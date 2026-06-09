@@ -1,13 +1,33 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <title>Tienda Surtida</title>
 </head>
+
 <body>
 
 <h1>Bienvenido a Tienda Surtida</h1>
 
-<p>Login exitoso.</p>
+<hr>
+
+<!-- Usuario logueado -->
+<p>
+    Usuario: <span sec:authentication="name"></span>
+</p>
+
+<!-- Roles -->
+<p>
+    Rol: <span sec:authentication="principal.authorities"></span>
+</p>
+
+<hr>
+
+<!-- Botón logout -->
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Cerrar sesión</button>
+</form>
 
 </body>
 </html>

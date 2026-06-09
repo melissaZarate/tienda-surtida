@@ -17,6 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username)
+
             throws UsernameNotFoundException {
 
         Usuario usuario = usuarioRepository
@@ -27,7 +28,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         return User.builder()
                 .username(usuario.getUsernameUsuario())
                 .password(usuario.getPasswordUsuario())
+                .disabled(!usuario.getEstadoUsuario())
                 .roles(usuario.getRol().getNombreRol())
+
                 .build();
+
+
     }
+
 }

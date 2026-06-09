@@ -24,10 +24,7 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
@@ -40,6 +37,10 @@ public class SecurityConfig {
 
         return authProvider;
     }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
@@ -47,12 +48,24 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
+                       // .requestMatchers("/").authenticated()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/css/**","/js/**").permitAll()
+                        .requestMatchers("/duena/**").hasRole("Dueña")
+                        .requestMatchers("/admin/**").hasAnyRole("Dueña","Administrador")
+                        .requestMatchers("/ventas/**").hasAnyRole("Dueña","Vendedor", "Administrador")
+                        .requestMatchers("/socio/**").hasAnyRole("Dueña","Socio")
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/",true)
                         .permitAll()
                 )
                 .logout(logout -> logout
+                        .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 );
 
