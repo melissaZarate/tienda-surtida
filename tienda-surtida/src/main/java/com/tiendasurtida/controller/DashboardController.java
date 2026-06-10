@@ -8,8 +8,12 @@ import org.springframework.ui.Model;
 public class DashboardController {
 
     @GetMapping("/")
-    public String inicio(Model model) {
-        model.addAttribute("contenido","dashboard/index :: contenido")
-        return "layout/base";
+    public String inicio() {
+
+        return "dashboard/index";
     }
+   /* public String inicio(Model model) {
+        model.addAttribute("contenido","dashboard/index :: contenido");
+        return "layout/base";
+    }*/
 }

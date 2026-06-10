@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
     <meta charset="UTF-8">
@@ -128,9 +129,14 @@
             <div class="container-fluid mt-3">
 
 
-                <!-- Aquí se cargará el contenido -->
-             <div th:replace="${contenido}">
+                <!-- Aquí se cargará el contenido
+             <div th:replace="~{${contenido}}">
                     Contenido
+                </div>-->
+               <!-- <div th:replace="~{dashboard/index :: contenido}">
+                </div>-->
+                <div layout:fragment="contenido">
+
                 </div>
 
             </div>
