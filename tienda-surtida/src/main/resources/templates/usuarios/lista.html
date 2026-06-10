@@ -1,84 +1,109 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Gestión de Usuarios</title>
-
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
 
 <body>
 
-<div class="container mt-4">
+<div layout:fragment="contenido">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Gestión de Usuarios</h2>
+    <div class="app-content-header">
+        <div class="container-fluid">
 
-        <a class="btn btn-primary" href="/usuarios/nuevo">
-            + Nuevo Usuario
-        </a>
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h1>Gestión de Usuarios</h1>
+
+                <a class="btn btn-primary"
+                   th:href="@{/usuarios/nuevo}">
+                    + Nuevo Usuario
+                </a>
+
+            </div>
+
+        </div>
     </div>
 
-    <table class="table table-striped table-hover">
+    <div class="app-content">
 
-        <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Usuario</th>
-            <th>Rol</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
+        <div class="container-fluid">
 
-        <tbody>
+            <div class="card">
 
-        <tr th:each="u : ${usuarios}">
-            <td th:text="${u.idUsuario}"></td>
-            <td th:text="${u.usernameUsuario}"></td>
-            <td th:text="${u.rol.nombreRol}"></td>
+                <div class="card-body">
 
-            <td>
-                <span th:if="${u.estadoUsuario}" class="badge bg-success"
-                     >Activo
-                </span>
-                <span th:unless="${u.estadoUsuario}" class="badge bg-danger"
-                      >Inactivo
-                </span>
-            </td>
+                    <table class="table table-striped table-hover">
 
-            <td>
+                        <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Usuario</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
 
-                <!-- ediitar-->
-                <a class="btn btn-warning btn-sm"
-                   th:href="@{/usuarios/editar/{id}(id=${u.idUsuario})}">
-                    Editar
-                </a>
+                        <tbody>
 
-                <!-- elimiabr de manera logica, no se elimina tot -->
-                <a class="btn btn-danger btn-sm"
-                   th:if="${u.estadoUsuario and u.rol.nombreRol!='Dueña'}"
-                   th:href="@{/usuarios/eliminar/{id}(id=${u.idUsuario})}"
+                        <tr th:each="u : ${usuarios}">
 
-                   onclick="return confirm('¿Desactivar usuario?')">
-                    Desactivar
-                </a>
+                            <td th:text="${u.idUsuario}"></td>
 
-                <!-- activar o descartivar -->
-                <a class="btn btn-info btn-sm"
-                   th:if="${!u.estadoUsuario}"
-                   th:href="@{/usuarios/estado/{id}(id=${u.idUsuario})}">
-                    activar
-                </a>
+                            <td th:text="${u.usernameUsuario}"></td>
 
+                            <td th:text="${u.rol.nombreRol}"></td>
 
-            </td>
-        </tr>
+                            <td>
 
-        </tbody>
+                                <span th:if="${u.estadoUsuario}"
+                                      class="badge bg-success">
+                                    Activo
+                                </span>
 
-    </table>
+                                <span th:unless="${u.estadoUsuario}"
+                                      class="badge bg-danger">
+                                    Inactivo
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <a class="btn btn-warning btn-sm"
+                                   th:href="@{/usuarios/editar/{id}(id=${u.idUsuario})}">
+                                    Editar
+                                </a>
+
+                                <a class="btn btn-danger btn-sm"
+                                   th:if="${u.estadoUsuario and u.rol.nombreRol!='Dueña'}"
+                                   th:href="@{/usuarios/eliminar/{id}(id=${u.idUsuario})}"
+                                   onclick="return confirm('¿Desactivar usuario?')">
+                                    Desactivar
+                                </a>
+
+                                <a class="btn btn-info btn-sm"
+                                   th:if="${!u.estadoUsuario}"
+                                   th:href="@{/usuarios/estado/{id}(id=${u.idUsuario})}">
+                                    Activar
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
