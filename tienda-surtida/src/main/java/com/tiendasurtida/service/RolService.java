@@ -5,4 +5,6 @@ import com.tiendasurtida.entity.rol;
 
 public interface RolService {
         List<rol>listarRoles();
+        List<rol>listarRolesAsignables();
 }
+

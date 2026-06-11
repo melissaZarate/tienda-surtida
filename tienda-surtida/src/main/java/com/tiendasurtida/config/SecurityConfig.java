@@ -48,7 +48,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                       // .requestMatchers("/").authenticated()
+                       // .requestMatchers("/").authenticated() //PERMISOS  QUE TENDRAN LOS ROLES
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/css/**","/js/**").permitAll()
                         .requestMatchers("/duena/**").hasRole("Dueña")

@@ -30,7 +30,7 @@
   --bs-gray-700: #495057;
   --bs-gray-800: #343a40;
   --bs-gray-900: #212529;
-  --bs-primary: #0d6efd;
+  --bs-primary: #1e3a8a;
   --bs-secondary: #6c757d;
   --bs-success: #198754;
   --bs-info: #0dcaf0;
@@ -38,7 +38,7 @@
   --bs-danger: #dc3545;
   --bs-light: #f8f9fa;
   --bs-dark: #212529;
-  --bs-primary-rgb: 13, 110, 253;
+  --bs-primary-rgb: 30, 58, 138;
   --bs-secondary-rgb: 108, 117, 125;
   --bs-success-rgb: 25, 135, 84;
   --bs-info-rgb: 13, 202, 240;
@@ -2036,16 +2036,16 @@ progress {
 
 .table-dark {
   --bs-table-color: #fff;
-  --bs-table-bg: #212529;
-  --bs-table-border-color: rgb(77.4, 80.6, 83.8);
+  --bs-table-bg: #1e3a8a;
+  --bs-table-border-color: rgba(255, 255,255,0.15);
   --bs-table-striped-bg: rgb(44.1, 47.9, 51.7);
   --bs-table-striped-color: #fff;
   --bs-table-active-bg: rgb(55.2, 58.8, 62.4);
   --bs-table-active-color: #fff;
-  --bs-table-hover-bg: rgb(49.65, 53.35, 57.05);
-  --bs-table-hover-color: #fff;
+  --bs-table-hover-bg: #162a63;
+  --bs-table-hover-color: #ffffff;
   color: var(--bs-table-color);
-  border-color: var(--bs-table-border-color);
+  border-color: rgba(255, 255,255,0.15);
 }
 
 .table-responsive {
@@ -2994,8 +2994,8 @@ textarea.form-control-lg {
 
 .btn-primary {
   --bs-btn-color: #fff;
-  --bs-btn-bg: #0d6efd;
-  --bs-btn-border-color: #0d6efd;
+  --bs-btn-bg: #1e3a8a;
+  --bs-btn-border-color: #1e3a8a;
   --bs-btn-hover-color: #fff;
   --bs-btn-hover-bg: rgb(11.05, 93.5, 215.05);
   --bs-btn-hover-border-color: rgb(10.4, 88, 202.4);
@@ -12936,19 +12936,19 @@ textarea.form-control-lg {
 }
 
 .app-sidebar {
-  --lte-sidebar-hover-bg: rgba(0, 0, 0, 0.1);
-  --lte-sidebar-color: #343a40;
-  --lte-sidebar-hover-color: #212529;
-  --lte-sidebar-active-color: #000;
-  --lte-sidebar-menu-active-bg: rgba(0, 0, 0, 0.1);
-  --lte-sidebar-menu-active-color: #000;
+  --lte-sidebar-hover-bg: rgba(255, 255, 255, 0.12);
+  --lte-sidebar-color: #1e3a8a;
+  --lte-sidebar-hover-color: #ffffff;
+  --lte-sidebar-active-color: #ffffff;
+  --lte-sidebar-menu-active-bg: #fd7e14;
+  --lte-sidebar-menu-active-color: #ffffff;
   --lte-sidebar-submenu-bg: transparent;
-  --lte-sidebar-submenu-color: #777;
-  --lte-sidebar-submenu-hover-color: #000;
+  --lte-sidebar-submenu-color: rgba(255, 255, 255, 0.7);
+  --lte-sidebar-submenu-hover-color: #ffffff;
   --lte-sidebar-submenu-hover-bg: rgba(0, 0, 0, 0.1);
   --lte-sidebar-submenu-active-color: #212529;
   --lte-sidebar-submenu-active-bg: rgba(0, 0, 0, 0.1);
-  --lte-sidebar-header-color: rgb(49.4, 55.1, 60.8);
+  --lte-sidebar-header-color: rgba(255, 255, 255, 0.6);
   z-index: 1038;
   grid-area: lte-app-sidebar;
   min-width: var(--lte-sidebar-width);
@@ -13858,11 +13858,11 @@ body:not(.app-loaded) .app-footer {
 
 [data-bs-theme=dark].app-sidebar,
 [data-bs-theme=dark] .app-sidebar {
-  --lte-sidebar-hover-bg: rgba(255, 255, 255, 0.1);
-  --lte-sidebar-color: #c2c7d0;
+  --lte-sidebar-hover-bg: #f97316;
+  --lte-sidebar-color: #ffffff;
   --lte-sidebar-hover-color: #fff;
   --lte-sidebar-active-color: #fff;
-  --lte-sidebar-menu-active-bg: rgba(255, 255, 255, 0.1);
+  --lte-sidebar-menu-active-bg: #f97316;
   --lte-sidebar-menu-active-color: #fff;
   --lte-sidebar-submenu-bg: transparent;
   --lte-sidebar-submenu-color: #c2c7d0;

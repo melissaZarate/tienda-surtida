@@ -1,34 +1,151 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
 <head>
+    <meta charset="UTF-8">
     <title>Login - Tienda Surtida</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        body {
+            background: #1b2a4a; /* azul elegante sólido */
+            height: 100vh;
+        }
+
+        .login-box {
+            max-width: 400px;
+            width: 100%;
+            border-radius: 18px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        /* HEADER AZUL (base del sistema) */
+        .login-header {
+            background: #1e3a8a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* ICONOS INPUT = NARANJA (acción) */
+        .input-group-text {
+            background: #fd7e14;
+            color: white;
+            border: none;
+        }
+
+        /* FOCO INPUT = NARANJA */
+        .form-control:focus {
+            border-color: #fd7e14;
+            box-shadow: 0 0 0 0.2rem rgba(253,126,20,0.25);
+        }
+
+        .form-control {
+            border-radius: 10px;
+        }
+
+        /* BOTÓN = NARANJA (acción principal) */
+        .btn-login {
+            background: #fd7e14;
+            border: none;
+            color: white;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .btn-login:hover {
+            background: #e96b02;
+        }
+
+        /* ALERTAS MÁS LIMPIAS */
+        .alert-danger {
+            border-left: 5px solid #dc3545;
+        }
+
+        .alert-success {
+            border-left: 5px solid #198754;
+        }
+    </style>
 </head>
+
 <body>
 
-<h2>Iniciar Sesión</h2>
+<div class="d-flex justify-content-center align-items-center h-100">
 
-<form th:action="@{/login}" method="post">
+    <div class="card login-box">
 
-    <div>
-        <label>Usuario:</label>
-        <input type="text" name="username"/>
+        <!-- HEADER -->
+        <div class="login-header">
+            <h4><i class="bi bi-shop"></i> Tienda Surtida</h4>
+           <small>Todo surtido, para ti</small>
+        </div>
+
+        <div class="card-body p-4">
+
+            <!-- ERROR -->
+            <div th:if="${param.error}" class="alert alert-danger">
+                Usuario o contraseña incorrectos
+            </div>
+
+            <!-- LOGOUT -->
+            <div th:if="${param.logout}" class="alert alert-success">
+                Sesión cerrada correctamente
+            </div>
+
+            <form th:action="@{/login}" method="post">
+
+                <div class="mb-3">
+                    <label class="form-label">Usuario</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-person"></i>
+                        </span>
+                        <input type="text"
+                               name="username"
+                               class="form-control"
+                               placeholder="Ingrese usuario"
+                               required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        <input type="password"
+                               name="password"
+                               class="form-control"
+                               placeholder="Ingrese contraseña"
+                               required>
+                    </div>
+                </div>
+
+                <button type="submit"
+                        class="btn btn-primary w-100 btn-login">
+                    Iniciar Sesión
+                </button>
+
+            </form>
+
+        </div>
+
+        <div class="text-center pb-3 text-muted small">
+            © 2026 Tienda Surtida
+        </div>
+
     </div>
 
-    <div>
-        <label>Contraseña:</label>
-        <input type="password" name="password"/>
-    </div>
-
-    <button type="submit">Ingresar</button>
-
-</form>
-
-<div th:if="${param.error}">
-    <p style="color:red;">Usuario o contraseña incorrectos</p>
-</div>
-
-<div th:if="${param.logout}">
-    <p style="color:green;">Sesión cerrada</p>
 </div>
 
 </body>

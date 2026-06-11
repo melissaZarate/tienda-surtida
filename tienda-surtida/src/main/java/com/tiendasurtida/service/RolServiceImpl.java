@@ -20,5 +20,12 @@ public class RolServiceImpl implements RolService{
         public List<rol> listarRoles() {
             return rolRepository.findAll();
         }
+    @Override
+    public List<rol> listarRolesAsignables() {
+        return rolRepository.findAll()
+                .stream()
+                .filter(r -> !r.getNombreRol().equalsIgnoreCase("Dueña"))
+                .toList();
+    }
 
 }
