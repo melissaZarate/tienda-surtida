@@ -52,13 +52,38 @@
 
         <div class="row">
 
-          <div class="col-md-10 mb-2">
+          <div class="col-md-5 mb-5">
+            <label class="form-label">Nombre</label>
 
             <input type="text"
                    class="form-control"
                    name="nombre"
                    th:value="${nombre}"
                    placeholder="Buscar producto por nombre">
+
+          </div>
+          <!--para cateforia-->
+          <div class="col-md-5 mb-2">
+
+            <label class="form-label">
+              Categoría
+            </label>
+
+            <select class="form-select"
+                    name="categoria">
+
+              <option value="">
+                Todas las categorías
+              </option>
+
+              <option th:each="c : ${categorias}"
+                      th:value="${c.idCategoria}"
+                      th:text="${c.nombreCategoria}"
+                      th:selected="${c.idCategoria==categoriaSeleccionada}">
+
+              </option>
+
+            </select>
 
           </div>
 
@@ -102,7 +127,7 @@
 
     <i class="bi bi-exclamation-triangle-fill me-2"></i>
 
-    No se encontro ningun producto con ese nombre.
+    No se encontraron productos.
 
   </div>
   <div class="card">
@@ -141,10 +166,26 @@
             <td th:text="${p.nombreProducto}"></td>
 
             <td th:text="${p.categoria.nombreCategoria}"></td>
+            <td>
+             <span th:if="${p.precioVentaProducto != null}"
+                   th:text="${p.precioVentaProducto}">
+             </span>
 
-            <td th:text="${p.precioVentaProducto}"></td>
+              <span th:unless="${p.precioVentaProducto != null}"
+                    class="text-muted">
+                       Sin definir
+              </span>
+            </td>
 
-            <td th:text="${p.stockActualProducto}"></td>
+            <td>
+            <span th:if="${p.stockActualProducto != null}"
+                 th:text="${p.stockActualProducto}">
+            </span>
+              <span th:unless="${p.stockActualProducto != null}"
+                    class="text-muted">
+                        Sin definir
+               </span>
+            </td>
 
             <td>
 

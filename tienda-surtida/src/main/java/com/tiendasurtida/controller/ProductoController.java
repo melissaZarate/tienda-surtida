@@ -45,22 +45,28 @@ public class ProductoController {
     }
     @GetMapping("/buscar")//para buscar por nombre
     public String buscar(
-            @RequestParam(required = false) String nombre, Model model) {
-        if(nombre==null || nombre.trim().isEmpty()){
-            model.addAttribute("productos", productoService.listarProductos());
-        }
-        else{
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) Integer categoria,
+            Model model) {
+        if(nombre!=null && !nombre.trim().isEmpty()){
             model.addAttribute("productos", productoService.buscarPorNombre(nombre));
+        }
+        else if(categoria!=null){
+            model.addAttribute("productos", productoService.buscarPorCategoria(categoria));
+        } else{
+            model.addAttribute("productos",productoService.listarProductos());
         }
 
      //ARREGLAAAR PROBELMAAS      model.addAttribute("productos", productoService.buscar(nombre, categoria));
-
+     
         model.addAttribute("categorias", categoriaService.listarCategorias());
         model.addAttribute("unidades", unidadMedidaService.listarUnidades());
 
         model.addAttribute("producto", new Producto());
+        model.addAttribute("nombre",nombre);
+        model.addAttribute("categoriaSeleccionada",categoria);
 
-        model.addAttribute("nombre", nombre);
+
 
 
         return "producto/lista";

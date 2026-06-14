@@ -32,7 +32,9 @@ public class ProductoServiceImpl implements ProductoService {
     public List<Producto> buscarPorNombre(String nombre){
         return productoRepository.findByNombreProductoContainingIgnoreCase(nombre);
     }
-
-
-
+    @Override
+    public List<Producto> buscarPorCategoria(Integer idCategoria){
+        return productoRepository.findByCategoriaIdCategoria(idCategoria);
+    }
 }
+
