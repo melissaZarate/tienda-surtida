@@ -12965,8 +12965,8 @@ textarea.form-control-lg {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 3.5rem;
-  padding: 0.8125rem 0.5rem;
+  height: 140px;
+  padding: 5px;
   overflow: hidden;
   font-size: 1.25rem;
   white-space: nowrap;

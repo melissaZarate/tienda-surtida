@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+  <!-- HEADER -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h1>
+      <i class="bi bi-box-seam-fill text-primary me-2" ></i>
+      Productos
+    </h1>
+    <!--aqui vienne para el buscador-->
+
+
+
+
+    <button class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modalProducto">
+
+      <i class="bi bi-plus-circle"></i>
+      Nuevo Producto
+
+    </button>
+
+  </div>
+
+  <!-- MENSAJES -->
+  <div th:if="${mensaje}" class="callout"
+       th:classappend="${tipo == 'success'} ? 'callout-success' : 'callout-danger'">
+
+    <h5 th:text="${tipo == 'success'} ? 'Éxito' : 'Error'"></h5>
+
+    <p th:text="${mensaje}"></p>
+
+  </div>
+
+  <div class="card mb-3">
+
+    <div class="card-header">
+      <i class="bi bi-search me-2"></i>
+      Buscar Productos
+    </div>
+
+    <div class="card-body">
+
+      <form th:action="@{/productos/buscar}" method="get">
+
+        <div class="row">
+
+          <div class="col-md-10 mb-2">
+
+            <input type="text"
+                   class="form-control"
+                   name="nombre"
+                   th:value="${nombre}"
+                   placeholder="Buscar producto por nombre">
+
+          </div>
+
+          <div class="col-md-2 mb-2">
+
+            <button type="submit"
+                    class="btn w-100" style="background-color: #e86523; color:white;">
+
+              <i class="bi bi-search me-1"></i>
+              Buscar
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+<!--aqui mostramios la cantidad de resluatdos encontrados-->
+  <div class="mb-3">
+
+    <span class="badge " style="background-color: #fd7e14; color:white;">
+
+        <i class="bi bi-box-seam me-1"></i>
+
+        Resultados encontrados:
+        <span th:text="${#lists.size(productos)}"></span>
+
+    </span>
+
+  </div>
+
+
+  <!-- cuado noexistan resuluatos -->
+  <div th:if="${#lists.isEmpty(productos)}"
+       class="alert alert-warning">
+
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+    No se encontro ningun producto con ese nombre.
+
+  </div>
+  <div class="card">
+
+    <div class="card-header">
+
+      <h5 class="mb-0">
+        Lista de Productos
+      </h5>
+
+    </div>
+
+    <div class="card-body">
+
+      <div class="table-responsive" th:unless="${#lists.isEmpty(productos)}">
+
+        <table class="table table-hover align-middle">
+
+          <thead class="table-dark">
+
+          <tr>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+
+          </thead>
+
+          <tbody>
+
+          <tr th:each="p : ${productos}">
+
+            <td th:text="${p.nombreProducto}"></td>
+
+            <td th:text="${p.categoria.nombreCategoria}"></td>
+
+            <td th:text="${p.precioVentaProducto}"></td>
+
+            <td th:text="${p.stockActualProducto}"></td>
+
+            <td>
+
+                            <span th:if="${p.estadoProducto}"
+                                  class="badge bg-success">
+                                Activo
+                            </span>
+
+              <span th:unless="${p.estadoProducto}"
+                    class="badge bg-danger">
+                                Inactivo
+                            </span>
+
+            </td>
+
+            <td>
+
+              <button class="btn btn-warning btn-sm">
+
+                <i class="bi bi-pencil-square"></i>
+
+              </button>
+
+            </td>
+
+          </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</html>

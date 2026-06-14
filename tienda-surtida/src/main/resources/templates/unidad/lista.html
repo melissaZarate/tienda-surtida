@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+  <!-- HEADER -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+
+
+    <h1>
+      <i class="bi bi-rulers-fill text-primary"></i>
+      <i class="bi bi-calculator-fill text-primary"></i>
+      Unidades de Medida</h1>
+
+    <button class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modalUnidad">
+      <i class="bi bi-plus-circle"></i>
+      Nueva Unidad
+    </button>
+
+
+  </div>
+
+  <!-- ALERTA -->
+  <div th:if="${mensaje}" class="callout"
+       th:classappend="${tipo == 'success'} ? 'callout-success' : 'callout-danger'">
+
+    <p th:text="${mensaje}"></p>
+  </div>
+
+  <!-- TABLA -->
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+
+      <table class="table table-hover align-middle">
+        <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Abreviación</th>
+          <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="u : ${unidades}">
+          <td th:text="${u.idUnidad}"></td>
+          <td th:text="${u.nombreUnidad}"></td>
+          <td th:text="${u.abreviacionUnidad}"></td>
+          <td>
+            <button class="btn btn-warning btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalEditar"
+                    th:attr="data-id=${u.idUnidad},
+                                         data-nombre=${u.nombreUnidad},
+                                         data-abreviacion=${u.abreviacionUnidad}">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal fade" id="modalUnidad" tabindex="-1">
+
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <form th:action="@{/unidades/guardar}"
+              th:object="${unidad}"
+              method="post">
+          <input type="hidden" name="idUnidad" id="editId">
+
+          <div class="modal-header">
+            <i class="bi bi-calculator text-primary me-2"></i>
+            <h5 class="modal-title">Nuevo Unidad de Medida</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <div class="modal-body">
+
+            <!-- NOMBRE -->
+            <div class="mb-2">
+              <label>Nombre</label>
+              <input type="text"
+                     class="form-control"
+                     th:field="*{nombreUnidad}">
+              <div class="text-danger"
+                   th:if="${#fields.hasErrors('nombreUnidad')}"
+                   th:errors="*{nombreUnidad}">
+              </div>
+            </div>
+
+            <!-- ABREVIACIÓN -->
+            <div class="mb-2">
+              <label>Abreviación</label>
+              <input type="text"
+                     class="form-control"
+                     th:field="*{abreviacionUnidad}">
+              <div class="text-danger"
+                   th:if="${#fields.hasErrors('abreviacionUnidad')}"
+                   th:errors="*{abreviacionUnidad}">
+              </div>
+            </div>
+
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit"
+                    class="btn btn-primary">
+              Guardar
+            </button>
+            <button type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+              Cancelar
+            </button>
+
+
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+  <div class="modal fade" id="modalEditar" tabindex="-1">
+
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <form th:action="@{/unidades/guardar}" method="post">
+
+          <input type="hidden" name="idUnidad" id="editId">
+          <div class="modal-header">
+            <i class="bi bi-calculator text-primary me-2"></i>
+            <h5 class="modal-title">Editar Unidad de Medida</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <div class="modal-body">
+
+            <input type="text" class="form-control mb-2"
+                   id="editNombre" name="nombreUnidad">
+
+            <input type="text" class="form-control mb-2"
+                   id="editAbreviacion" name="abreviacionUnidad">
+
+          </div>
+
+          <div class="modal-footer">
+            <button class="btn btn-primary">Guardar </button>
+            <button type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+              Cancelar
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+  <!-- SCRIPT EDITAR -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+      const modal = document.getElementById("modalEditar");
+
+      modal.addEventListener("show.bs.modal", function (event) {
+
+        let button = event.relatedTarget;
+
+        document.getElementById("editId").value = button.getAttribute("data-id");
+        document.getElementById("editNombre").value = button.getAttribute("data-nombre");
+        document.getElementById("editAbreviacion").value = button.getAttribute("data-abreviacion");
+
+      });
+
+    });
+  </script>
+
+</div>
+
+
+
+</html>

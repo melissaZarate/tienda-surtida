@@ -125,11 +125,12 @@
         <!-- Logo -->
         <div class="sidebar-brand">
 
-            <a th:href="@{/}" class="brand-link">
+            <a th:href="@{/}" class="brand-link d-flex aling-items-center">
+              <img th:src="@{/assets/img/logo (2).png }"
+                    class="brand-image img-circle elevation-3"
+                     alt="logo"
+                     style="width:100%;height:100px;object-fit:contain;">
 
-                <span class="brand-text fw-light">
-                    Tienda Surtida
-                </span>
 
             </a>
 
@@ -167,6 +168,63 @@
                             <p>Usuarios</p>
 
                         </a>
+
+                    </li>
+                    <li class="nav-item">
+
+                        <a href="#" class="nav-link" data-lte-toggle="treeview">
+
+                            <i class="nav-icon bi bi-box-seam"></i>
+
+                            <p>
+                                Productos e Inventario
+                                <i class="nav-arrow bi bi-chevron-right"></i>
+                            </p>
+
+                        </a>
+
+                        <ul class="nav nav-treeview">
+
+                            <li class="nav-item">
+
+                                <a th:href="@{/categorias}"
+                                   class="nav-link">
+
+                                    <i class="bi bi-tod"></i>
+                                        <i class="bi bi-tags-fill nav-icon text-warning"></i>
+                                    <p>Categorías</p>
+
+                                </a>
+
+                            </li>
+                            <!--aqui boton para uidad medida-->
+                            <li class="nav-item">
+
+                                <a th:href="@{/unidades}"
+                                   class="nav-link">
+
+                                    <i class="bi bi-tod"></i>
+                                    <i class="bi bi-calculator-fill nav-icon text-warning"></i>
+                                    <p>Unidades de Medida</p>
+
+                                </a>
+
+                            </li>
+                            <!--aqui boton para poductos-->
+                            <li class="nav-item">
+
+                                <a th:href="@{/productos}"
+                                   class="nav-link">
+
+                                    <i class="bi bi-tod"></i>
+                                    <i class="bi bi-boxes nav-icon text-warning"></i>
+                                    <p>Productos</p>
+
+                                </a>
+
+                            </li>
+
+                        </ul>
 
                     </li>
 

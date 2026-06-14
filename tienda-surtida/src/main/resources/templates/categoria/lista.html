@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<body>
+
+<div layout:fragment="contenido">
+    <div class="app-content-header">
+        <div class="container-fluid">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <h1>
+                    <i class="bi bi-bookmark-fill text-primary"></i>
+                    Lista de Categorías</h1>
+
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCategoria">
+                    <i class="bi bi-plus-circle"></i>
+                    Nueva Categoría
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+
+<!--cambiar arjetas de aletra de e acciones  si o siiii-->
+        <div th:if="${mensaje}" class="callout"
+             th:classappend="${tipo == 'success'} ? 'callout-success' : 'callout-danger'">
+
+            <h5 th:text="${tipo == 'success'} ? 'Éxito' : 'Error'"></h5>
+            <p th:text="${mensaje}"></p>
+
+        </div>
+
+
+    <div class="card">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="c : ${categorias}">
+                        <td th:text="${c.idCategoria}"></td>
+                        <td th:text="${c.nombreCategoria}"></td>
+                        <td th:text="${c.descripcionCategoria}"></td>
+                        <td>
+                            <span th:if="${c.estadoCategoria}"
+                                  class="badge bg-success">
+                                Activa
+                            </span>
+
+                            <span th:unless="${c.estadoCategoria}"
+                                  class="badge bg-danger">
+                                Inactiva
+                            </span>
+                        </td>
+                        <!--editar-->
+                        <td>
+                            <button class="btn btn-warning btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEditar"
+                                    th:attr="data-id=${c.idCategoria},
+                     data-nombre=${c.nombreCategoria},
+                     data-descripcion=${c.descripcionCategoria},
+                     data-estado=${c.estadoCategoria}">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+
+
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+        <!-- MODAL CATEGORIA -->
+        <div class="modal fade" id="modalCategoria" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <form th:action="@{/categorias/guardar}" th:object="${categoria}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="bi bi-tag-fill text-primary"></i>
+                                Nueva Categoría
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <!-- Nombre -->
+                            <div class="mb-3">
+                                <label class="form-label">Nombre</label>
+                                <input type="text"
+                                       class="form-control"
+
+                                       th:field="*{nombreCategoria}"
+                                       placeholder="Ej: Bebidas" required>
+                                <div class="text-danger"
+                                     th:if="${#fields.hasErrors('nombreCategoria')}"
+                                     th:errors="*{nombreCategoria}" >
+                                </div>
+                            </div>
+
+                            <!-- Descripción alerta -->
+                            <div class="mb-3">
+                                <label class="form-label">Descripción</label>
+                                <textarea class="form-control"
+                                          th:field="*{descripcionCategoria}"
+                                          rows="3"
+                                          placeholder="Opcional"></textarea>
+                                <div class="text-danger"
+                                     th:if="${#fields.hasErrors('descripcionCategoria')}"
+                                     th:errors="*{descripcionCategoria}">
+                                </div>
+                            </div>
+
+                            <!-- Estado alerta-->
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       th:field="*{estadoCategoria}">
+                                <label class="form-check-label">
+                                    Activa
+                                </label>
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+
+
+                            <button type="submit" class="btn btn-primary">
+                                Guardar
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Cancelar
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    <!--modal para editr-->
+    <div class="modal fade" id="modalEditar" tabindex="-1">
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <form th:action="@{/categorias/actualizar}" method="post">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar Categoría</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <input type="hidden" id="editId" name="idCategoria">
+
+                        <div class="mb-3">
+                            <label>Nombre</label>
+                            <input type="text" id="editNombre" name="nombreCategoria" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Descripción</label>
+                            <textarea id="editDescripcion" name="descripcionCategoria" class="form-control"></textarea>
+                        </div>
+
+                        <div class="form-check">
+                            <input type="checkbox" id="editEstado" name="estadoCategoria" class="form-check-input">
+                            <label class="form-check-label">Activa</label>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">Guardar</button>
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const modalEditar = document.getElementById('modalEditar');
+
+            modalEditar.addEventListener('show.bs.modal', function (event) {
+
+                let button = event.relatedTarget;
+
+                document.getElementById("editId").value = button.getAttribute("data-id");
+                document.getElementById("editNombre").value = button.getAttribute("data-nombre");
+                document.getElementById("editDescripcion").value = button.getAttribute("data-descripcion");
+                document.getElementById("editEstado").checked = button.getAttribute("data-estado") === "true";
+            });
+
+        });
+    </script>
+
+</div>
+
+</body>
+</html>
