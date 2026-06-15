@@ -50,10 +50,11 @@
 
       <form th:action="@{/productos/buscar}" method="get">
 
+
         <div class="row">
 
-          <div class="col-md-5 mb-5">
-            <label class="form-label">Nombre</label>
+          <div class="col-md-6 mb-2">
+            <label class="form-label"><b>Nombre</b></label>
 
             <input type="text"
                    class="form-control"
@@ -63,10 +64,10 @@
 
           </div>
           <!--para cateforia-->
-          <div class="col-md-5 mb-2">
+          <div class="col-md-6 mb-2">
 
             <label class="form-label">
-              Categoría
+             <b>Categoría</b>
             </label>
 
             <select class="form-select"
@@ -96,6 +97,22 @@
               Buscar
 
             </button>
+
+          </div>
+          <div class="col-md-2 mb-2">
+
+            <a th:href="@{/productos}"
+               class="btn btn-secondary w-100">
+
+              <i class="bi bi-x-circle me-1"></i>
+              Limpiar
+
+            </a>
+
+          </div>
+
+
+          <div class="col-md-2 mb-2">
 
           </div>
 
@@ -200,13 +217,41 @@
                             </span>
 
             </td>
-
+            <!--Editar producto,en este boton esta la onformacion delproducto-->
             <td>
 
-              <button class="btn btn-warning btn-sm">
-
+              <button class="btn btn-warning btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modalProducto"
+                      th:attr="
+          data-id=${p.idProducto},
+          data-nombre=${p.nombreProducto},
+          data-descripcion=${p.descripcionProducto},
+          data-stockmin=${p.stockMinimoProducto},
+          data-categoria=${p.categoria.idCategoria},
+          data-unidad=${p.unidadMedida.idUnidad},
+          data-estado=${p.estadoProducto},
+          data-vencimiento=${p.controlVencimientoProducto}
+        ">
                 <i class="bi bi-pencil-square"></i>
+              </button>
+              <!--boton para mostrar detalle-->
+              <button class="btn btn-info btn-sm"
+                      data-bs-toggle="modal"
+                      data-bs-target="#modalDetalleProducto"
+                      th:attr="
+          data-id=${p.idProducto},
+          data-nombre=${p.nombreProducto},
+          data-descripcion=${p.descripcionProducto},
+          data-categoria=${p.categoria.nombreCategoria},
+          data-unidad=${p.unidadMedida.nombreUnidad},
+          data-stock=${p.stockActualProducto},
+          data-stockmin=${p.stockMinimoProducto},
+          data-estado=${p.estadoProducto},
+          data-vencimiento=${p.controlVencimientoProducto},
+          data-precio=${p.precioVentaProducto}">
 
+                <i class="bi bi-eye"></i>
               </button>
 
             </td>
@@ -222,6 +267,311 @@
     </div>
 
   </div>
+  <!--aqi es el modal para registrar nuevo prouctos-->
+  <div class="modal fade" id="modalProducto" tabindex="-1">
+
+    <div class="modal-dialog
+     modal-dialog-scrollable
+     modal-dialog-centered
+     modal-fullscreen-sm-down
+      modal-lg">
+
+      <div class="modal-content">
+
+        <!-- FORMULARIO -->
+          <form th:action="@{/productos/guardar}" method="post" id="formProducto">
+          <input type="hidden" name="idProducto" id="idProducto"> <!--agregamos id oculto sii id viene vacio es nuevo, sitiene valor enediion-->
+
+          <!-- HEADER -->
+          <div class="modal-header">
+            <h5 class="modal-title"><i class="bi bi-box-seam me-2 text-primary"></i> Nuevo Producto</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <!-- BODY -->
+          <div class="modal-body" style="max-height:70vh; overflow-y:auto;">
+
+            <!-- NOMBRE -->
+            <div class="mb-3">
+              <label class="form-label">Nombre </label>
+              <input type="text"
+                     class="form-control"
+                     name="nombreProducto"
+                     required>
+            </div>
+
+            <!-- CATEGORIA Y UNIDAD -->
+            <div class="row g-2 mb-3">
+
+              <div class="col-12 col-md-6">
+                <label class="form-label">Categoría </label>
+                <select class="form-select"
+                        name="idCategoria"
+                        required>
+
+                  <option value="">Seleccione</option>
+
+                  <option th:each="c : ${categorias}"
+                          th:value="${c.idCategoria}"
+                          th:text="${c.nombreCategoria}">
+                  </option>
+
+                </select>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="form-label">Unidad </label>
+                <select class="form-select"
+                        name="idUnidad"
+                        required>
+
+                  <option value="">Seleccione</option>
+
+                  <option th:each="u : ${unidades}"
+                          th:value="${u.idUnidad}"
+                          th:text="${u.nombreUnidad}">
+                  </option>
+
+                </select>
+              </div>
+
+            </div>
+
+            <!-- STOCK MINIMO -->
+            <div class="mb-3">
+              <label class="form-label">Stock mínimo </label>
+              <input type="number"
+                     class="form-control"
+                     name="stockMinimoProducto"
+                     required>
+            </div>
+
+            <!-- DESCRIPCION -->
+            <div class="mb-3">
+              <label class="form-label">Descripción</label>
+              <textarea class="form-control"
+                        name="descripcionProducto"
+                        rows="3"></textarea>
+            </div>
+
+            <!-- CHECKBOX -->
+            <div class="row mb-3">
+
+              <div class="col-12 col-md-6 form-check">
+                <input class="form-check-input"
+                       type="checkbox"
+                       name="controlVencimientoProducto"
+                       value="true">
+                <label class="form-check-label">
+                  Control de vencimiento
+                </label>
+              </div>
+
+              <div class="col-12 col-md-6 form-check">
+                <input class="form-check-input"
+                       type="checkbox"
+                       name="estadoProducto"
+                       value="true"
+                       checked>
+                <label class="form-check-label">
+                  Activo
+                </label>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- FOOTER -->
+          <div class="modal-footer bg-light sticky-bottom d-flex justify-content-between">
+
+            <button type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+              Cancelar
+            </button>
+
+            <button type="submit"
+                    class="btn btn-primary">
+              Guardar Producto
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+  <!--modal par ver detalle delproducto-->
+  <div class="modal fade" id="modalDetalleProducto" tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+
+      <div class="modal-content">
+
+        <!-- HEADER -->
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">
+            <i class="bi bi-eye me-2"></i>
+            Detalle del Producto
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- BODY -->
+        <div class="modal-body">
+
+          <div class="row g-3">
+
+            <!-- IDENTIDAD -->
+            <div class="col-12">
+              <h6 class="text-primary"><i class="bi bi-info-circle"></i> Información General</h6>
+              <hr>
+            </div>
+
+            <div class="col-md-6">
+              <strong>Nombre:</strong>
+              <p id="dNombre"></p>
+            </div>
+
+            <div class="col-md-6">
+              <strong>Categoría:</strong>
+              <p id="dCategoria"></p>
+            </div>
+
+            <div class="col-md-6">
+              <strong>Unidad:</strong>
+              <p id="dUnidad"></p>
+            </div>
+
+            <div class="col-md-6">
+              <strong>Precio venta:</strong>
+              <p id="dPrecio"></p>
+            </div>
+
+            <!-- INVENTARIO -->
+            <div class="col-12 mt-3">
+              <h6 class="text-primary"><i class="bi bi-boxes"></i>Inventario</h6>
+              <hr>
+            </div>
+
+            <div class="col-md-6">
+              <strong>Stock actual:</strong>
+              <p id="dStock"></p>
+            </div>
+
+            <div class="col-md-6">
+              <strong>Stock mínimo:</strong>
+              <p id="dStockMin"></p>
+            </div>
+
+            <!-- CONFIGURACIÓN -->
+            <div class="col-12 mt-3">
+              <h6 class="text-primary"><i class="bi bi-gear"></i> Configuración</h6>
+              <hr>
+            </div>
+
+            <div class="col-md-6">
+              <strong>Estado:</strong>
+              <p id="dEstado"></p>
+            </div>
+
+            <div class="col-md-6">
+              <strong>Control vencimiento:</strong>
+              <p id="dVencimiento"></p>
+            </div>
+
+            <div class="col-12">
+              <strong>Descripción:</strong>
+              <p id="dDescripcion"></p>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">
+            Cerrar
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+      const modal = document.getElementById('modalProducto');
+
+      modal.addEventListener('show.bs.modal', function (event) {
+
+        const button = event.relatedTarget;
+
+        // datos
+        const id = button.getAttribute('data-id');
+        const nombre = button.getAttribute('data-nombre');
+        const descripcion = button.getAttribute('data-descripcion');
+        const stockmin = button.getAttribute('data-stockmin');
+        const categoria = button.getAttribute('data-categoria');
+        const unidad = button.getAttribute('data-unidad');
+        const estado = button.getAttribute('data-estado');
+        const vencimiento = button.getAttribute('data-vencimiento');
+
+        // asignar al form
+        document.getElementById('idProducto').value = id || '';
+        document.querySelector('[name="nombreProducto"]').value = nombre || '';
+        document.querySelector('[name="descripcionProducto"]').value = descripcion || '';
+        document.querySelector('[name="stockMinimoProducto"]').value = stockmin || '';
+
+        document.querySelector('[name="idCategoria"]').value = categoria || '';
+        document.querySelector('[name="idUnidad"]').value = unidad || '';
+
+        document.querySelector('[name="estadoProducto"]').checked = (estado === 'true');
+        document.querySelector('[name="controlVencimientoProducto"]').checked = (vencimiento === 'true');
+
+      });
+
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+      const modalDetalle = document.getElementById('modalDetalleProducto');
+
+      modalDetalle.addEventListener('show.bs.modal', function (event) {
+
+        const button = event.relatedTarget;
+
+        const nombre = button.getAttribute('data-nombre');
+        const categoria = button.getAttribute('data-categoria');
+        const unidad = button.getAttribute('data-unidad');
+        const stock = button.getAttribute('data-stock');
+        const stockMin = button.getAttribute('data-stockmin');
+        const estado = button.getAttribute('data-estado');
+        const vencimiento = button.getAttribute('data-vencimiento');
+        const descripcion = button.getAttribute('data-descripcion');
+        const precio = button.getAttribute('data-precio');
+
+        document.getElementById('dNombre').innerText = nombre || '-';
+        document.getElementById('dCategoria').innerText = categoria || '-';
+        document.getElementById('dUnidad').innerText = unidad || '-';
+        document.getElementById('dStock').innerText = stock ?? '0';
+        document.getElementById('dStockMin').innerText = stockMin ?? '0';
+        document.getElementById('dDescripcion').innerText = descripcion || '-';
+        document.getElementById('dPrecio').innerText = precio ? 'Bs ' + precio : 'Sin definir';
+
+        document.getElementById('dEstado').innerText = (estado === 'true') ? 'Activo' : 'Inactivo';
+        document.getElementById('dVencimiento').innerText = (vencimiento === 'true') ? 'Sí' : 'No';
+
+      });
+
+    });
+  </script>
 
 </div>
 

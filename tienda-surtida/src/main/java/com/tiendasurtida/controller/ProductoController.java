@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/productos")// ruta principal localhost:8080/productos
@@ -58,7 +60,7 @@ public class ProductoController {
         }
 
      //ARREGLAAAR PROBELMAAS      model.addAttribute("productos", productoService.buscar(nombre, categoria));
-     
+
         model.addAttribute("categorias", categoriaService.listarCategorias());
         model.addAttribute("unidades", unidadMedidaService.listarUnidades());
 
@@ -70,5 +72,44 @@ public class ProductoController {
 
 
         return "producto/lista";
+    }
+    @PostMapping("/guardar")
+    public String guardar( Producto producto,
+            @RequestParam String nombreProducto,
+            @RequestParam String descripcionProducto,
+            @RequestParam Integer stockMinimoProducto,
+            @RequestParam(required = false) Boolean controlVencimientoProducto,
+            @RequestParam(required = false) Boolean estadoProducto,
+            @RequestParam Integer idCategoria,
+            @RequestParam Integer idUnidad,
+            RedirectAttributes redirectAttributes
+    ) {
+
+        try {
+
+           // Producto producto = new Producto();
+
+            producto.setNombreProducto(nombreProducto);
+            producto.setDescripcionProducto(descripcionProducto);
+            producto.setStockMinimoProducto(stockMinimoProducto);
+
+            producto.setControlVencimientoProducto(controlVencimientoProducto != null);
+            producto.setEstadoProducto(estadoProducto != null);
+
+            producto.setCategoria(categoriaService.buscarPorId(idCategoria));
+            producto.setUnidadMedida(unidadMedidaService.buscarPorId(idUnidad));
+
+            productoService.guardarProducto(producto);
+
+            redirectAttributes.addFlashAttribute("mensaje", "Producto guardado correctamente");
+            redirectAttributes.addFlashAttribute("tipo", "success");
+
+        } catch (Exception e) {
+
+            redirectAttributes.addFlashAttribute("mensaje", "Error al guardar el producto");
+            redirectAttributes.addFlashAttribute("tipo", "error");
+        }
+
+        return "redirect:/productos";
     }
 }

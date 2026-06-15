@@ -79,7 +79,7 @@
         <form th:action="@{/unidades/guardar}"
               th:object="${unidad}"
               method="post">
-          <input type="hidden" name="idUnidad" id="editId">
+
 
           <div class="modal-header">
             <i class="bi bi-calculator text-primary me-2"></i>
@@ -94,7 +94,8 @@
               <label>Nombre</label>
               <input type="text"
                      class="form-control"
-                     th:field="*{nombreUnidad}">
+                     th:field="*{nombreUnidad}"
+                      placeholder="Ej: Kiligramo, Gramo, Litro" required>
               <div class="text-danger"
                    th:if="${#fields.hasErrors('nombreUnidad')}"
                    th:errors="*{nombreUnidad}">
@@ -106,7 +107,8 @@
               <label>Abreviación</label>
               <input type="text"
                      class="form-control"
-                     th:field="*{abreviacionUnidad}">
+                     th:field="*{abreviacionUnidad}"
+                     placeholder="Ej: Kg, G, L" required>
               <div class="text-danger"
                    th:if="${#fields.hasErrors('abreviacionUnidad')}"
                    th:errors="*{abreviacionUnidad}">
@@ -140,9 +142,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
 
-        <form th:action="@{/unidades/guardar}" method="post">
+        <form th:action="@{/unidades/guardar}" th:object="${unidad}" method="post">
 
           <input type="hidden" name="idUnidad" id="editId">
+
           <div class="modal-header">
             <i class="bi bi-calculator text-primary me-2"></i>
             <h5 class="modal-title">Editar Unidad de Medida</h5>
@@ -152,10 +155,10 @@
           <div class="modal-body">
 
             <input type="text" class="form-control mb-2"
-                   id="editNombre" name="nombreUnidad">
+                   id="editNombre" name="nombreUnidad" required>
 
             <input type="text" class="form-control mb-2"
-                   id="editAbreviacion" name="abreviacionUnidad">
+                   id="editAbreviacion" name="abreviacionUnidad" required>
 
           </div>
 

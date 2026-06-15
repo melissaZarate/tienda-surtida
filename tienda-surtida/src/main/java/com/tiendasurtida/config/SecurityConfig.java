@@ -51,8 +51,8 @@ public class SecurityConfig {
                        // .requestMatchers("/").authenticated() //PERMISOS  QUE TENDRAN LOS ROLES
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/css/**","/js/**").permitAll()
-                        .requestMatchers("/duena/**").hasRole("Dueña")
-                        .requestMatchers("/admin/**").hasAnyRole("Dueña","Administrador")
+                        .requestMatchers("/usuarios/**").hasAnyRole("Dueña","Administrador")
+                        .requestMatchers("/productos/**").hasAnyRole("Dueña","Administrador")
                         .requestMatchers("/ventas/**").hasAnyRole("Dueña","Vendedor", "Administrador")
                         .requestMatchers("/socio/**").hasAnyRole("Dueña","Socio")
 
