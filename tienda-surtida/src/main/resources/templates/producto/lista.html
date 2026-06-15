@@ -123,6 +123,46 @@
     </div>
 
   </div>
+  <!--aqui vemos undashboard de inventario-->
+  <div class="row mb-3">
+
+    <div class="col-12 col-md-4">
+      <div class="small-box bg-primary">
+        <div class="inner">
+          <h3 th:text="${#lists.size(productos)}">0</h3>
+          <p>Productos Registrados</p>
+        </div>
+        <div class="icon">
+          <i class="bi bi-box-seam"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="small-box bg-warning">
+        <div class="inner">
+          <h3>0</h3>
+          <p>Stock Bajo</p> <!--falta logica de stock bajo, eso lo haremos en laiteracion 4-->
+        </div>
+        <div class="icon">
+          <i class="bi bi-exclamation-triangle"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="small-box bg-danger">
+        <div class="inner">
+          <h3>0</h3>
+          <p>Próximos a Vencer</p> <!--falta crear identodad para vencimiento de producto-->
+        </div>
+        <div class="icon">
+          <i class="bi bi-calendar-event"></i>
+        </div>
+      </div>
+    </div>
+
+  </div>
 <!--aqui mostramios la cantidad de resluatdos encontrados-->
   <div class="mb-3">
 
