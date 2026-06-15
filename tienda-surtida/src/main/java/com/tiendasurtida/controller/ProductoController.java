@@ -39,6 +39,7 @@ public class ProductoController {
         model.addAttribute("unidades",
                 unidadMedidaService.listarUnidades()); //para combo
         //aqui falta de socio uteracion 2
+        model.addAttribute("totalProductos",productoService.listarProductos().size());
 
         model.addAttribute("producto", //th:object=${producto}
                 new Producto());
@@ -67,6 +68,7 @@ public class ProductoController {
         model.addAttribute("producto", new Producto());
         model.addAttribute("nombre",nombre);
         model.addAttribute("categoriaSeleccionada",categoria);
+        model.addAttribute("totalProductos",productoService.listarProductos().size()); //esto para as tarjetitas
 
 
 
