@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+    <div class="d-flex justify-content-between mb-3">
+
+        <h1>
+            <i class="bi bi-cart-check text-primary me-2"></i>
+            Compras
+        </h1>
+
+        <a th:href="@{/compras/nuevo}"
+           class="btn btn-primary">
+
+            <i class="bi bi-plus-circle"></i>
+            Nueva Compra
+        </a>
+
+    </div>
+    <div th:if="${mensaje}" class="callout"
+         th:classappend="${tipo == 'success'} ? 'callout-success' : 'callout-danger'">
+
+        <h5 th:text="${tipo == 'success'} ? 'Éxito' : 'Error'"></h5>
+
+        <p th:text="${mensaje}"></p>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <h5 class="mb-0">
+                Lista de compras registradas
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-hover">
+
+                <thead class="table-dark">
+
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Proveedor</th>
+                    <th>Total</th>
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                <tr th:each="c : ${compras}">
+
+                    <td th:text="${c.idCompra}"></td>
+
+                    <td th:text="${c.fechaCompra}"></td>
+
+                    <td th:text="${c.proveedor.nombreProveedor}"></td>
+
+                    <td th:text="${c.totalCompra}"></td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</html>

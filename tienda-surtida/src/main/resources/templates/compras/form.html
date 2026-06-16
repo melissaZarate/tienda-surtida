@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+    <div class="card">
+
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="bi bi-cart-plus me-2"></i>
+                Nueva Compra
+            </h3>
+        </div>
+
+        <form th:action="@{/compras/guardar}"
+              th:object="${compra}"
+              method="post">
+
+            <div class="card-body">
+
+                <!-- Proveedor -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Proveedor *
+                    </label>
+
+                    <select class="form-select" name="idProveedor" required>
+
+                        <option value="">
+                            Seleccione un proveedor
+                        </option>
+
+                        <option th:each="p : ${proveedores}" th:value="${p.idProveedor}" th:text="${p.nombreProveedor}"></option>
+
+                    </select>
+
+                </div>
+
+                <!-- Observacion -->
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Observación
+                    </label>
+
+                    <textarea class="form-control"
+                              rows="3"
+                              th:field="*{observacionCompra}">
+                    </textarea>
+
+                </div>
+
+            </div>
+
+            <div class="card-footer">
+
+                <button type="submit"
+                        class="btn btn-primary">
+
+                    <i class="bi bi-save"></i>
+                    Guardar Compra
+
+                </button>
+
+                <a th:href="@{/compras}"
+                   class="btn btn-secondary">
+
+                    Cancelar
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</html>
