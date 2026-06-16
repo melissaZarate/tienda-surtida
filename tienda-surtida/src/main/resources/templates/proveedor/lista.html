@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h1>
+            <i class="bi bi-truck text-primary me-2"></i>
+            Proveedores
+        </h1>
+
+        <button class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#modalProveedor"
+                onclick="limpiarProveedor()">
+
+            <i class="bi bi-plus-circle"></i>
+            Nuevo Proveedor
+
+        </button>
+
+    </div>
+    <!-- MENSAJES -->
+    <div th:if="${mensaje}" class="callout"
+         th:classappend="${tipo == 'success'} ? 'callout-success' : 'callout-danger'">
+
+        <h5 th:text="${tipo == 'success'} ? 'Éxito' : 'Error'"></h5>
+
+        <p th:text="${mensaje}"></p>
+
+    </div>
+    <div class="card mb-3">
+
+        <div class="card-header">
+            <i class="bi bi-search me-2"></i>
+            Buscar Proveedor
+        </div>
+
+        <div class="card-body">
+
+            <form th:action="@{/proveedores/buscar}" method="get">
+
+                <div class="row">
+
+                    <div class="col-md-8 mb-2">
+
+                        <label class="form-label">
+                            <b>Nombre</b>
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               name="nombre"
+                               th:value="${nombre}"
+                               placeholder="Buscar proveedor">
+
+                    </div>
+
+                    <div class="col-md-2 mb-2">
+
+                        <button type="submit"
+                                class="btn w-100"
+                                style="background-color:#e86523;color:white;">
+
+                            <i class="bi bi-search me-1"></i>
+                            Buscar
+
+                        </button>
+
+                    </div>
+
+                    <div class="col-md-2 mb-2">
+
+                        <a th:href="@{/proveedores}"
+                           class="btn btn-secondary w-100">
+
+                            <i class="bi bi-x-circle me-1"></i>
+                            Limpiar
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+    <!--contador de proveedores-->
+    <div class="mb-3">
+
+    <span class="badge"
+          style="background-color:#fd7e14;color:white;">
+
+        <i class="bi bi-truck me-1"></i>
+
+        Proveedores registrados:
+        <span th:text="${#lists.size(proveedores)}"></span>
+
+    </span>
+
+    </div>
+     <!--tabla de proveedores-->
+    <div class="card">
+
+        <div class="card-header">
+
+            <h5 class="mb-0">
+                Lista de Proveedores
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <!-- Mensaje si no existen proveedores -->
+            <div th:if="${#lists.isEmpty(proveedores)}"
+                 class="alert alert-warning">
+
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+                No existen proveedores registrados.
+
+            </div>
+
+            <!-- Tabla -->
+            <div class="table-responsive"
+                 th:unless="${#lists.isEmpty(proveedores)}">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Teléfono</th>
+                        <th>Dirección</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="p : ${proveedores}">
+
+                        <td th:text="${p.nombreProveedor}"></td>
+
+                        <td>
+                        <span th:if="${p.telefonoProveedor != null && !#strings.isEmpty(p.telefonoProveedor)}"
+                              th:text="${p.telefonoProveedor}">
+                        </span>
+
+                            <span th:unless="${p.telefonoProveedor != null && !#strings.isEmpty(p.telefonoProveedor)}"
+                                  class="text-muted">
+                            Sin registrar
+                        </span>
+                        </td>
+
+                        <td>
+                        <span th:if="${p.direccionProveedor != null && !#strings.isEmpty(p.direccionProveedor)}"
+                              th:text="${p.direccionProveedor}">
+                        </span>
+
+                            <span th:unless="${p.direccionProveedor != null && !#strings.isEmpty(p.direccionProveedor)}"
+                                  class="text-muted">
+                            Sin registrar
+                        </span>
+                        </td>
+
+                        <td>
+
+                        <span th:if="${p.estadoProveedor}"
+                              class="badge bg-success">
+                            Activo
+                        </span>
+
+                            <span th:unless="${p.estadoProveedor}"
+                                  class="badge bg-danger">
+                            Inactivo
+                        </span>
+
+                        </td>
+
+                        <td>
+
+                            <button class="btn btn-warning btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalProveedor"
+                                    th:attr="
+            data-id=${p.idProveedor},
+            data-nombre=${p.nombreProveedor},
+            data-telefono=${p.telefonoProveedor},
+            data-direccion=${p.direccionProveedor},
+            data-estado=${p.estadoProveedor}
+        "
+                                    onclick="cargarProveedor(this)" >
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- MODAL PROVEEDOR -->
+    <div class="modal fade" id="modalProveedor" tabindex="-1">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <form th:action="@{/proveedores/guardar}"
+                      th:object="${proveedor}"
+                      method="post">
+
+                    <!-- ID oculto (para editar) -->
+                    <input type="hidden" th:field="*{idProveedor}" id="idProveedor">
+
+                    <!-- HEADER -->
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="bi bi-truck me-2 text-primary"></i>
+                            Proveedor
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <!-- BODY -->
+                    <div class="modal-body">
+
+                        <!-- NOMBRE -->
+                        <div class="mb-3">
+                            <label class="form-label">Nombre *</label>
+                            <input type="text"
+                                   class="form-control"
+                                   th:field="*{nombreProveedor}"
+                                   placeholder="Ej: Distribuidora XYZ"
+                                   required>
+
+                            <div class="text-danger"
+                                 th:if="${#fields.hasErrors('nombreProveedor')}"
+                                 th:errors="*{nombreProveedor}">
+                            </div>
+                        </div>
+
+                        <!-- TELÉFONO -->
+                        <div class="mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="text"
+                                   class="form-control"
+                                   th:field="*{telefonoProveedor}"
+                                   placeholder="Ej: 71234567">
+                        </div>
+
+                        <!-- DIRECCIÓN -->
+                        <div class="mb-3">
+                            <label class="form-label">Dirección</label>
+                            <input type="text"
+                                   class="form-control"
+                                   th:field="*{direccionProveedor}"
+                                   placeholder="Ej: Av. Siempre Viva">
+                        </div>
+
+                        <!-- ESTADO -->
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   th:field="*{estadoProveedor}">
+                            <label class="form-check-label">
+                                Activo
+                            </label>
+                        </div>
+
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div class="modal-footer">
+
+                        <a type="button" th:href="@{/proveedores}"
+                                class="btn btn-secondary"
+                                >
+                            Cancelar
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            Guardar
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+    <script>
+        function limpiarProveedor() {
+
+            document.getElementById("idProveedor").value = "";
+
+            document.querySelector("[name='nombreProveedor']").value = "";
+            document.querySelector("[name='telefonoProveedor']").value = "";
+            document.querySelector("[name='direccionProveedor']").value = "";
+
+            document.querySelector("[name='estadoProveedor']").checked = true;
+        }
+    </script>
+    <script>
+        function cargarProveedor(button) {
+
+            document.getElementById("idProveedor").value = button.getAttribute("data-id") || "";
+
+            document.querySelector("[name='nombreProveedor']").value = button.getAttribute("data-nombre") || "";
+
+            document.querySelector("[name='telefonoProveedor']").value = button.getAttribute("data-telefono") || "";
+
+            document.querySelector("[name='direccionProveedor']").value = button.getAttribute("data-direccion") || "";
+
+            const estado = button.getAttribute("data-estado");
+            document.querySelector("[name='estadoProveedor']").checked = (estado === 'true');
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const modal = document.getElementById("modalProveedor");
+
+            modal.addEventListener("hidden.bs.modal", function () {
+
+                document.getElementById("idProveedor").value = "";
+
+                document.querySelector("[name='nombreProveedor']").value = "";
+                document.querySelector("[name='telefonoProveedor']").value = "";
+                document.querySelector("[name='direccionProveedor']").value = "";
+
+                document.querySelector("[name='estadoProveedor']").checked = true;
+
+            });
+
+        });
+    </script>
+</div>
+
+</html>
