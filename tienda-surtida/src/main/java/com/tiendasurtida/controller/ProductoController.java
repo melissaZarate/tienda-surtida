@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.tiendasurtida.dto.DatosAjusteDTO;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+import java.math.BigDecimal;
 
 @Controller
 @RequestMapping("/productos")// ruta principal localhost:8080/productos
@@ -114,4 +118,49 @@ public class ProductoController {
 
         return "redirect:/productos";
     }
+    @PostMapping("/ajustar-precio")
+    public String ajustarPrecio(
+            @RequestParam Long idProducto,
+            @RequestParam BigDecimal nuevoPorcentajeGanancia,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+
+            productoService.ajustarPrecioManual(
+                    idProducto,
+                    nuevoPorcentajeGanancia
+            );
+
+            redirectAttributes.addFlashAttribute(
+                    "mensaje",
+                    "Precio ajustado correctamente");
+
+            redirectAttributes.addFlashAttribute(
+                    "tipo",
+                    "success");
+
+        } catch (Exception e) {
+
+            redirectAttributes.addFlashAttribute(
+                    "mensaje",
+                    e.getMessage());
+
+            redirectAttributes.addFlashAttribute(
+                    "tipo",
+                    "error");
+        }
+
+        return "redirect:/productos";
+    }
+    @GetMapping("/datos-ajuste/{id}")
+    @ResponseBody
+    public DatosAjusteDTO obtenerDatosAjuste(
+            @PathVariable Long id) {
+
+        return productoService.obtenerDatosAjuste(id);
+    }
+
+   /* @GetMapping("/productos/datos-ajuste/{id}")
+    @ResponseBody
+    public DatosAjusteDTO obtenerDatos(@PathVariable Long id)*/
 }

@@ -43,6 +43,11 @@ public class DetalleCompraServiceImpl
 
         return detalleCompraRepository.findByCompraIdCompra(idCompra);
     }
+    @Override
+    public DetalleCompra obtenerUltimaCompraProducto(Long idProducto) {
+  //esto para ajuste manual porque necesitamos mostrar el costo acyual, ganancia actual y el precio de venta
+        return detalleCompraRepository.findTopByProductoIdProductoOrderByIdDetalleDesc(idProducto);
+    }
 
 
 }
