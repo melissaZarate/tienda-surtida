@@ -98,12 +98,7 @@ public class CompraServiceImpl implements CompraService {
                         )
                         .multiply(BigDecimal.valueOf(100));
 
-        detalle.setPorcentajeGananciaDetalle(
-                porcentajeGananciaReal.setScale(
-                        2,
-                        RoundingMode.HALF_UP
-                )
-        );
+        detalle.setPorcentajeGananciaDetalle(porcentajeGananciaReal.setScale(2,RoundingMode.HALF_UP));
         // Buscar último detalle del producto para historial
         DetalleCompra ultimoDetalle = detalleCompraRepository.findTopByProductoIdProductoOrderByIdDetalleDesc(producto.getIdProducto());
 
@@ -151,6 +146,15 @@ public class CompraServiceImpl implements CompraService {
                 stockActual + detalle.getCantidadDetalle();
 
         producto.setStockActualProducto(nuevoStock);
+        //regla automatica de estado
+
+
+       // REGLA NUEVA
+        if (nuevoStock <= 0) {
+            producto.setEstadoProducto(false);
+        } else {
+            producto.setEstadoProducto(true);
+        }
 
 
         // Relación detalle-compra

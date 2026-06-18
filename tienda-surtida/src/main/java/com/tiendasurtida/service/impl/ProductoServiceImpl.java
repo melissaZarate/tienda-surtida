@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.math.RoundingMode;
 
 @Service //aquicontiene la logica de negocio
 public class ProductoServiceImpl implements ProductoService {
@@ -34,7 +35,16 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public List<Producto> listarProductos() {
+
+        Producto productos= new Producto();
+
+        if ( productos.getStockActualProducto()<= 0) {
+            productos.setEstadoProducto(false);
+        } else {
+            productos.setEstadoProducto(true);
+        }
         return productoRepository.findAll(); //obtiene todos los productos
+
     }
 
     @Override
@@ -92,35 +102,70 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     @Transactional
     public void ajustarPrecioManual(Long idProducto, BigDecimal nuevoPorcentajeGanancia) {
-        Producto producto = productoRepository.findById(idProducto).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-        DetalleCompra ultimoDetalle = detalleCompraRepository.findTopByProductoIdProductoOrderByIdDetalleDesc(idProducto);
+
+        // Buscar producto
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        // Obtener último costo de compra
+        DetalleCompra ultimoDetalle = detalleCompraRepository
+                .findTopByProductoIdProductoOrderByIdDetalleDesc(idProducto);
+
         if (ultimoDetalle == null) {
-            throw new RuntimeException(
-                    "El producto no tiene compras registradas");
+            throw new RuntimeException("No existe historial de compras");
         }
-        BigDecimal precioCompraAnterior = ultimoDetalle.getPrecioCompraDetalle();
+
+        BigDecimal costoCompra = ultimoDetalle.getPrecioCompraDetalle();
+
+        //  VALIDACIONES
+        if (costoCompra == null || costoCompra.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("Costo de compra inválido");
+        }
+
+        if (nuevoPorcentajeGanancia.compareTo(BigDecimal.ZERO) < 0) {
+            throw new RuntimeException("El porcentaje no puede ser negativo");
+        }
+
+        // CAPTURAR VALORES ANTES DEL CAMBIO
         BigDecimal precioVentaAnterior = producto.getPrecioVentaProducto();
+
+        // CALCULAR NUEVO PRECIO
+        BigDecimal precioVentaNuevo = costoCompra.multiply(BigDecimal.ONE.add(nuevoPorcentajeGanancia.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP))).setScale(2, RoundingMode.HALF_UP);
+
+        //  VALIDAR QUE NO SEA MENOR AL COSTO
+        if (precioVentaNuevo.compareTo(costoCompra) < 0) {
+            throw new RuntimeException("El precio no puede ser menor al costo de compra");
+        }
+
+        //  ACTUALIZAR PRODUCTO
+        producto.setPrecioVentaProducto(precioVentaNuevo);
+
+        //  ACTUALIZAR DETALLE COMPRA (ganancia)
+        ultimoDetalle.setPorcentajeGananciaDetalle(nuevoPorcentajeGanancia);
+
+        // 9. GUARDAR HISTORIAL (ANTES DEL CAMBIO vs DESPUÉS)
         HistorialPrecio historial = new HistorialPrecio();
         historial.setProducto(producto);
-        historial.setPrecioCompraHistorial(precioCompraAnterior);
+        historial.setPrecioCompraHistorial(costoCompra);
         historial.setPrecioVentaHistorial(precioVentaAnterior);
         historial.setMotivoHistorial("Problemas externos");
+
         historialPrecioRepository.save(historial);
-        BigDecimal nuevoPrecioVenta = precioCompraAnterior.multiply(BigDecimal.ONE.add(nuevoPorcentajeGanancia.divide(BigDecimal.valueOf(100), 4, java.math.RoundingMode.HALF_UP)));
 
-        producto.setPrecioVentaProducto(
-                nuevoPrecioVenta.setScale(
-                        2,
-                        java.math.RoundingMode.HALF_UP
-                )
-        );
-
-        ultimoDetalle.setPorcentajeGananciaDetalle(
-                nuevoPorcentajeGanancia);
-
+        //  GUARDAR CAMBIOS
         detalleCompraRepository.save(ultimoDetalle);
-
         productoRepository.save(producto);
+    }
+    //CONTADOR PARA TARJETA EN LSTA.HTML
+    public long contarStockBajo() {
+        return productoRepository.findAll()
+                .stream()
+                .filter(p ->
+                        p.getStockActualProducto() != null &&
+                                p.getStockMinimoProducto() != null &&
+                                p.getStockActualProducto() <= p.getStockMinimoProducto()
+                )
+                .count();
     }
 }
 

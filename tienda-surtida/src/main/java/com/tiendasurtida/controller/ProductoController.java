@@ -4,6 +4,7 @@ package com.tiendasurtida.controller;
 import com.tiendasurtida.entity.Producto;
 import com.tiendasurtida.service.CategoriaService;
 import com.tiendasurtida.service.ProductoService;
+import com.tiendasurtida.service.impl.ProductoServiceImpl;
 import com.tiendasurtida.service.UnidadMedidaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,8 @@ public class ProductoController {
 
     @Autowired
     private ProductoService productoService;
+    @Autowired
+    private ProductoServiceImpl productoServiceImpl;
 
     @Autowired
     private CategoriaService categoriaService;
@@ -44,6 +47,7 @@ public class ProductoController {
                 unidadMedidaService.listarUnidades()); //para combo
         //aqui falta de socio uteracion 2
         model.addAttribute("totalProductos",productoService.listarProductos().size());
+        model.addAttribute("stockBajo", productoServiceImpl.contarStockBajo());
 
         model.addAttribute("producto", //th:object=${producto}
                 new Producto());

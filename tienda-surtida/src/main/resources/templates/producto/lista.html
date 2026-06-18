@@ -46,8 +46,8 @@
     <div class="col-12 col-md-4">
       <div class="small-box bg-primary">
         <div class="inner">
-          <h3 th:text="${totalProductos}">0</h3>
-          <p>Productos Registrados</p>
+          <h3 th:text="${totalProductos}" style="color: aliceblue"><strong>0</strong> </h3>
+          <p style="color: aliceblue"> <strong>Productos Registrados</strong></p>
         </div>
         <div class="icon">
           <i class="bi bi-box-seam"></i>
@@ -58,7 +58,7 @@
     <div class="col-12 col-md-4">
       <div class="small-box bg-warning">
         <div class="inner">
-          <h3>0</h3>
+          <h3 th:text="${stockBajo}">0</h3>
           <p>Stock Bajo</p> <!--falta logica de stock bajo, eso lo haremos en laiteracion 4-->
         </div>
         <div class="icon">
@@ -212,7 +212,6 @@
             <th>Categoría</th>
             <th>Precio</th>
             <th>Stock</th>
-
             <th>Acciones</th>
           </tr>
 
@@ -279,12 +278,8 @@
                 <i class="bi bi-pencil-square"></i>
               </button>
               <!--boton para ajustar precio-->
-            <td>
 
-              <!-- Editar -->
-              <button class="btn btn-warning btn-sm">
-                <i class="bi bi-pencil-square"></i>
-              </button>
+
 
               <!-- Ajuste manual -->
               <button class="btn btn-success btn-sm"
@@ -297,12 +292,8 @@
                 <i class="bi bi-currency-exchange"></i>
               </button>
 
-              <!-- Detalle -->
-              <button class="btn btn-info btn-sm">
-                <i class="bi bi-eye"></i>
-              </button>
 
-            </td>
+
               <!--boton para mostrar detalle-->
               <button class="btn btn-info btn-sm"
                       data-bs-toggle="modal"
@@ -429,9 +420,9 @@
                 <input class="form-check-input"
                        type="checkbox"
                        name="controlVencimientoProducto"
-                       value="true">
-                <label class="form-check-label">
-                  Control de vencimiento
+                       value="true" >
+                <label class="form-check-label" >
+                  <strong>Control de vencimiento</strong>
                 </label>
               </div>
 
