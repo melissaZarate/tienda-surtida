@@ -7,6 +7,6 @@ public interface DetalleCompraService {
     //DetalleCompra guardarDetalle(DetalleCompra detalle);
     List<DetalleCompra> listarPorCompra(Long idCompra);
    //realizamos csmbios, comora service ahora gregara el desalle y detllecompralplasmara
-
+   DetalleCompra obtenerUltimaCompraProducto(Long idProducto);
 
 }

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h1>
+            <i class="bi bi-clock-history text-primary me-2"></i>
+            Historial de Precios
+        </h1>
+
+    </div>
+
+    <!-- DASHBOARD -->
+
+    <div class="row mb-3">
+
+        <div class="col-12 col-md-4">
+
+            <div class="small-box bg-info">
+
+                <div class="inner">
+
+                    <h3 th:text="${totalCambios}">0</h3>
+
+                    <p>Cambios Registrados</p>
+
+                </div>
+
+                <div class="icon">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-12 col-md-4">
+
+            <div class="small-box bg-success">
+
+                <div class="inner">
+
+                    <h3 th:text="${totalCompras}">0</h3>
+
+                    <p>Cambios por Compra</p>
+
+                </div>
+
+                <div class="icon">
+                    <i class="bi bi-cart-check"></i>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-12 col-md-4">
+
+            <div class="small-box bg-warning">
+
+                <div class="inner">
+
+                    <h3 th:text="${totalAjustes}">0</h3>
+
+                    <p>Ajustes Manuales</p>
+
+                </div>
+
+                <div class="icon">
+                    <i class="bi bi-pencil-square"></i>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SIN DATOS -->
+
+    <div th:if="${#lists.isEmpty(historiales)}"
+         class="alert alert-info">
+
+        <i class="bi bi-info-circle-fill me-2"></i>
+
+        No existen cambios de precios registrados todavía.
+
+        <hr>
+
+        Los cambios aparecerán automáticamente cuando se registre
+        una compra con nuevo precio o un ajuste manual.
+
+    </div>
+
+    <!-- TABLA -->
+
+    <div class="card"
+         th:unless="${#lists.isEmpty(historiales)}">
+
+        <div class="card-header">
+
+            <h5 class="mb-0">
+
+                <i class="bi bi-table me-2"></i>
+
+                Historial de Cambios de Precio
+
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Producto</th>
+
+                        <th>Compra Anterior</th>
+
+                        <th>Venta Anterior</th>
+
+                        <th>Venta Actual</th>
+
+                        <th>Fecha</th>
+
+                        <th>Tipo</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="h : ${historiales}">
+
+                        <!-- PRODUCTO -->
+
+                        <td>
+
+                            <strong
+                                    th:text="${h.producto.nombreProducto}">
+                                Producto
+                            </strong>
+
+                        </td>
+
+                        <!-- PRECIO COMPRA ANTERIOR -->
+
+                        <td>
+
+                            <span th:if="${h.precioCompraHistorial != null}"
+                                  th:text="'Bs ' + ${h.precioCompraHistorial}">
+                            </span>
+
+                            <span th:unless="${h.precioCompraHistorial != null}"
+                                  class="text-muted">
+
+                                Sin registro
+
+                            </span>
+
+                        </td>
+
+                        <!-- PRECIO VENTA ANTERIOR -->
+
+                        <td>
+
+                            <span th:if="${h.precioVentaHistorial != null}"
+                                  th:text="'Bs ' + ${h.precioVentaHistorial}">
+                            </span>
+
+                            <span th:unless="${h.precioVentaHistorial != null}"
+                                  class="text-muted">
+
+                                Sin registro
+
+                            </span>
+
+                        </td>
+
+                        <!-- PRECIO ACTUAL -->
+
+                        <td>
+
+                            <span class="fw-bold text-success"
+                                  th:text="'Bs ' + ${h.producto.precioVentaProducto}">
+                            </span>
+
+                        </td>
+
+                        <!-- FECHA -->
+
+                        <td>
+
+                            <span th:text="${#temporals.format(
+                                h.fechaCambioHistorial,
+                                'dd/MM/yyyy HH:mm')}">
+                            </span>
+
+                        </td>
+
+                        <!-- TIPO -->
+
+                        <td>
+
+                            <span
+                                    th:if="${h.motivoHistorial == 'Compra con nuevo precio proveedor'}"
+                                    class="badge bg-success">
+
+                                Compra
+
+                            </span>
+
+                            <span
+                                    th:if="${h.motivoHistorial == 'Problemas externos'}"
+                                    class="badge bg-warning text-dark">
+
+                                Ajuste Manual
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</html>

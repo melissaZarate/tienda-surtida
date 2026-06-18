@@ -3,10 +3,13 @@ package com.tiendasurtida.service.impl;
 import com.tiendasurtida.entity.Compra;
 import com.tiendasurtida.entity.DetalleCompra;
 import com.tiendasurtida.entity.Producto;
+import com.tiendasurtida.entity.HistorialPrecio;
 import com.tiendasurtida.repository.CompraRepository;
+import com.tiendasurtida.repository.HistorialPrecioRepository;
 import com.tiendasurtida.repository.ProductoRepository;
 import com.tiendasurtida.service.CompraService;
 import org.springframework.stereotype.Service;
+import com.tiendasurtida.repository.DetalleCompraRepository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -19,13 +22,17 @@ public class CompraServiceImpl implements CompraService {
 
     private final CompraRepository compraRepository;
     private final ProductoRepository productoRepository;
+    private final HistorialPrecioRepository historialPrecioRepository ;
 
-    public CompraServiceImpl(
-            CompraRepository compraRepository,
-            ProductoRepository productoRepository) {
+    private final DetalleCompraRepository detalleCompraRepository;
+  //para historial se modifica el cpntructor
 
+
+    public CompraServiceImpl(CompraRepository compraRepository, ProductoRepository productoRepository, HistorialPrecioRepository historialPrecioRepository, DetalleCompraRepository detalleCompraRepository) {
         this.compraRepository = compraRepository;
         this.productoRepository = productoRepository;
+        this.historialPrecioRepository = historialPrecioRepository;
+        this.detalleCompraRepository = detalleCompraRepository;
     }
 
     @Override
@@ -71,16 +78,11 @@ public class CompraServiceImpl implements CompraService {
                         detalle.getProducto().getIdProducto())
                 .orElseThrow(() ->
                         new RuntimeException("Producto no encontrado"));
+        //qui gurdamos los valores en precioventa anerior
+      //  BigDecimal precioVentaAnterior = producto.getPrecioVentaProducto();
 
         // Calcular costo unitario
-        BigDecimal costoUnitario =
-                detalle.getPrecioTotalDetalle()
-                        .divide(
-                                BigDecimal.valueOf(
-                                        detalle.getCantidadDetalle()),
-                                2,
-                                RoundingMode.HALF_UP
-                        );
+        BigDecimal costoUnitario = detalle.getPrecioTotalDetalle().divide(BigDecimal.valueOf(detalle.getCantidadDetalle()), 2, RoundingMode.HALF_UP);
 
         // Guardar costo unitario
         detalle.setPrecioCompraDetalle(costoUnitario);
@@ -102,9 +104,40 @@ public class CompraServiceImpl implements CompraService {
                         RoundingMode.HALF_UP
                 )
         );
+        // Buscar último detalle del producto para historial
+        DetalleCompra ultimoDetalle = detalleCompraRepository.findTopByProductoIdProductoOrderByIdDetalleDesc(producto.getIdProducto());
+
+// Solo registrar historial si el producto ya tuvo compras para CASO1
+        if (ultimoDetalle != null) {
+
+            HistorialPrecio historial =
+                    new HistorialPrecio();
+
+            historial.setProducto(producto);
+
+            historial.setPrecioCompraHistorial(
+                    ultimoDetalle.getPrecioCompraDetalle()
+            );
+
+            historial.setPrecioVentaHistorial(
+                    producto.getPrecioVentaProducto()
+            );
+
+            historial.setFechaCambioHistorial(
+                    LocalDateTime.now()
+            );
+
+            historial.setMotivoHistorial(
+                    "Compra con nuevo precio proveedor"
+            );
+
+            historialPrecioRepository.save(historial);
+        }
 
         // Actualizar precio de venta del producto
         producto.setPrecioVentaProducto(precioVentaFinal);
+
+
 
         // Actualizar stock
         Integer stockActual =

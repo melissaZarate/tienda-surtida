@@ -12,4 +12,6 @@ import java.util.List;
 public interface DetalleCompraRepository extends JpaRepository<DetalleCompra, Long> {
 
     List<DetalleCompra> findByCompraIdCompra(Long idCompra); //con esto obetnedmos todos los productis de una comrpa
+    DetalleCompra findTopByProductoIdProductoOrderByIdDetalleDesc(Long idProducto);
+    //DetalleCompra findTopByProductoIdProductoOrderByIdDetalleDesc(Long idProducto);
 }
