@@ -51,6 +51,7 @@
                     <th>Fecha</th>
                     <th>Proveedor</th>
                     <th>Total</th>
+                    <th>Acciones</th>
                 </tr>
 
                 </thead>
@@ -66,6 +67,34 @@
                     <td th:text="${c.proveedor.nombreProveedor}"></td>
 
                     <td th:text="${c.totalCompra}"></td>
+                    <!--aqui van las acciones-->
+
+                    <!--acciones version Pro-->
+                    <td class="text-nowrap">
+
+                        <!-- VER SIEMPRE -->
+                        <a th:href="@{/compras/{id}(id=${c.idCompra})}"
+                           class="btn btn-info btn-sm">
+
+                            <i class="bi bi-eye"></i>
+
+                        </a>
+
+                        <span class="badge"
+                              th:classappend="${c.estadoCompra == 'EN_PROCESO'} ? 'bg-warning text-dark' : 'bg-secondary'">
+
+        <span th:text="${c.estadoCompra == 'EN_PROCESO'} ? 'EN PROCESO' : 'FINALIZADA'"></span>
+
+    </span>
+
+                        <i th:if="${c.estadoCompra == 'FINALIZADA'}"
+                           class="bi bi-lock-fill text-muted ms-1"></i>
+
+
+                        <!-- BOTÓN CONTINUAR -->
+
+
+                    </td>
 
                 </tr>
 

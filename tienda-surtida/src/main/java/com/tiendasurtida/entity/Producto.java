@@ -19,10 +19,10 @@ public class Producto {
     private String descripcionProducto;
 
     @Column(name = "precio_venta_producto")
-    private BigDecimal precioVentaProducto;
+    private BigDecimal precioVentaProducto=BigDecimal.ZERO; //evitar null en precioventa
 
     @Column(name = "stock_actual_producto")
-    private Integer stockActualProducto; //esto actualizar hasa la teracion 4
+    private Integer stockActualProducto=0; //esto actualizar hasa la teracion 4
 
     @Column(name = "stock_minimo_producto")
     private Integer stockMinimoProducto;

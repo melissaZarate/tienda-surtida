@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import jakarta.persistence.*;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "compra")
@@ -22,6 +23,8 @@ public class Compra {
 
     @Column(name = "observacion_compra")
     private String observacionCompra;
+    @Column(name = "estado_compra")
+    private String estadoCompra;
 
     // relacion con proveedr
     @ManyToOne
@@ -34,22 +37,22 @@ public class Compra {
     private Usuario usuario;
 
     // rdlacion condetalleProducto
-    @OneToMany(mappedBy = "compra", cascade = CascadeType.ALL)
-    private List<DetalleCompra> detalles;
+    @OneToMany(mappedBy = "compra", cascade = CascadeType.ALL, orphanRemoval=true)
+    private List<DetalleCompra> detalles=new ArrayList<>();
 
     // CONSTRUCTORES
     public Compra() {
     }
 
-    public Compra(Long idCompra, LocalDateTime fechaCompra,
-                  Double totalCompra, String observacionCompra,
-                  Proveedor proveedor, Usuario usuario) {
+    public Compra(Long idCompra, LocalDateTime fechaCompra, Double totalCompra, String observacionCompra, String estadoCompra, Proveedor proveedor, Usuario usuario, List<DetalleCompra> detalles) {
         this.idCompra = idCompra;
         this.fechaCompra = fechaCompra;
         this.totalCompra = totalCompra;
         this.observacionCompra = observacionCompra;
+        this.estadoCompra = estadoCompra;
         this.proveedor = proveedor;
         this.usuario = usuario;
+        this.detalles = detalles;
     }
 
     // GETTERS Y SETTERS
@@ -107,5 +110,13 @@ public class Compra {
 
     public void setDetalles(List<DetalleCompra> detalles) {
         this.detalles = detalles;
+    }
+
+    public String getEstadoCompra() {
+        return estadoCompra;
+    }
+
+    public void setEstadoCompra(String estadoCompra) {
+        this.estadoCompra = estadoCompra;
     }
 }

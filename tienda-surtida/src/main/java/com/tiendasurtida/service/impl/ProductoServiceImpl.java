@@ -11,8 +11,12 @@ import java.util.List;
 @Service //aquicontiene la logica de negocio
 public class ProductoServiceImpl implements ProductoService {
 
-    @Autowired //inyecta automaticamnete el repository
-    private ProductoRepository productoRepository;
+     //inyecta automaticamnete el repository
+    private final ProductoRepository productoRepository;
+ //constructor
+    public ProductoServiceImpl(ProductoRepository productoRepository) {
+        this.productoRepository = productoRepository;
+    }
 
     @Override
     public List<Producto> listarProductos() {
@@ -21,6 +25,9 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public Producto guardarProducto(Producto producto) {
+        if(producto.getStockActualProducto()==null){
+            producto.setStockActualProducto(0);
+        }
         return productoRepository.save(producto); // guardar producto siel id es null se crea o inserta y siel id existe actualiza
     }
 
@@ -35,6 +42,10 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     public List<Producto> buscarPorCategoria(Integer idCategoria){
         return productoRepository.findByCategoriaIdCategoria(idCategoria);
+    }
+    @Override
+    public List<Producto> listarProductosActivos() {
+        return productoRepository.findByEstadoProductoTrue();
     }
 }
 

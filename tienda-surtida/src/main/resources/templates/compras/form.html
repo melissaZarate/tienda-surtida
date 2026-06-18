@@ -28,13 +28,18 @@
                         Proveedor *
                     </label>
 
-                    <select class="form-select" name="idProveedor" required>
+                    <select class="form-select"
+                             name="idProveedor"
+                            required>
 
                         <option value="">
                             Seleccione un proveedor
                         </option>
 
-                        <option th:each="p : ${proveedores}" th:value="${p.idProveedor}" th:text="${p.nombreProveedor}"></option>
+                        <option th:each="p : ${proveedores}"
+                                th:value="${p.idProveedor}"
+                                th:text="${p.nombreProveedor}">
+                        </option>
 
                     </select>
 

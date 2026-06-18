@@ -15,4 +15,5 @@ public interface ProductoService {
 
     List<Producto> buscarPorNombre(String nombre);
     List<Producto> buscarPorCategoria(Integer idCategoria);//funcion para implentar
+    List<Producto> listarProductosActivos();
 }

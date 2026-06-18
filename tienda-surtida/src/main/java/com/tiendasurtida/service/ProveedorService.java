@@ -13,6 +13,7 @@ public interface ProveedorService {
     Proveedor buscarPorId(Long id);
 
     List<Proveedor> buscarPorNombre(String nombre);
+    List<Proveedor> listarProveedoresActivos();
 
 
 }

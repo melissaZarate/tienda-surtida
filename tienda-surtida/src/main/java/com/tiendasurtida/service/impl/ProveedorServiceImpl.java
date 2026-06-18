@@ -42,4 +42,13 @@ public class ProveedorServiceImpl implements ProveedorService {
 
         return repository.findByNombreProveedorContainingIgnoreCase(nombre);
     }
+  //  @Override
+  /*  public List<Proveedor> listarProveedoresActivos() {
+        return proveedorRepository.findByEstadoProveedorTrue();
+    }*/
+
+    @Override
+    public List<Proveedor> listarProveedoresActivos() {
+        return repository.findByEstadoProveedorTrue();
+    }
 }

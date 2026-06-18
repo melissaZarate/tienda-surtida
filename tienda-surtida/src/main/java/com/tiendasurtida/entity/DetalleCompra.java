@@ -20,6 +20,9 @@ public class DetalleCompra {
     @Column(name = "precio_compra_detalle")
     private BigDecimal precioCompraDetalle;
 
+    @Column(name = "precio_total_detalle")
+    private BigDecimal precioTotalDetalle;
+
     @Column(name = "porcentaje_ganancia_detalle")
     private BigDecimal porcentajeGananciaDetalle;
 
@@ -37,16 +40,14 @@ public class DetalleCompra {
     public DetalleCompra() {
     }
 
-    public DetalleCompra(Long idDetalle, Integer cantidadDetalle,
-                         BigDecimal precioCompraDetalle,
-                         BigDecimal porcentajeGananciaDetalle,
-                         Compra compra, Producto producto) {
-        this.idDetalle = idDetalle;
-        this.cantidadDetalle = cantidadDetalle;
-        this.precioCompraDetalle = precioCompraDetalle;
-        this.porcentajeGananciaDetalle = porcentajeGananciaDetalle;
-        this.compra = compra;
+    public DetalleCompra(Producto producto, Compra compra, BigDecimal porcentajeGananciaDetalle, BigDecimal precioTotalDetalle, BigDecimal precioCompraDetalle, Integer cantidadDetalle, Long idDetalle) {
         this.producto = producto;
+        this.compra = compra;
+        this.porcentajeGananciaDetalle = porcentajeGananciaDetalle;
+        this.precioTotalDetalle = precioTotalDetalle;
+        this.precioCompraDetalle = precioCompraDetalle;
+        this.cantidadDetalle = cantidadDetalle;
+        this.idDetalle = idDetalle;
     }
 
     // GETTERS Y SETTERS
@@ -96,5 +97,13 @@ public class DetalleCompra {
 
     public void setProducto(Producto producto) {
         this.producto = producto;
+    }
+
+    public BigDecimal getPrecioTotalDetalle() {
+        return precioTotalDetalle;
+    }
+
+    public void setPrecioTotalDetalle(BigDecimal precioTotalDetalle) {
+        this.precioTotalDetalle = precioTotalDetalle;
     }
 }

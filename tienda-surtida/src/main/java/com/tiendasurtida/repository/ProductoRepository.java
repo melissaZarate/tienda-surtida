@@ -12,4 +12,5 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> { //us
                                             //en este jpa llamamos a la entidad produncto y su id es de tipo long
     List<Producto> findByNombreProductoContainingIgnoreCase(String nombre); //esto es para busqueda
     List<Producto> findByCategoriaIdCategoria(Integer idCategoria ); //esto e spara busqueda de categoria
+    List<Producto> findByEstadoProductoTrue();
 }
