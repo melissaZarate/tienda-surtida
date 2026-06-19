@@ -10,6 +10,7 @@ import com.tiendasurtida.repository.ProductoRepository;
 import com.tiendasurtida.service.CompraService;
 import org.springframework.stereotype.Service;
 import com.tiendasurtida.repository.DetalleCompraRepository;
+import com.tiendasurtida.repository.VencimientoProductoRepository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -25,14 +26,16 @@ public class CompraServiceImpl implements CompraService {
     private final HistorialPrecioRepository historialPrecioRepository ;
 
     private final DetalleCompraRepository detalleCompraRepository;
+    private final VencimientoProductoRepository vencimientoProductoRepository;
   //para historial se modifica el cpntructor
 
 
-    public CompraServiceImpl(CompraRepository compraRepository, ProductoRepository productoRepository, HistorialPrecioRepository historialPrecioRepository, DetalleCompraRepository detalleCompraRepository) {
+    public CompraServiceImpl(CompraRepository compraRepository, ProductoRepository productoRepository, HistorialPrecioRepository historialPrecioRepository, DetalleCompraRepository detalleCompraRepository, VencimientoProductoRepository vencimientoProductoRepository) {
         this.compraRepository = compraRepository;
         this.productoRepository = productoRepository;
         this.historialPrecioRepository = historialPrecioRepository;
         this.detalleCompraRepository = detalleCompraRepository;
+        this.vencimientoProductoRepository = vencimientoProductoRepository;
     }
 
     @Override

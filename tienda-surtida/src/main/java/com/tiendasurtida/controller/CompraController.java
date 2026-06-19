@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Controller
 @RequestMapping("/compras")
@@ -151,6 +153,10 @@ public class CompraController {
             @RequestParam Double precioTotal,
 
             @RequestParam Double precioVentaFinal,
+            //para capturar fechade vencimiennto
+            @RequestParam(required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
+            LocalDate fechaVencimiento,
 
             RedirectAttributes redirectAttributes) {
 
@@ -158,10 +164,7 @@ public class CompraController {
 
         detalle.setCantidadDetalle(cantidad);
 
-        detalle.setPrecioTotalDetalle(
-                BigDecimal.valueOf(precioTotal)
-        );
-
+        detalle.setPrecioTotalDetalle(BigDecimal.valueOf(precioTotal));
         Producto producto = new Producto();
         producto.setIdProducto(idProducto);
 

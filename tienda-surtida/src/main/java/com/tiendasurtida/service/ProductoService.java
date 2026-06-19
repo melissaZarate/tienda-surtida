@@ -20,4 +20,5 @@ public interface ProductoService {
     List<Producto> listarProductosActivos();
     DatosAjusteDTO obtenerDatosAjuste(Long idProducto); //para ajustes de dtos
     void ajustarPrecioManual(Long idProducto,BigDecimal nuevoPorcentajeGanancia);
+    void actualizarStockProducto(Long idProducto);
 }

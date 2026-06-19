@@ -3,9 +3,11 @@ package com.tiendasurtida.service.impl;
 import com.tiendasurtida.entity.Producto;
 import com.tiendasurtida.entity.HistorialPrecio;
 import com.tiendasurtida.entity.DetalleCompra;
+import com.tiendasurtida.entity.VencimientoProducto;
 import com.tiendasurtida.repository.DetalleCompraRepository;
 import com.tiendasurtida.repository.HistorialPrecioRepository;
 import com.tiendasurtida.repository.ProductoRepository;
+import com.tiendasurtida.repository.VencimientoProductoRepository;
 import com.tiendasurtida.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,14 +25,16 @@ public class ProductoServiceImpl implements ProductoService {
     private final ProductoRepository productoRepository;
     private final DetalleCompraRepository detalleCompraRepository;
     private final HistorialPrecioRepository  historialPrecioRepository;
+    private final VencimientoProductoRepository  vencimientoProductoRepository ;
 
  //constructor
 
 
-    public ProductoServiceImpl(ProductoRepository productoRepository, DetalleCompraRepository detalleCompraRepository, HistorialPrecioRepository historialPrecioRepository) {
+    public ProductoServiceImpl(ProductoRepository productoRepository, DetalleCompraRepository detalleCompraRepository, HistorialPrecioRepository historialPrecioRepository, VencimientoProductoRepository vencimientoProductoRepository) {
         this.productoRepository = productoRepository;
         this.detalleCompraRepository = detalleCompraRepository;
-        this.historialPrecioRepository =   historialPrecioRepository;
+        this.historialPrecioRepository = historialPrecioRepository;
+        this.vencimientoProductoRepository = vencimientoProductoRepository;
     }
 
     @Override
@@ -163,9 +167,49 @@ public class ProductoServiceImpl implements ProductoService {
                 .filter(p ->
                         p.getStockActualProducto() != null &&
                                 p.getStockMinimoProducto() != null &&
-                                p.getStockActualProducto() <= p.getStockMinimoProducto()
-                )
-                .count();
+                                p.getStockActualProducto() <= p.getStockMinimoProducto()).count();
+    }
+    //usar esto  compra,vnta, ajuste manuales
+  /*  @Override
+    @Transactional
+    public void actualizarStockProducto(Long idProducto) {
+
+        // 1. Obtener lotes ordenados (opcional, pero útil para control)
+        List<VencimientoProducto> lotes = vencimientoProductoRepository
+                        .findByProductoIdProducto(idProducto);
+
+        // 2. Calcular stock total
+        int stockTotal = lotes.stream()
+                .mapToInt(VencimientoProducto::getCantidadVencimiento)
+                .sum();
+
+        // 3. Obtener producto
+        Producto producto = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        // 4. Actualizar stock cache
+        producto.setStockActualProducto(stockTotal);
+
+        // 5. Guardar
+        productoRepository.save(producto);
+    }*/
+    @Override
+    public void actualizarStockProducto(Long idProducto) {
+
+        Integer stockTotal =
+                vencimientoProductoRepository
+                        .sumarStockPorProducto(idProducto);
+
+        Producto producto = productoRepository
+                .findById(idProducto)
+                .orElseThrow(() ->
+                        new RuntimeException("Producto no encontrado"));
+
+        producto.setStockActualProducto(
+                stockTotal != null ? stockTotal : 0
+        );
+
+        productoRepository.save(producto);
     }
 }
 

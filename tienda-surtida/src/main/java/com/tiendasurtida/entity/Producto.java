@@ -1,7 +1,8 @@
 package com.tiendasurtida.entity;
-
+import com.tiendasurtida.entity.VencimientoProducto;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity //esta clase represent una tabla de la base de dato
 @Table(name = "producto") //esta entidd corresponde a la tabla producto
@@ -40,7 +41,24 @@ public class Producto {
     @JoinColumn(name="id_unidad")
     private UnidadMedida unidadMedida;
 
+    @OneToMany(mappedBy = "producto")
+    private List<VencimientoProducto> vencimientos;
+
     public Producto() {
+    }
+
+    public Producto(Long idProducto, String nombreProducto, String descripcionProducto, BigDecimal precioVentaProducto, Integer stockActualProducto, Integer stockMinimoProducto, Boolean estadoProducto, Boolean controlVencimientoProducto, Categoria categoria, UnidadMedida unidadMedida, List<VencimientoProducto> vencimientos) {
+        this.idProducto = idProducto;
+        this.nombreProducto = nombreProducto;
+        this.descripcionProducto = descripcionProducto;
+        this.precioVentaProducto = precioVentaProducto;
+        this.stockActualProducto = stockActualProducto;
+        this.stockMinimoProducto = stockMinimoProducto;
+        this.estadoProducto = estadoProducto;
+        this.controlVencimientoProducto = controlVencimientoProducto;
+        this.categoria = categoria;
+        this.unidadMedida = unidadMedida;
+        this.vencimientos = vencimientos;
     }
 
     public Long getIdProducto() {
@@ -121,5 +139,13 @@ public class Producto {
 
     public void setUnidadMedida(UnidadMedida unidadMedida) {
         this.unidadMedida = unidadMedida;
+    }
+
+    public List<VencimientoProducto> getVencimientos() {
+        return vencimientos;
+    }
+
+    public void setVencimientos(List<VencimientoProducto> vencimientos) {
+        this.vencimientos = vencimientos;
     }
 }
