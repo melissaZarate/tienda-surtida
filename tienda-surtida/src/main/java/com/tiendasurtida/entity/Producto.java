@@ -41,7 +41,7 @@ public class Producto {
     @JoinColumn(name="id_unidad")
     private UnidadMedida unidadMedida;
 
-    @OneToMany(mappedBy = "producto")
+    @OneToMany(mappedBy = "producto", cascade= CascadeType.ALL,orphanRemoval = true)
     private List<VencimientoProducto> vencimientos;
 
     public Producto() {

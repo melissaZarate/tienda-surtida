@@ -4,6 +4,7 @@ import com.tiendasurtida.entity.Compra;
 import com.tiendasurtida.entity.DetalleCompra;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface CompraService {
@@ -16,7 +17,7 @@ public interface CompraService {
     List<Compra> listarTodas();
 
     //agragr detalle aqui lalogica del negocio
-    void agregarDetalle(Long idCompra, DetalleCompra detalle, BigDecimal precioVentaFinal);
+    void agregarDetalle(Long idCompra, DetalleCompra detalle, BigDecimal precioVentaFinal, LocalDate fechaVencimiento);
     void finalizarCompra(Long id);
 
 }

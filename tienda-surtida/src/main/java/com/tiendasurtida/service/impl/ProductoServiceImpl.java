@@ -194,11 +194,11 @@ public class ProductoServiceImpl implements ProductoService {
         productoRepository.save(producto);
     }*/
     @Override
-    public void actualizarStockProducto(Long idProducto) {
+    public void actualizarStockProducto(Long idProducto) {  //metodo a evaluar
 
         Integer stockTotal =
                 vencimientoProductoRepository
-                        .sumarStockPorProducto(idProducto);
+                           .sumarStockPorProducto(idProducto);
 
         Producto producto = productoRepository
                 .findById(idProducto)

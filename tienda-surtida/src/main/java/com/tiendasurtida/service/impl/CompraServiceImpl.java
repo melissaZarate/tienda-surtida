@@ -4,6 +4,7 @@ import com.tiendasurtida.entity.Compra;
 import com.tiendasurtida.entity.DetalleCompra;
 import com.tiendasurtida.entity.Producto;
 import com.tiendasurtida.entity.HistorialPrecio;
+import com.tiendasurtida.entity.VencimientoProducto;
 import com.tiendasurtida.repository.CompraRepository;
 import com.tiendasurtida.repository.HistorialPrecioRepository;
 import com.tiendasurtida.repository.ProductoRepository;
@@ -17,6 +18,7 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
 
 @Service
 public class CompraServiceImpl implements CompraService {
@@ -69,18 +71,28 @@ public class CompraServiceImpl implements CompraService {
     public void agregarDetalle(
             Long idCompra,
             DetalleCompra detalle,
-            BigDecimal precioVentaFinal) {
+            BigDecimal precioVentaFinal,
+            LocalDate fechaVencimiento) {
 
         // Buscar compra
-        Compra compra = compraRepository.findById(idCompra)
-                .orElseThrow(() ->
-                        new RuntimeException("Compra no encontrada"));
+        Compra compra = compraRepository.findById(idCompra).orElseThrow(() -> new RuntimeException("Compra no encontrada"));
 
         // Buscar producto
-        Producto producto = productoRepository.findById(
-                        detalle.getProducto().getIdProducto())
-                .orElseThrow(() ->
-                        new RuntimeException("Producto no encontrado"));
+        Producto producto = productoRepository.findById(detalle.getProducto().getIdProducto()).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+       //para crear automaticamente rel lote de vencimiento, solovalidacion, verificamos que el produto tiene control de vencimiento
+        if (producto.getControlVencimientoProducto()) {
+
+            if (fechaVencimiento == null) {
+                throw new RuntimeException(
+                        "Debe ingresar la fecha de vencimiento");
+            }
+
+            VencimientoProducto lote = new VencimientoProducto();
+            lote.setProducto(producto);
+            lote.setCantidadVencimiento(detalle.getCantidadDetalle()); //obtenemos cantidad de la comora
+            lote.setFechaVencimiento(fechaVencimiento);
+            vencimientoProductoRepository.save(lote);
+        }
         //qui gurdamos los valores en precioventa anerior
       //  BigDecimal precioVentaAnterior = producto.getPrecioVentaProducto();
 
@@ -145,8 +157,7 @@ public class CompraServiceImpl implements CompraService {
             stockActual = 0;
         }
 
-        int nuevoStock =
-                stockActual + detalle.getCantidadDetalle();
+        int nuevoStock = stockActual + detalle.getCantidadDetalle();
 
         producto.setStockActualProducto(nuevoStock);
         //regla automatica de estado

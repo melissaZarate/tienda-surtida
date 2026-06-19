@@ -171,20 +171,13 @@ public class CompraController {
         detalle.setProducto(producto);
 
         compraService.agregarDetalle(
-                id,
-                detalle,
-                BigDecimal.valueOf(precioVentaFinal)
+                id, detalle, BigDecimal.valueOf(precioVentaFinal), fechaVencimiento
         );
 
         redirectAttributes.addFlashAttribute(
-                "mensaje",
-                "Producto agregado correctamente a la compra."
-        );
+                "mensaje", "Producto agregado correctamente a la compra.");
 
-        redirectAttributes.addFlashAttribute(
-                "tipo",
-                "success"
-        );
+        redirectAttributes.addFlashAttribute("tipo", "success");
 
         return "redirect:/compras/" + id;
     }

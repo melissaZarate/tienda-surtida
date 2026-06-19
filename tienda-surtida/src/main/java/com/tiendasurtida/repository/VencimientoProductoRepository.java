@@ -12,15 +12,17 @@ import java.util.List;
 @Repository
 public interface VencimientoProductoRepository extends JpaRepository<VencimientoProducto, Long> {
 
-    // 🔹 Todos los lotes de un producto
+    // Todos los lotes de un producto
     List<VencimientoProducto> findByProductoIdProducto(Long idProducto);
 
-    // CLAVE FEFO: ordenados por vencimiento (los primeros en vencer primero)
+    // CLAVE FEFO: ordenados por vencimiento los primeros en vencer primero)
     List<VencimientoProducto> findByProductoIdProductoOrderByFechaVencimientoAsc(Long idProducto);
 
+    //
+    List<VencimientoProducto>findByFechaVencimientoBetween(LocalDate inicio, LocalDate fin);
     // Lotes próximos a vencer (para dashboard)
     @Query("SELECT v FROM VencimientoProducto v " +
-            "WHERE v.fechaVencimiento BETWEEN CURRENT_DATE AND :fechaLimite")
+    "WHERE v.fechaVencimiento BETWEEN CURRENT_DATE AND :fechaLimite")
     List<VencimientoProducto> findProximosAVencer(LocalDate fechaLimite);
 
     //  Lotes ya vencidos
