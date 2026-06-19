@@ -13,8 +13,7 @@ public class HistorialPrecioController {
 
     private final HistorialPrecioService historialPrecioService;
 
-    public HistorialPrecioController(
-            HistorialPrecioService historialPrecioService) {
+    public HistorialPrecioController(HistorialPrecioService historialPrecioService) {
 
         this.historialPrecioService = historialPrecioService;
     }
@@ -27,16 +26,13 @@ public class HistorialPrecioController {
                 "historiales",
                 historialPrecioService.listarHistorial());
 
-        model.addAttribute(
-                "totalCambios",
+        model.addAttribute("totalCambios",
                 historialPrecioService.contarTodos());
 
-        model.addAttribute(
-                "totalCompras",
+        model.addAttribute("totalCompras",
                 historialPrecioService.contarCompras());
 
-        model.addAttribute(
-                "totalAjustes",
+        model.addAttribute("totalAjustes",
                 historialPrecioService.contarAjustesManuales());
 
         return "historial-precio/lista";

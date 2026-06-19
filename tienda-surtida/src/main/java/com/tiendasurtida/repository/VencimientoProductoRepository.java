@@ -20,6 +20,8 @@ public interface VencimientoProductoRepository extends JpaRepository<Vencimiento
 
     //
     List<VencimientoProducto>findByFechaVencimientoBetween(LocalDate inicio, LocalDate fin);
+
+    List<VencimientoProducto> findByFechaVencimientoBefore(LocalDate fecha);
     // Lotes próximos a vencer (para dashboard)
     @Query("SELECT v FROM VencimientoProducto v " +
     "WHERE v.fechaVencimiento BETWEEN CURRENT_DATE AND :fechaLimite")

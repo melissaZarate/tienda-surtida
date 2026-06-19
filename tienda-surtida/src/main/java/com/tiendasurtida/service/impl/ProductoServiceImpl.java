@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.tiendasurtida.dto.DatosAjusteDTO;
 import java.math.BigDecimal;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 
 import java.util.List;
 import java.math.RoundingMode;
@@ -152,6 +153,7 @@ public class ProductoServiceImpl implements ProductoService {
         historial.setProducto(producto);
         historial.setPrecioCompraHistorial(costoCompra);
         historial.setPrecioVentaHistorial(precioVentaAnterior);
+        historial.setFechaCambioHistorial(LocalDateTime.now());
         historial.setMotivoHistorial("Problemas externos");
 
         historialPrecioRepository.save(historial);
@@ -170,29 +172,7 @@ public class ProductoServiceImpl implements ProductoService {
                                 p.getStockActualProducto() <= p.getStockMinimoProducto()).count();
     }
     //usar esto  compra,vnta, ajuste manuales
-  /*  @Override
-    @Transactional
-    public void actualizarStockProducto(Long idProducto) {
 
-        // 1. Obtener lotes ordenados (opcional, pero útil para control)
-        List<VencimientoProducto> lotes = vencimientoProductoRepository
-                        .findByProductoIdProducto(idProducto);
-
-        // 2. Calcular stock total
-        int stockTotal = lotes.stream()
-                .mapToInt(VencimientoProducto::getCantidadVencimiento)
-                .sum();
-
-        // 3. Obtener producto
-        Producto producto = productoRepository.findById(idProducto)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-
-        // 4. Actualizar stock cache
-        producto.setStockActualProducto(stockTotal);
-
-        // 5. Guardar
-        productoRepository.save(producto);
-    }*/
     @Override
     public void actualizarStockProducto(Long idProducto) {  //metodo a evaluar
 

@@ -6,6 +6,7 @@ import com.tiendasurtida.service.CategoriaService;
 import com.tiendasurtida.service.ProductoService;
 import com.tiendasurtida.service.impl.ProductoServiceImpl;
 import com.tiendasurtida.service.UnidadMedidaService;
+import com.tiendasurtida.service.VencimientoProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +34,8 @@ public class ProductoController {
 
     @Autowired
     private UnidadMedidaService unidadMedidaService;
+    @Autowired
+    private VencimientoProductoService vencimientoProductoService;
 
     @GetMapping //metodo listar
     public String listar(Model model){
@@ -51,6 +54,8 @@ public class ProductoController {
 
         model.addAttribute("producto", //th:object=${producto}
                 new Producto());
+        //alerta paa vencimiento
+        model.addAttribute("proximosAVencer", vencimientoProductoService.listarProximosAVencer(30).size());
 
         return "producto/lista";
     }
