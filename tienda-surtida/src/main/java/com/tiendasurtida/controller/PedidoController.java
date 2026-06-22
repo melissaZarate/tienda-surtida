@@ -102,6 +102,11 @@ public class PedidoController {
 
         return "redirect:/pedidos";
     }
+    @GetMapping("/exportar/{id}")
+    @ResponseBody
+    public String exportarPedido(@PathVariable Long id) {
+        return pedidoService.generarTextoPedido(id);
+    }
 
 }
 /*package com.tiendasurtida.controller;

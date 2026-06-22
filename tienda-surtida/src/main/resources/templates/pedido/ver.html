@@ -201,10 +201,45 @@
 
             </form>
 
+
+
+        </div>
+        <div th:if="${pedido.estadoPedido.idEstadoPedido == 2}">
+            <button type="button"
+                    class="btn btn-success"
+                    th:onclick="'copiarPedido(' + ${pedido.idPedido} + ')'">
+                <i class="bi bi-clipboard"></i>
+                Copiar a WhatsApp
+            </button>
         </div>
 
-    </div>
 
+    </div>
+    <script>
+
+        async function copiarPedido(idPedido) {
+
+            try {
+
+                const response =
+                    await fetch('/pedidos/exportar/' + idPedido);
+
+                const texto =
+                    await response.text();
+
+                await navigator.clipboard.writeText(texto);
+
+                alert('Pedido copiado al portapapeles');
+
+            } catch (error) {
+
+                alert('Error al copiar el pedido');
+
+            }
+
+        }
+
+    </script>
 </div>
 
 </html>

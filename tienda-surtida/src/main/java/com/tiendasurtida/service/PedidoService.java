@@ -18,6 +18,7 @@ public interface PedidoService {
     //para generar pedido por categoria
     Pedido generarPedidoPorCategoria(String username , Long idCategoria);
     Pedido generarPedidoAutomaticoPorUsername(String username);
+    String generarTextoPedido(Long idPedido);
 
    /* Pedido generarPedidoAutomatico(Long idUsuario);
 

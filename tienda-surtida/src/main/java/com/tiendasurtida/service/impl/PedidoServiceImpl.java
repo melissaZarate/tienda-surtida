@@ -239,4 +239,43 @@ public class PedidoServiceImpl implements PedidoService {
 
         return pedido;
     }
+    //lsta depedidoentxt
+    @Override
+    public String generarTextoPedido(Long idPedido) {
+
+        Pedido pedido = pedidoRepository.findById(idPedido)
+                .orElseThrow(() ->
+                        new RuntimeException("Pedido no encontrado"));
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(" PEDIDO DE REPOSICIÓN\n");
+        sb.append(" TIENDA SURTIDA\n\n");
+
+        sb.append("Fecha: ")
+                .append(pedido.getFechaGeneracionPedido())
+                .append("\n");
+
+        sb.append(" Pedido: ")
+                .append(pedido.getIdPedido())
+                .append("\n\n");
+
+        sb.append(" PRODUCTOS\n\n");
+
+        for (DetallePedido detalle : pedido.getDetalles()) {
+
+            sb.append("• ")
+                    .append(detalle.getProducto().getNombreProducto())
+                    .append("\n");
+
+            sb.append("  Cantidad: ")
+                    .append(detalle.getCantidadDetalle())
+                    .append("\n\n");
+        }
+
+        sb.append("--------------------------------\n");
+        sb.append("Generado automáticamente por el Sistema Tienda Surtida");
+
+        return sb.toString();
+    }
 }
