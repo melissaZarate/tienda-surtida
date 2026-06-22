@@ -40,13 +40,9 @@ public class PedidoServiceImpl implements PedidoService {
         this.detallePedidoRepository = detallePedidoRepository;
         this.usuarioRepository = usuarioRepository;
     }
-    @Override
+  /*  @Override
     @Transactional
     public Pedido generarPedidoAutomatico(Long idUsuario) {
-     /*   Optional<Pedido> pedidoPendiente = pedidoRepository.findByEstadoPedido_IdEstadoPedido(1);
-        if (pedidoPendiente.isPresent()) {
-            throw new RuntimeException("Ya existe un pedido pendiente de aprobación");
-        }*/
 
 
 //buscar productos con stock baji
@@ -77,7 +73,7 @@ public class PedidoServiceImpl implements PedidoService {
            /* System.out.println("Producto: " + p.getNombreProducto());
             System.out.println("Stock actual: " + stockActual);
             System.out.println("Stock mínimo: " + stockMinimo);
-            System.out.println("Cantidad sugerida: " + cantidad);*/
+            System.out.println("Cantidad sugerida: " + cantidad);
 
 
             if (cantidad <= 0) continue;
@@ -92,7 +88,59 @@ public class PedidoServiceImpl implements PedidoService {
         }
 
         return pedidoRepository.save(pedido);
-    }
+    }*/
+  @Override
+  @Transactional
+  public Pedido generarPedidoAutomaticoPorUsername(String username) {
+
+      Usuario usuario =
+              usuarioRepository.findByUsernameUsuario(username)
+                      .orElseThrow(() ->
+                              new RuntimeException("Usuario no encontrado"));
+
+      Optional<Pedido> pedidoPendiente =
+              pedidoRepository.findByEstadoPedido_IdEstadoPedido(1);
+
+      if (pedidoPendiente.isPresent()) {
+          throw new RuntimeException("Ya existe un pedido pendiente de aprobación");
+      }
+
+      List<Producto> productos =
+              productoRepository.obtenerProductosStockBajo();
+
+      if (productos.isEmpty()) {
+          throw new RuntimeException("No existen productos con stock bajo");
+      }
+
+      EstadoPedido estadoPendiente =
+              estadoPedidoRepository.findById(1)
+                      .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
+
+      Pedido pedido = new Pedido();
+      pedido.setEstadoPedido(estadoPendiente);
+      pedido.setUsuario(usuario);
+      pedido.setFechaGeneracionPedido(LocalDateTime.now());
+      pedido.setObservacionPedido("Pedido generado automáticamente");
+
+      pedido = pedidoRepository.save(pedido);
+
+      for (Producto producto : productos) {
+
+          int cantidadSugerida =
+                  producto.getStockMinimoProducto() - producto.getStockActualProducto();
+
+          if (cantidadSugerida <= 0) continue;
+
+          DetallePedido detalle = new DetallePedido();
+          detalle.setPedido(pedido);
+          detalle.setProducto(producto);
+          detalle.setCantidadDetalle(cantidadSugerida);
+
+          detallePedidoRepository.save(detalle);
+      }
+
+      return pedido;
+  }
     @Override
     public List<Pedido> listarPedidos() {
         return pedidoRepository.findAll();
@@ -134,9 +182,15 @@ public class PedidoServiceImpl implements PedidoService {
     }
     @Override
     @Transactional
-    public Pedido generarPedidoPorCategoria(Long idUsuario, Long idCategoria) {
+    public Pedido generarPedidoPorCategoria(String username, Long idCategoria) {
 
-        //  Validar si ya existe un pedido pendiente
+        // 1. Usuario autenticado (REAL)
+        Usuario usuario =
+                usuarioRepository.findByUsernameUsuario(username)
+                        .orElseThrow(() ->
+                                new RuntimeException("Usuario no encontrado"));
+
+        // 2. Evitar pedidos duplicados
         Optional<Pedido> pedidoPendiente =
                 pedidoRepository.findByEstadoPedido_IdEstadoPedido(1);
 
@@ -144,45 +198,36 @@ public class PedidoServiceImpl implements PedidoService {
             throw new RuntimeException("Ya existe un pedido pendiente de aprobación");
         }
 
-        //  Obtener productos con stock bajo filtrados por categoría
+        // 3. Productos con stock bajo por categoría
         List<Producto> productos =
                 productoRepository.obtenerProductosStockBajoPorCategoria(idCategoria);
 
         if (productos.isEmpty()) {
-            throw new RuntimeException("No existen productos con stock bajo en esta categoría");
+            throw new RuntimeException("No hay productos con stock bajo en esta categoría");
         }
 
-        //  Obtener estado pendiente
+        // 4. Estado pendiente
         EstadoPedido estadoPendiente =
                 estadoPedidoRepository.findById(1)
-                        .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
-
-        //  Obtener usuario
-        Usuario usuario =
-                usuarioRepository.findById(idUsuario)
-                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                        .orElseThrow(() ->
+                                new RuntimeException("Estado no encontrado"));
 
         // 5. Crear pedido
         Pedido pedido = new Pedido();
         pedido.setEstadoPedido(estadoPendiente);
-        pedido.setUsuario(usuario);
+        pedido.setUsuario(usuario); // 👈 AQUÍ YA ES EL LOGUEADO
         pedido.setFechaGeneracionPedido(LocalDateTime.now());
-        pedido.setObservacionPedido("Pedido generado por categoría ID: " + idCategoria);
+        pedido.setObservacionPedido("Pedido por categoría ID: " + idCategoria);
 
         pedido = pedidoRepository.save(pedido);
 
-        //  Crear detalles
+        // 6. Detalles
         for (Producto producto : productos) {
 
-            int stockMinimo = producto.getStockMinimoProducto();
-            int stockActual = producto.getStockActualProducto();
+            int cantidadSugerida =
+                    producto.getStockMinimoProducto() - producto.getStockActualProducto();
 
-            int cantidadSugerida = stockMinimo - stockActual;
-
-            // seguridad adicional
-            if (cantidadSugerida <= 0) {
-                continue;
-            }
+            if (cantidadSugerida <= 0) continue;
 
             DetallePedido detalle = new DetallePedido();
             detalle.setPedido(pedido);

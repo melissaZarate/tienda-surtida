@@ -12,7 +12,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import org.springframework.security.core.Authentication;
 
 
 @Controller
@@ -58,12 +58,14 @@ public class PedidoController {
 
     //  GENERAR PEDIDO AUTOMÁTICO
     @PostMapping("/generar")
-    public String generar() {
+    public String generar(Authentication authentication, RedirectAttributes redirectAttributes) {
 
-        Long idUsuario = 1L; // luego lo cambiamos por sesión real
+   //     Long idUsuario = 1L; // luego lo cambiamos por sesión real
 
         try {
-            pedidoService.generarPedidoAutomatico(idUsuario);
+            String username=authentication.getName();
+            pedidoService.generarPedidoAutomaticoPorUsername(username);
+            redirectAttributes.addFlashAttribute("success","Pedido Generado correctamente");
         } catch (Exception e) {
             System.out.println("Error generando pedido: " + e.getMessage());
         }
@@ -87,12 +89,12 @@ public class PedidoController {
     @PostMapping("/generar/categoria")
     public String generarPedidoPorCategoria(
             @RequestParam("idCategoria") Long idCategoria,
-            RedirectAttributes ra) {
+            RedirectAttributes ra, Authentication authentication) {
 
-        Long idUsuario = 1L;
+        String username=authentication.getName();
 
         try {
-            pedidoService.generarPedidoPorCategoria(idUsuario, idCategoria);
+            pedidoService.generarPedidoPorCategoria(username, idCategoria);
             ra.addFlashAttribute("success", "Pedido generado correctamente");
         } catch (RuntimeException e) {
             ra.addFlashAttribute("error", e.getMessage());
