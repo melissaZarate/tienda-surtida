@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+    <div class="container-fluid">
+
+        <!--  BUSCADOR (mobile first) -->
+        <form method="get" th:action="@{/ventas}" class="sticky-top bg-white p-2 shadow-sm">
+
+            <div class="input-group input-group-lg">
+
+                <input type="text"
+                       name="q"
+                       class="form-control"
+                       placeholder="Buscar producto..."
+                       th:value="${q}">
+
+                <button class="btn btn-primary">
+                    <i class="bi bi-search"></i>
+                </button>
+
+            </div>
+
+        </form>
+
+        <div class="row mt-2">
+
+            <!--  PRODUCTOS -->
+            <div class="col-12 col-md-7">
+
+                <div class="row">
+
+                    <div class="col-6 col-md-4 mb-3"
+                         th:each="p : ${productos}">
+
+                        <div class="card shadow-sm h-100">
+
+                            <div class="card-body text-center">
+
+                                <h6 class="mb-1"
+                                    th:text="${p.nombreProducto}">
+                                </h6>
+
+                                <small class="text-muted d-block">
+                                    Stock: <span th:text="${p.stockActualProducto}"></span>
+                                </small>
+
+                                <strong class="text-success d-block">
+                                    Bs <span th:text="${p.precioVentaProducto}"></span>
+                                </strong>
+
+                                <form th:action="@{/ventas/agregar}" method="post">
+
+                                    <input type="hidden"
+                                           name="idProducto"
+                                           th:value="${p.idProducto}">
+
+                                    <input type="number"
+                                           name="cantidad"
+                                           value="1"
+                                           min="1"
+                                           class="form-control form-control-sm mt-2">
+
+                                    <button class="btn btn-primary w-100 mt-2">
+                                        + Agregar
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!--  CARRITO -->
+            <div class="col-12 col-md-5">
+
+                <div class="card shadow-sm sticky-top" style="top:70px;">
+
+                    <div class="card-header bg-primary text-white" >
+                         Carrito de venta
+                    </div>
+
+                    <div class="card-body">
+
+                        <div th:if="${#lists.isEmpty(venta.items)}"
+                             class="text-muted text-center">
+                            Sin productos
+                        </div>
+
+                        <div th:each="item, iterStat : ${venta.items}"
+                             class="d-flex justify-content-between border-bottom py-2">
+
+                            <div>
+                                <strong th:text="${item.nombreProducto}"></strong><br>
+                                <small th:text="'x' + ${item.cantidad}"></small>
+                            </div>
+
+                            <div class="text-end">
+
+                                <div th:text="${item.subtotal}"></div>
+
+                                <a th:href="@{/ventas/eliminar/{i}(i=${iterStat.index})}"
+                                   class="btn btn-sm btn-danger">
+                                    x
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Total -->
+                    <div class="card-footer">
+
+                        <h5 class="text-center">
+                            Total: Bs <span th:text="${venta.total}"></span>
+                        </h5>
+
+                        <form th:action="@{/ventas/finalizar}" method="post">
+
+                            <button class="btn btn-success w-100 btn-lg" style="background-color: #e86523; color:white;">
+                                Finalizar Venta
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+<script>
+    document.getElementById("buscador").addEventListener("keyup", function () {
+        let filtro = this.value.toLowerCase();
+        let cards = document.querySelectorAll(".card");
+
+        cards.forEach(card => {
+            let texto = card.innerText.toLowerCase();
+            card.style.display = texto.includes(filtro) ? "" : "none";
+        });
+    });
+</script>
+</div>
+
+</html>
