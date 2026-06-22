@@ -1,5 +1,6 @@
 
 package com.tiendasurtida.controller;
+import com.tiendasurtida.dto.ClienteDTO;
 import com.tiendasurtida.dto.ItemVentaDTO;
 import com.tiendasurtida.dto.VentaDTO;
 import com.tiendasurtida.entity.Producto;
@@ -94,6 +95,7 @@ public class VentaController {
     public String finalizarVenta(HttpSession session, Principal principal) {
 
         VentaDTO venta = (VentaDTO) session.getAttribute("venta");
+       // ventaService.registrarVenta(venta,principal.getName())
 
         if (venta == null || venta.getItems().isEmpty()) {
             return "redirect:/ventas?error=vacio";
@@ -127,6 +129,23 @@ public class VentaController {
         model.addAttribute("venta", ventaService.obtenerVentaPorId(id));
 
         return "ventas/detalle";
+    }
+    @GetMapping("/recibo")
+    public String formularioRecibo(Model model) {
+        model.addAttribute("clienteDTO", new ClienteDTO());
+        return "ventas/recibo";
+    }
+    @PostMapping("/recibo/finalizar")
+    public String finalizarConRecibo(@ModelAttribute ClienteDTO clienteDTO, HttpSession session, Principal principal) {
+
+        VentaDTO venta = (VentaDTO) session.getAttribute("venta");
+        if(venta== null || venta.getItems().isEmpty()){
+            return "redirect:/ventas?error=vacio";
+        }
+        venta.setCliente(clienteDTO);
+        ventaService.registrarVenta(venta, principal.getName());
+        session.removeAttribute("venta");
+        return "redirect:/ventas?success=recibo";
     }
   /*  @PostMapping("/finalizar")
     public String finalizarVenta(HttpSession session, Principal principal) {

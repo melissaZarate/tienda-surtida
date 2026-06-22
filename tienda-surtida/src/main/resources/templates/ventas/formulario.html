@@ -11,6 +11,7 @@
             <i class="bi bi-shop text-primary"></i>
             Registrar Venta</h1>
 
+
         <!--  BUSCADOR (mobile first) -->
         <form method="get" th:action="@{/ventas}" class="sticky-top bg-white p-2 shadow-sm">
 
@@ -141,16 +142,39 @@
                         <h5 class="text-center">
                             Total: Bs <span th:text="${venta.calcularTotal()}"></span>
                         </h5>
+                        <!--boton para finalizar con recibo y si recibo-->
+                        <!-- FINALIZAR SIN RECIBO -->
+                        <form th:action="@{/ventas/finalizar}"
+                              method="post">
 
-                        <form th:action="@{/ventas/finalizar}" method="post">
+                            <button type="submit"
+                                    class="btn btn-success w-100 mb-2">
+                                Finalizar sin recibo
+                            </button>
+
+                        </form>
+
+                        <!-- ABRIR MODAL -->
+                        <button type="button"
+                                class="btn btn-primary w-100"
+                                onclick="preguntarRecibo()">
+
+                            Finalizar con recibo
+
+                        </button>
+                        <!--modal para registro de ciente para recibo-->
+
+
+                    <!--    <form th:action="@{/ventas/finalizar}" method="post">
 
                             <button class="btn btn-success w-100 btn-lg" style="background-color: #e86523; color:white;">
                                 Finalizar Venta
                             </button>
 
-                        </form>
+                        </form>-->
 
                     </div>
+
 
                 </div>
 
@@ -159,6 +183,89 @@
         </div>
 
     </div>
+    <!-- MODAL CLIENTE -->
+    <diva class="modal fade"
+          id="modalCliente"
+          tabindex="-1">
+
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Datos para recibo
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <form id="formRecibo"
+                      th:action="@{/ventas/recibo/finalizar}"
+                      method="post">
+
+                    <div class="modal-body">
+
+                        <input type="number"
+                               name="ciCliente"
+                               class="form-control mb-2"
+                               placeholder="CI"
+                               required>
+
+                        <input type="text"
+                               name="nombreCliente"
+                               class="form-control mb-2"
+                               placeholder="Nombre"
+                               required>
+
+                        <input type="text"
+                               name="apellidoCliente"
+                               class="form-control mb-2"
+                               placeholder="Apellido">
+
+                        <input type="text"
+                               name="telefonoCliente"
+                               class="form-control mb-2"
+                               placeholder="Teléfono">
+
+                        <input type="text"
+                               name="direccionCliente"
+                               class="form-control"
+                               placeholder="Dirección">
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+
+                            Cancelar
+
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+
+                            Guardar Venta y Generar Recibo
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </diva>
 <script>
     document.getElementById("buscador").addEventListener("keyup", function () {
         let filtro = this.value.toLowerCase();
@@ -170,6 +277,20 @@
         });
     });
 </script>
+    <script>
+
+        function preguntarRecibo() {
+
+            let modal = new bootstrap.Modal(
+                document.getElementById('modalCliente')
+            );
+
+            modal.show();
+        }
+
+
+
+    </script>
 </div>
 
 </html>

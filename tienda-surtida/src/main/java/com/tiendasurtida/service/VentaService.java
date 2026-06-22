@@ -1,6 +1,7 @@
 
 package com.tiendasurtida.service;
 
+import com.tiendasurtida.dto.ClienteDTO;
 import com.tiendasurtida.dto.VentaDTO;
 import com.tiendasurtida.entity.Venta;
 

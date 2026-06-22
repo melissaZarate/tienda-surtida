@@ -1,6 +1,7 @@
 
 package com.tiendasurtida.service.impl;
 
+import com.tiendasurtida.dto.ClienteDTO;
 import com.tiendasurtida.dto.ItemVentaDTO;
 import com.tiendasurtida.dto.VentaDTO;
 import com.tiendasurtida.entity.*;
@@ -8,6 +9,7 @@ import com.tiendasurtida.repository.*;
 import com.tiendasurtida.service.VentaService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.tiendasurtida.dto.ClienteDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -20,15 +22,17 @@ public class VentaServiceImpl implements VentaService {
     private final ProductoRepository productoRepository;
     private final UsuarioRepository usuarioRepository;
     private final DetalleVentaRepository detalleVentaRepository;
+    private final ClienteRepository clienteRepository;
 
 
-    public VentaServiceImpl(VentaRepository ventaRepository, ProductoRepository productoRepository, UsuarioRepository usuarioRepository, DetalleVentaRepository detalleVentaRepository) {
+
+    public VentaServiceImpl(VentaRepository ventaRepository, ProductoRepository productoRepository, UsuarioRepository usuarioRepository, DetalleVentaRepository detalleVentaRepository, ClienteRepository clienteRepository) {
         this.ventaRepository = ventaRepository;
         this.productoRepository = productoRepository;
         this.usuarioRepository = usuarioRepository;
         this.detalleVentaRepository = detalleVentaRepository;
+        this.clienteRepository = clienteRepository;
     }
-
 
     @Override
     @Transactional
@@ -36,6 +40,25 @@ public class VentaServiceImpl implements VentaService {
 
         Usuario usuario = usuarioRepository.findByUsernameUsuario(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        //aqui parte delclinete
+        ClienteDTO clienteDTO=ventaDTO.getCliente();
+        Cliente clienteFinal = null;
+
+        if (clienteDTO != null && clienteDTO.getCiCliente()!= null) {
+
+            clienteFinal = clienteRepository.findByCiCliente(clienteDTO.getCiCliente())
+                    .orElseGet(() -> {
+                        Cliente nuevo = new Cliente();
+                        nuevo.setCiCliente(clienteDTO.getCiCliente());
+                        nuevo.setNombreCliente(clienteDTO.getNombreCliente());
+                        nuevo.setApellidoCliente(clienteDTO.getApellidoCliente());
+                        nuevo.setTelefonoCliente(clienteDTO.getTelefonoCliente());
+                        nuevo.setDireccionCliente(clienteDTO.getDireccionCliente());
+
+                        return clienteRepository.save(nuevo);
+                    });
+        }
+
 
         if (ventaDTO.getItems() == null || ventaDTO.getItems().isEmpty()) {
             throw new RuntimeException("No hay productos en la venta");
@@ -43,8 +66,10 @@ public class VentaServiceImpl implements VentaService {
 
         Venta venta = new Venta();
         venta.setUsuario(usuario);
+        venta.setCliente(clienteFinal);
         venta.setFechaVenta(LocalDateTime.now());
         venta.setTotalVenta(BigDecimal.ZERO);
+
 
         venta = ventaRepository.save(venta);
 

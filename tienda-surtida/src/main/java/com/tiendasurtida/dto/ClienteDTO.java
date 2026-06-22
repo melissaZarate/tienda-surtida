@@ -1,56 +1,27 @@
-package com.tiendasurtida.entity;
+package com.tiendasurtida.dto;
 
-import jakarta.persistence.*;
+public class ClienteDTO {
 
-@Entity
-@Table(name = "cliente")
-public class Cliente {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_cliente")
-    private Long idCliente;
-
-    @Column(name = "ci_cliente", unique = true, nullable = false)
     private Integer ciCliente;
-
-    @Column(name = "nombre_cliente")
     private String nombreCliente;
-
-    @Column(name = "apellido_cliente")
     private String apellidoCliente;
-
-    @Column(name = "telefono_cliente")
     private String telefonoCliente;
-
-    @Column(name = "direccion_cliente")
     private String direccionCliente;
 
-    @Column(name = "estado_cliente")
-    private Boolean estadoCliente = true;
-
-    public Cliente() {
-
+    public ClienteDTO() {
     }
 
-    public Cliente(Long idCliente, Integer ciCliente, String nombreCliente, String apellidoCliente, String telefonoCliente, String direccionCliente, Boolean estadoCliente) {
-        this.idCliente = idCliente;
+    public ClienteDTO(Integer ciCliente, String nombreCliente, String apellidoCliente, String telefonoCliente, String direccionCliente) {
         this.ciCliente = ciCliente;
         this.nombreCliente = nombreCliente;
         this.apellidoCliente = apellidoCliente;
         this.telefonoCliente = telefonoCliente;
         this.direccionCliente = direccionCliente;
-        this.estadoCliente = estadoCliente;
     }
+
+
+
     // getters y setters
-
-    public Long getIdCliente() {
-        return idCliente;
-    }
-
-    public void setIdCliente(Long idCliente) {
-        this.idCliente = idCliente;
-    }
 
     public Integer getCiCliente() {
         return ciCliente;
@@ -90,13 +61,5 @@ public class Cliente {
 
     public void setDireccionCliente(String direccionCliente) {
         this.direccionCliente = direccionCliente;
-    }
-
-    public Boolean getEstadoCliente() {
-        return estadoCliente;
-    }
-
-    public void setEstadoCliente(Boolean estadoCliente) {
-        this.estadoCliente = estadoCliente;
     }
 }

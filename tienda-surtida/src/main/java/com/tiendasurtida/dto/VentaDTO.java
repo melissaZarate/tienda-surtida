@@ -10,13 +10,15 @@ public class VentaDTO {
     private List<ItemVentaDTO> items = new ArrayList<>();
 
     private BigDecimal total = BigDecimal.ZERO;
+    private ClienteDTO cliente;
 
     public VentaDTO() {
     }
 
-    public VentaDTO(List<ItemVentaDTO> items, BigDecimal total) {
+    public VentaDTO(List<ItemVentaDTO> items, BigDecimal total, ClienteDTO cliente) {
         this.items = items;
         this.total = total;
+        this.cliente = cliente;
     }
 
     public List<ItemVentaDTO> getItems() {
@@ -37,5 +39,13 @@ public class VentaDTO {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    public ClienteDTO getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(ClienteDTO cliente) {
+        this.cliente = cliente;
     }
 }
