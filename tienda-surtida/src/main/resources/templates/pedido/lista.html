@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+    <div class="container-fluid">
+
+
+        <!-- GENERACIÓN DE PEDIDOS -->
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+
+                <h5 class="mb-3">
+                    <i class="bi bi-gear"></i>
+                    Generar pedidos de compra
+                </h5>
+                <!-- MENSAJE DE ERROR -->
+                <div th:if="${error}" class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <span th:text="${error}"></span>
+                </div>
+
+                <!-- MENSAJE DE ÉXITO -->
+                <div th:if="${success}" class="alert alert-success">
+                    <i class="bi bi-check-circle"></i>
+                    <span th:text="${success}"></span>
+                </div>
+
+                <!-- ALERTA SI HAY PEDIDO PENDIENTE -->
+                <div th:if="${existePendiente}" class="alert alert-warning">
+                    Ya existe un pedido pendiente. Debes aprobarlo o rechazarlo antes de generar otro.
+                </div>
+
+                <!-- BOTONES SOLO SI NO HAY PENDIENTE -->
+                <div th:if="${!existePendiente}">
+
+                    <!-- GENERAR AUTOMÁTICO -->
+                    <form th:action="@{/pedidos/generar}" method="post" class="mb-3">
+
+                        <button type="submit" class="btn btn-primary w-100 w-md-auto">
+                            <i class="bi bi-lightning-charge"></i>
+                            Generar pedido automático
+                        </button>
+
+                    </form>
+
+                    <hr>
+
+                    <!-- GENERAR POR CATEGORÍA -->
+                    <form th:action="@{/pedidos/generar/categoria}" method="post">
+
+                        <label class="form-label">
+                            Generar por categoría (opcional)
+                        </label>
+
+                        <div class="row g-2 align-items-center">
+
+                            <div class="col-12 col-md-6">
+
+                                <select name="idCategoria" class="form-select" required>
+                                    <option value="">-- Selecciona una categoría --</option>
+
+                                    <option th:each="cat : ${categorias}"
+                                            th:value="${cat.idCategoria}"
+                                            th:text="${cat.nombreCategoria}">
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <div class="col-12 col-md-6">
+
+                                <button type="submit" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-funnel"></i>
+                                    Generar por categoría
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead class="table-dark">
+
+                        <tr>
+                            <th>N#</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Generado por</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:if="${#lists.isEmpty(pedidos)}">
+                            <td colspan="5" class="text-center">
+                                No existen pedidos registrados.
+                            </td>
+                        </tr>
+
+                        <tr th:each="pedido : ${pedidos}">
+
+                            <td>
+                                <strong th:text="${pedido.idPedido}"></strong>
+                            </td>
+
+                            <td th:text="${pedido.fechaGeneracionPedido}">
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-warning text-dark"
+                                      th:if="${pedido.estadoPedido.idEstadoPedido == 1}">
+                                    Pendiente
+                                </span>
+
+                                <span class="badge bg-success"
+                                      th:if="${pedido.estadoPedido.idEstadoPedido == 2}">
+                                    Aprobado
+                                </span>
+
+                                <span class="badge bg-danger"
+                                      th:if="${pedido.estadoPedido.idEstadoPedido == 3}">
+                                    Rechazado
+                                </span>
+
+                            </td>
+
+                            <td th:text="${pedido.usuario.nombreUsuario}">
+                            </td>
+
+                            <td class="text-center">
+
+                                <a th:href="@{/pedidos/ver/{id}(id=${pedido.idPedido})}"
+                                   class="btn btn-outline-primary btn-sm">
+
+                                    <i class="bi bi-eye"></i>
+                                    Ver
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</html>

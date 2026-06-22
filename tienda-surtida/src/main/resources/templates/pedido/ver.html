@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org/extras/spring-secutiry"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+    <div class="container-fluid">
+
+        <div class="mb-3">
+
+            <a th:href="@{/pedidos}"
+               class="btn btn-secondary">
+
+                <i class="bi bi-arrow-left"></i>
+                Volver
+
+            </a>
+
+        </div>
+
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header">
+
+                <h3 class="mb-0">
+
+                    <i class="bi bi-clipboard-data"></i>
+                    Detalle del Pedido
+
+                </h3>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-3">
+
+                    <div class="col-12 col-md-3">
+
+                        <strong>Número de Pedido</strong>
+
+                        <div th:text="${pedido.idPedido}"></div>
+
+                    </div>
+
+                    <div class="col-12 col-md-3">
+
+                        <strong>Fecha</strong>
+
+                        <div th:text="${pedido.fechaGeneracionPedido}"></div>
+
+                    </div>
+
+                    <div class="col-12 col-md-3">
+
+                        <strong>Estado</strong>
+
+                        <div>
+
+                            <span class="badge bg-warning text-dark"
+                                  th:if="${pedido.estadoPedido.idEstadoPedido == 1}">
+                                Pendiente
+                            </span>
+
+                            <span class="badge bg-success"
+                                  th:if="${pedido.estadoPedido.idEstadoPedido == 2}">
+                                Aprobado
+                            </span>
+
+                            <span class="badge bg-danger"
+                                  th:if="${pedido.estadoPedido.idEstadoPedido == 3}">
+                                Rechazado
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 col-md-3">
+
+                        <strong>Generado por</strong>
+
+                        <div th:text="${pedido.usuario.nombreUsuario}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card shadow-sm">
+
+            <div class="card-header">
+
+                <h4 class="mb-0">
+
+                    Productos a Comprar
+
+                </h4>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-striped align-middle">
+
+                        <thead class="table-dark">
+
+                        <tr>
+
+                            <th>Producto</th>
+                            <th>Stock Actual</th>
+                            <th>Stock Mínimo</th>
+                            <th>Cantidad Sugerida</th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:if="${#lists.isEmpty(detalles)}">
+
+                            <td colspan="4" class="text-center">
+
+                                Este pedido no tiene productos.
+
+                            </td>
+
+                        </tr>
+
+                        <tr th:each="detalle : ${detalles}">
+
+                            <td>
+                                <strong th:text="${detalle.producto.nombreProducto}">
+                                </strong>
+                            </td>
+
+                            <td th:text="${detalle.producto.stockActualProducto}">
+                            </td>
+
+                            <td th:text="${detalle.producto.stockMinimoProducto}">
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-primary"
+                                      th:text="${detalle.cantidadDetalle}">
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="mt-4"
+             th:if="${pedido.estadoPedido.idEstadoPedido == 1}"
+              sec:authorize="hasRole('Dueña')">
+
+            <form th:action="@{/pedidos/aprobar/{id}(id=${pedido.idPedido})}"
+                  method="post"
+                  class="d-inline">
+
+                <button type="submit"
+                        class="btn btn-success">
+
+                    <i class="bi bi-check-circle"></i>
+                    Aprobar Pedido
+
+                </button>
+
+            </form>
+
+            <form th:action="@{/pedidos/rechazar/{id}(id=${pedido.idPedido})}"
+                  method="post"
+                  class="d-inline">
+
+                <button type="submit"
+                        class="btn btn-danger">
+
+                    <i class="bi bi-x-circle"></i>
+                    Rechazar Pedido
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+</html>

@@ -49,14 +49,45 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                        // .requestMatchers("/").authenticated() //PERMISOS  QUE TENDRAN LOS ROLES
-                        .requestMatchers("/login").permitAll()
+                       /* .requestMatchers("/login").permitAll()
                         .requestMatchers("/css/**","/js/**").permitAll()
                         .requestMatchers("/usuarios/**").hasAnyRole("Dueña","Administrador")
                         .requestMatchers("/productos/**").hasAnyRole("Dueña","Administrador")
                         .requestMatchers("/ventas/**").hasAnyRole("Dueña","Vendedor", "Administrador")
                         .requestMatchers("/socio/**").hasAnyRole("Dueña","Socio")
 
-                        .anyRequest().authenticated()
+                        .anyRequest().authenticated()*/
+                    //    .authorizeHttpRequests(auth -> auth
+
+                                .requestMatchers("/login").permitAll()
+                                .requestMatchers("/css/**","/js/**").permitAll()
+
+                                .requestMatchers("/usuarios/**")
+                                .hasAnyRole("Dueña","Administrador")
+
+                                .requestMatchers("/productos/**")
+                                .hasAnyRole("Dueña","Administrador","Vendedor")
+
+                                .requestMatchers("/ventas/**")
+                                .hasAnyRole("Dueña","Vendedor","Administrador")
+
+                                .requestMatchers("/pedidos/generar")
+                                .hasAnyRole("Dueña","Administrador","Vendedor")
+
+                                .requestMatchers("/pedidos/aprobar/**")
+                                .hasRole("Dueña")
+
+                                .requestMatchers("/pedidos/rechazar/**")
+                                .hasRole("Dueña")
+
+                                .requestMatchers("/pedidos/**")
+                                .hasAnyRole("Dueña","Administrador","Vendedor")
+
+                                .requestMatchers("/socio/**")
+                                .hasAnyRole("Dueña","Socio")
+
+                                .anyRequest().authenticated()
+
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
