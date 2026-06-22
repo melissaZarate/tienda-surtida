@@ -26,6 +26,10 @@ public class VentaDTO {
     public void setItems(List<ItemVentaDTO> items) {
         this.items = items;
     }
+    public BigDecimal calcularTotal(){
+        return items.stream().map(ItemVentaDTO::getSubtotal).reduce(BigDecimal.ZERO,BigDecimal::add);
+    }
+
 
     public BigDecimal getTotal() {
         return total;

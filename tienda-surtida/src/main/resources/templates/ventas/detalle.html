@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+    <div class="container-fluid">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <div>
+                <h2>
+                    <i class="bi bi-receipt"></i>
+                    Detalle de Venta
+                </h2>
+
+                <small class="text-muted">
+                    Venta N°
+                    <span th:text="${venta.idVenta}"></span>
+                </small>
+            </div>
+
+            <a th:href="@{/ventas/historial}"
+               class="btn btn-secondary">
+
+                <i class="bi bi-arrow-left"></i>
+                Volver
+            </a>
+
+        </div>
+
+        <!-- DATOS GENERALES -->
+
+        <div class="card mb-3">
+
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <strong>Fecha:</strong><br>
+                        <span th:text="${venta.fechaVenta}"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <strong>Vendedor:</strong><br>
+                        <span th:text="${venta.usuario.nombreUsuario}"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <strong>Total:</strong><br>
+                        Bs <span th:text="${venta.totalVenta}"></span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- DETALLE -->
+
+        <div class="card">
+
+            <div class="card-header">
+                Productos Vendidos
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table table-dark">
+
+                    <thead>
+
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="detalle : ${venta.detalles}">
+
+                        <td th:text="${detalle.producto.nombreProducto}"></td>
+
+                        <td th:text="${detalle.cantidadDetalle}"></td>
+
+                        <td>
+                            Bs
+                            <span th:text="${detalle.precioDetalleVenta}"></span>
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</html>

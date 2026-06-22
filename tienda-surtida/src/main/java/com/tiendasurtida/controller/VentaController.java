@@ -50,7 +50,7 @@ public class VentaController {
         model.addAttribute("venta", venta);
         model.addAttribute("q", q);
 
-        return "venta/formulario";
+        return "ventas/formulario";
     }
     //agegar producto de carrito
     @PostMapping("/agregar")
@@ -96,6 +96,44 @@ public class VentaController {
         VentaDTO venta = (VentaDTO) session.getAttribute("venta");
 
         if (venta == null || venta.getItems().isEmpty()) {
+            return "redirect:/ventas?error=vacio";
+        }
+
+        try {
+            ventaService.registrarVenta(venta, principal.getName());
+            session.removeAttribute("venta");
+
+        } catch (RuntimeException e) {
+            return "redirect:/ventas?error=" + e.getMessage();
+        }
+
+        return "redirect:/ventas?success=1";
+    }
+    @GetMapping("/historial")
+    public String historialVentas(Model model) {
+
+        model.addAttribute(
+                "ventas",
+                ventaService.listarVentas() //obtiene todas laas ventas con fechas en ordendescendente
+                //envia las ventas al thymeleaf ventas
+        );
+
+        return "ventas/historial";
+    }
+    @GetMapping("/detalle/{id}")
+    public String detalleVenta(@PathVariable Long id,
+                               Model model) {
+
+        model.addAttribute("venta", ventaService.obtenerVentaPorId(id));
+
+        return "ventas/detalle";
+    }
+  /*  @PostMapping("/finalizar")
+    public String finalizarVenta(HttpSession session, Principal principal) {
+
+        VentaDTO venta = (VentaDTO) session.getAttribute("venta");
+
+        if (venta == null || venta.getItems().isEmpty()) {
             return "redirect:/ventas";
         }
 
@@ -104,6 +142,6 @@ public class VentaController {
         session.removeAttribute("venta");
 
         return "redirect:/ventas";
-    }
+    }*/
 }
     //

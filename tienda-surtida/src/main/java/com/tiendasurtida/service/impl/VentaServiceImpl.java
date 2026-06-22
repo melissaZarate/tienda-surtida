@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class VentaServiceImpl implements VentaService {
@@ -29,8 +30,77 @@ public class VentaServiceImpl implements VentaService {
     }
 
 
+    @Override
+    @Transactional
+    public Venta registrarVenta(VentaDTO ventaDTO, String username) {
+
+        Usuario usuario = usuarioRepository.findByUsernameUsuario(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (ventaDTO.getItems() == null || ventaDTO.getItems().isEmpty()) {
+            throw new RuntimeException("No hay productos en la venta");
+        }
+
+        Venta venta = new Venta();
+        venta.setUsuario(usuario);
+        venta.setFechaVenta(LocalDateTime.now());
+        venta.setTotalVenta(BigDecimal.ZERO);
+
+        venta = ventaRepository.save(venta);
+
+        BigDecimal totalFinal = BigDecimal.ZERO;
+
+        for (ItemVentaDTO item : ventaDTO.getItems()) {
+
+            Producto producto = productoRepository.findById(item.getIdProducto())
+                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+            // ✔ VALIDACIÓN DE STOCK
+            if (producto.getStockActualProducto() < item.getCantidad()) {
+                throw new RuntimeException(
+                        "Stock insuficiente para: " + producto.getNombreProducto()
+                );
+            }
+
+            // ✔ CALCULAR SUBTOTAL
+            BigDecimal subtotal = producto.getPrecioVentaProducto()
+                    .multiply(BigDecimal.valueOf(item.getCantidad()));
+
+            // ✔ DETALLE VENTA
+            DetalleVenta detalle = new DetalleVenta();
+            detalle.setVenta(venta);
+            detalle.setProducto(producto);
+            detalle.setCantidadDetalle(item.getCantidad());
+            detalle.setPrecioDetalleVenta(producto.getPrecioVentaProducto());
+
+            detalleVentaRepository.save(detalle);
+
+            // ✔ DESCONTAR STOCK
+            producto.setStockActualProducto(
+                    producto.getStockActualProducto() - item.getCantidad()
+            );
+            productoRepository.save(producto);
+
+            totalFinal = totalFinal.add(subtotal);
+        }
+
+        // ✔ ACTUALIZAR TOTAL FINAL
+        venta.setTotalVenta(totalFinal);
+        ventaRepository.save(venta);
+
+        return venta;
+    }
 
     @Override
+    public List<Venta> listarVentas() {
+        return ventaRepository.findAllByOrderByFechaVentaDesc();
+    }
+
+    @Override
+    public Venta obtenerVentaPorId(Long id) {
+            return ventaRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+    }
+    /* @Override
     @Transactional
     public Venta registrarVenta(VentaDTO ventaDTO, String username) {
 
@@ -59,7 +129,7 @@ public class VentaServiceImpl implements VentaService {
                 throw new RuntimeException("Stock insuficiente para: " + producto.getNombreProducto());
             }
 
-            //  Crear detalle
+            //  Crear detalle //muktiplicamos elproducto por la cantidad
             BigDecimal subtotal = producto.getPrecioVentaProducto()
                     .multiply(BigDecimal.valueOf(item.getCantidad()));
 
@@ -86,5 +156,5 @@ public class VentaServiceImpl implements VentaService {
         ventaRepository.save(venta);
 
         return venta;
-    }
+    }*/
 }

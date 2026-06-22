@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <h2>
+            <i class="bi bi-receipt"></i>
+            Historial de Ventas
+        </h2>
+
+        <a th:href="@{/ventas}"
+           class="btn btn-primary">
+            Nueva Venta
+        </a>
+
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                    <tr>
+                        <th>#</th>
+                        <th>Fecha</th>
+                        <th>Vendedor</th>
+                        <th>Total</th>
+                        <th>Acciones</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="venta : ${ventas}">
+
+                        <td th:text="${venta.idVenta}"></td>
+
+                        <td th:text="${#temporals.format(
+                            venta.fechaVenta,
+                            'dd/MM/yyyy HH:mm')}">
+                        </td>
+
+                        <td th:text="${venta.usuario.nombreUsuario}">
+                        </td>
+
+                        <td>
+                            Bs
+                            <span th:text="${venta.totalVenta}"></span>
+                        </td>
+
+                        <td>
+
+                            <a th:href="@{/ventas/detalle/{id}(id=${venta.idVenta})}"
+                               class="btn btn-sm btn-outline-primary">
+
+                                Ver
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</html>
