@@ -2,6 +2,9 @@ package com.tiendasurtida.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "cliente")
 public class Cliente {
@@ -28,6 +31,8 @@ public class Cliente {
 
     @Column(name = "estado_cliente")
     private Boolean estadoCliente = true;
+    @OneToMany(mappedBy="cliente")
+    private List<Venta> ventas= new ArrayList<>();
 
     public Cliente() {
 

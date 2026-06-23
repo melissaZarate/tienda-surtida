@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Recibo</title>
+
+    <style>
+
+        body{
+            font-family: monospace;
+            width:300px;
+            margin:auto;
+        }
+
+        h2{
+            text-align:center;
+        }
+
+        table{
+            width:100%;
+        }
+
+        .total{
+            font-size:18px;
+            font-weight:bold;
+            text-align:right;
+        }
+
+        @media print{
+            button{
+                display:none;
+            }
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="ticket">
+
+    <h3 class="text-center">TIENDA SURTIDA</h3>
+    <hr>
+
+    <p><strong>Recibo #:</strong> <span th:text="${venta.idVenta}"></span></p>
+    <p><strong>Fecha:</strong> <span th:text="${venta.fechaVenta}"></span></p>
+
+    <hr>
+
+    <p><strong>Cliente:</strong></p>
+    <p th:text="${venta.cliente.nombreCliente + ' ' + venta.cliente.apellidoCliente}"></p>
+    <p th:text="${venta.cliente.ciCliente}"></p>
+
+    <hr>
+
+    <table class="table table-sm">
+        <tr>
+            <th>Producto</th>
+            <th>Cant</th>
+            <th>Subtotal</th>
+        </tr>
+
+        <tr th:each="d : ${venta.detalles}">
+            <td th:text="${d.producto.nombreProducto}"></td>
+            <td th:text="${d.cantidadDetalle}"></td>
+            <td th:text="${d.precioDetalleVenta}"></td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <h4 class="text-end">
+        TOTAL: Bs <span th:text="${venta.totalVenta}"></span>
+    </h4>
+
+</div>
+<div class="no-print mt-3">
+
+    <button onclick="window.print()" class="btn btn-primary">
+        Imprimir
+    </button>
+
+    <a th:href="@{/ventas?success=1}" class="btn btn-secondary">
+        Volver
+    </a>
+
+</div>
+
+</body>
+</html>

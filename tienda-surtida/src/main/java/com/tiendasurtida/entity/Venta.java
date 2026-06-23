@@ -22,6 +22,8 @@ public class Venta {
 
     @Column(name = "total_venta")
     private BigDecimal totalVenta;
+    @Column(name = "ruta_pdf")
+    private String rutaPdf;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
@@ -40,14 +42,16 @@ public class Venta {
     public Venta() {
     }
 
-    public Venta(Long idVenta, LocalDateTime fechaVenta, BigDecimal totalVenta, Usuario usuario, Cliente cliente, List<DetalleVenta> detalles) {
+    public Venta(Long idVenta, LocalDateTime fechaVenta, BigDecimal totalVenta, String rutaPdf, Usuario usuario, Cliente cliente, List<DetalleVenta> detalles) {
         this.idVenta = idVenta;
         this.fechaVenta = fechaVenta;
         this.totalVenta = totalVenta;
+        this.rutaPdf = rutaPdf;
         this.usuario = usuario;
         this.cliente = cliente;
         this.detalles = detalles;
     }
+
     // GETTERS Y SETTERS
 
     public Long getIdVenta() {
@@ -96,5 +100,13 @@ public class Venta {
 
     public void setDetalles(List<DetalleVenta> detalles) {
         this.detalles = detalles;
+    }
+
+    public String getRutaPdf() {
+        return rutaPdf;
+    }
+
+    public void setRutaPdf(String rutaPdf) {
+        this.rutaPdf = rutaPdf;
     }
 }

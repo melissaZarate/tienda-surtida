@@ -184,7 +184,7 @@
 
     </div>
     <!-- MODAL CLIENTE -->
-    <diva class="modal fade"
+    <div class="modal fade"
           id="modalCliente"
           tabindex="-1">
 
@@ -212,6 +212,7 @@
                     <div class="modal-body">
 
                         <input type="number"
+                               id="ciCliente"
                                name="ciCliente"
                                class="form-control mb-2"
                                placeholder="CI"
@@ -224,16 +225,19 @@
                                required>
 
                         <input type="text"
+                               id="apellidoCliente"
                                name="apellidoCliente"
                                class="form-control mb-2"
                                placeholder="Apellido">
 
                         <input type="text"
+                               id="telefonoCliente"
                                name="telefonoCliente"
                                class="form-control mb-2"
                                placeholder="Teléfono">
 
                         <input type="text"
+                               id="direccionCliente"
                                name="direccionCliente"
                                class="form-control"
                                placeholder="Dirección">
@@ -265,7 +269,7 @@
 
         </div>
 
-    </diva>
+    </div>
 <script>
     document.getElementById("buscador").addEventListener("keyup", function () {
         let filtro = this.value.toLowerCase();
@@ -290,6 +294,27 @@
 
 
 
+    </script>
+    <script>
+        document.getElementById("ciCliente").addEventListener("blur", function () {
+
+            let ci = this.value;
+
+            if (!ci) return;
+
+            fetch(`/clientes/buscar-ci?ci=${ci}`)
+                .then(response => response.json())
+                .then(data => {
+
+                    if (data) {
+                        document.getElementById("nombreCliente").value = data.nombreCliente || "";
+                        document.getElementById("apellidoCliente").value = data.apellidoCliente || "";
+                        document.getElementById("telefonoCliente").value = data.telefonoCliente || "";
+                        document.getElementById("direccionCliente").value = data.direccionCliente || "";
+                    }
+
+                });
+        });
     </script>
 </div>
 

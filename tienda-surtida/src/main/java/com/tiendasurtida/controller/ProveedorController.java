@@ -27,9 +27,7 @@ public class ProveedorController {
     }
 
     @PostMapping("/guardar")
-    public String guardar(
-            @Valid @ModelAttribute("proveedor") Proveedor proveedor,
-            BindingResult result,
+    public String guardar(@Valid @ModelAttribute("proveedor") Proveedor proveedor, BindingResult result,
             Model model,
             RedirectAttributes redirect) {
 
@@ -37,19 +35,12 @@ public class ProveedorController {
 
             model.addAttribute("proveedores",
                     service.listarProveedores());
-
             return "proveedor/lista";
         }
 
         service.guardarProveedor(proveedor);
-
-        redirect.addFlashAttribute(
-                "mensaje",
-                "Proveedor guardado correctamente");
-
-        redirect.addFlashAttribute(
-                "tipo",
-                "success");
+        redirect.addFlashAttribute("mensaje", "Proveedor guardado correctamente");
+        redirect.addFlashAttribute("tipo", "success");
 
         return "redirect:/proveedores";
     }

@@ -50,7 +50,6 @@ public class UsuarioController {
 
         try {
             usuarioService.guardarUsuario(usuario);
-
             redirectAttributes.addFlashAttribute(
                     "success",
                     "Usuario guardado correctamente."

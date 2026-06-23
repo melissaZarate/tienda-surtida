@@ -4,6 +4,8 @@ import com.tiendasurtida.dto.ClienteDTO;
 import com.tiendasurtida.dto.ItemVentaDTO;
 import com.tiendasurtida.dto.VentaDTO;
 import com.tiendasurtida.entity.Producto;
+import com.tiendasurtida.entity.Venta;
+import com.tiendasurtida.repository.ClienteRepository;
 import com.tiendasurtida.service.VentaService;
 import com.tiendasurtida.repository.ProductoRepository;
 import jakarta.servlet.http.HttpSession;
@@ -20,12 +22,15 @@ import java.util.List;
 public class VentaController {
 
     private final ProductoRepository productoRepository;
+    private final ClienteRepository clienteRepository;
     private final VentaService ventaService;
 
-    public VentaController(ProductoRepository productoRepository, VentaService ventaService) {
+    public VentaController(ProductoRepository productoRepository, ClienteRepository clienteRepository, VentaService ventaService) {
         this.productoRepository = productoRepository;
+        this.clienteRepository = clienteRepository;
         this.ventaService = ventaService;
     }
+
     //pantalla principal ára ventas
     @GetMapping
     public String vistaVenta(@RequestParam(required = false) String q,
@@ -95,19 +100,14 @@ public class VentaController {
     public String finalizarVenta(HttpSession session, Principal principal) {
 
         VentaDTO venta = (VentaDTO) session.getAttribute("venta");
-       // ventaService.registrarVenta(venta,principal.getName())
 
         if (venta == null || venta.getItems().isEmpty()) {
             return "redirect:/ventas?error=vacio";
         }
 
-        try {
-            ventaService.registrarVenta(venta, principal.getName());
-            session.removeAttribute("venta");
+        Venta ventaGuardada = ventaService.registrarVenta(venta, principal.getName());
 
-        } catch (RuntimeException e) {
-            return "redirect:/ventas?error=" + e.getMessage();
-        }
+        session.removeAttribute("venta");
 
         return "redirect:/ventas?success=1";
     }
@@ -130,22 +130,50 @@ public class VentaController {
 
         return "ventas/detalle";
     }
-    @GetMapping("/recibo")
-    public String formularioRecibo(Model model) {
-        model.addAttribute("clienteDTO", new ClienteDTO());
-        return "ventas/recibo";
-    }
+
     @PostMapping("/recibo/finalizar")
-    public String finalizarConRecibo(@ModelAttribute ClienteDTO clienteDTO, HttpSession session, Principal principal) {
+    public String finalizarConRecibo(@ModelAttribute ClienteDTO clienteDTO,
+                                     HttpSession session,
+                                     Principal principal) {
 
         VentaDTO venta = (VentaDTO) session.getAttribute("venta");
-        if(venta== null || venta.getItems().isEmpty()){
+
+        if (venta == null || venta.getItems().isEmpty()) {
             return "redirect:/ventas?error=vacio";
         }
+
         venta.setCliente(clienteDTO);
-        ventaService.registrarVenta(venta, principal.getName());
+
+        Venta ventaGuardada = ventaService.registrarVenta(venta, principal.getName());
+
         session.removeAttribute("venta");
-        return "redirect:/ventas?success=recibo";
+
+        return "redirect:/ventas/recibo/" + ventaGuardada.getIdVenta();
+    }
+    @GetMapping("/recibo/{id}")
+    public String verRecibo(@PathVariable Long id, Model model) {
+
+        Venta venta = ventaService.obtenerVentaPorId(id);
+
+        model.addAttribute("venta", venta);
+
+        return "ventas/recibo-ticket";
+    }
+    @GetMapping("/clientes/buscar-ci")
+    @ResponseBody
+    public ClienteDTO buscarPorCi(@RequestParam Integer ci) {
+
+        return clienteRepository.findByCiCliente(ci)
+                .map(c -> {
+                    ClienteDTO dto = new ClienteDTO();
+                    dto.setCiCliente(c.getCiCliente());
+                    dto.setNombreCliente(c.getNombreCliente());
+                    dto.setApellidoCliente(c.getApellidoCliente());
+                    dto.setTelefonoCliente(c.getTelefonoCliente());
+                    dto.setDireccionCliente(c.getDireccionCliente());
+                    return dto;
+                })
+                .orElse(null);
     }
   /*  @PostMapping("/finalizar")
     public String finalizarVenta(HttpSession session, Principal principal) {
