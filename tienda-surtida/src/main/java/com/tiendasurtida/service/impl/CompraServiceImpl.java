@@ -38,7 +38,7 @@ public class CompraServiceImpl implements CompraService {
 
         compra.setFechaCompra(LocalDateTime.now());
         // Validar caja abierta
-        Caja caja = cajaRepository.findByEstadoIgnoreCase("ABIERTA").orElseThrow(() -> new RuntimeException("Debe abrir una caja antes de registrar ventas"));
+        Caja caja = cajaRepository.findByEstadoIgnoreCase("ABIERTA").orElseThrow(() -> new RuntimeException("Debe abrir una caja antes de registrar compras"));
 
 
         if (compra.getTotalCompra() == null) {

@@ -105,12 +105,16 @@ public class VentaController {
         if (venta == null || venta.getItems().isEmpty()) {
             return "redirect:/ventas?error=vacio";
         }
+        try {
 
-        Venta ventaGuardada = ventaService.registrarVenta(venta, principal.getName());
+            Venta ventaGuardada = ventaService.registrarVenta(venta, principal.getName());
 
-        session.removeAttribute("venta");
+            session.removeAttribute("venta");
 
-        return "redirect:/ventas?success=1";
+            return "redirect:/ventas?success=1";
+        } catch(RuntimeException e){
+            return "redirect:/ventas?error="+e.getMessage();
+        }
     }
     @GetMapping("/historial")
     public String historialVentas(Model model) {

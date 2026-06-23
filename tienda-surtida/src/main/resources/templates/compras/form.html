@@ -15,6 +15,18 @@
             </h3>
         </div>
 
+        <!-- mensajes  para validar caja -->
+        <div th:if="${param.error}" class="callout callout-danger">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span th:text="${param.error}"></span>
+        </div>
+
+        <div th:if="${param.success}" class="callout callout-success">
+            <i class="bi bi-check-circle-fill"></i>
+            <span th:text="${param.success}"></span>
+        </div>
+
+
         <form th:action="@{/compras/guardar}"
               th:object="${compra}"
               method="post">

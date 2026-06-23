@@ -61,12 +61,16 @@ public class CompraController {
     @GetMapping("/nuevo")
     public String nuevaCompra(Model model) {
 
-        model.addAttribute("compra", new Compra());
 
-        model.addAttribute("proveedores", proveedorService.listarProveedoresActivos());
+            model.addAttribute("compra", new Compra());
 
-        return "compras/form";
+
+            model.addAttribute("proveedores", proveedorService.listarProveedoresActivos());
+
+            return "compras/form";
+
     }
+
 
     // GUARDAR COMPRA
     @PostMapping("/guardar")
@@ -74,41 +78,24 @@ public class CompraController {
             @ModelAttribute Compra compra,
             @RequestParam Long idProveedor,
             RedirectAttributes redirectAttributes) {
+        try {
 
-        Proveedor proveedor =
-                proveedorService.buscarPorId(idProveedor);
+            Proveedor proveedor = proveedorService.buscarPorId(idProveedor);
 
-        compra.setProveedor(proveedor);
+            compra.setProveedor(proveedor);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth.getName();
+            Usuario usuario = usuarioService.buscarPorUsername(username).orElseThrow(() ->
+                    new RuntimeException("Usuario no encontrado"));
 
-        Authentication auth =
-                SecurityContextHolder
-                        .getContext()
-                        .getAuthentication();
-
-        String username = auth.getName();
-
-        Usuario usuario =
-                usuarioService.buscarPorUsername(username)
-                        .orElseThrow(() ->
-                                new RuntimeException("Usuario no encontrado"));
-
-        compra.setUsuario(usuario);
-
-        Compra compraGuardada =
-                compraService.crearCompra(compra);
-
-        redirectAttributes.addFlashAttribute(
-                "mensaje",
-                "Compra registrada correctamente"
-        );
-
-        redirectAttributes.addFlashAttribute(
-                "tipo",
-                "success"
-        );
-
-        return "redirect:/compras/" +
-                compraGuardada.getIdCompra();
+            compra.setUsuario(usuario);
+            Compra compraGuardada = compraService.crearCompra(compra);
+            redirectAttributes.addFlashAttribute("mensaje", "Compra registrada correctamente");
+            redirectAttributes.addFlashAttribute("tipo", "success");
+            return "redirect:/compras/" + compraGuardada.getIdCompra();
+        }   catch (RuntimeException e) {
+             return "redirect:/compras/nuevo?error=" + e.getMessage();
+                }
     }
 
     // VER DETALLE DE COMPRA
