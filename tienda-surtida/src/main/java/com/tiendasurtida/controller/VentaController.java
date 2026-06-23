@@ -6,6 +6,7 @@ import com.tiendasurtida.dto.VentaDTO;
 import com.tiendasurtida.entity.Producto;
 import com.tiendasurtida.entity.Venta;
 import com.tiendasurtida.repository.ClienteRepository;
+import com.tiendasurtida.repository.DetalleVentaRepository;
 import com.tiendasurtida.service.VentaService;
 import com.tiendasurtida.repository.ProductoRepository;
 import jakarta.servlet.http.HttpSession;
@@ -22,20 +23,20 @@ import java.util.List;
 public class VentaController {
 
     private final ProductoRepository productoRepository;
+    private final DetalleVentaRepository detalleVentaRepository;
     private final ClienteRepository clienteRepository;
     private final VentaService ventaService;
 
-    public VentaController(ProductoRepository productoRepository, ClienteRepository clienteRepository, VentaService ventaService) {
+    public VentaController(ProductoRepository productoRepository, DetalleVentaRepository detalleVentaRepository, ClienteRepository clienteRepository, VentaService ventaService) {
         this.productoRepository = productoRepository;
+        this.detalleVentaRepository = detalleVentaRepository;
         this.clienteRepository = clienteRepository;
         this.ventaService = ventaService;
     }
 
     //pantalla principal ára ventas
     @GetMapping
-    public String vistaVenta(@RequestParam(required = false) String q,
-                             Model model,
-                             HttpSession session) {
+    public String vistaVenta(@RequestParam(required = false) String q, Model model, HttpSession session) {
 
         VentaDTO venta = (VentaDTO) session.getAttribute("venta");
 
@@ -46,7 +47,7 @@ public class VentaController {
 
         List<Producto> productos;
 
-        if (q != null && !q.isEmpty()) {
+        if (q != null && !q.isEmpty()) { //para busqueda
             productos = productoRepository.buscarPorNombre(q);
         } else {
             productos = productoRepository.findAll();
@@ -175,20 +176,17 @@ public class VentaController {
                 })
                 .orElse(null);
     }
-  /*  @PostMapping("/finalizar")
-    public String finalizarVenta(HttpSession session, Principal principal) {
+    //paa prodcutos mas vendidos
+    @GetMapping("/mas-vendidos")
+    public String productosMasVendidos(Model model){
 
-        VentaDTO venta = (VentaDTO) session.getAttribute("venta");
+        model.addAttribute(
+                "productos",
+                detalleVentaRepository.obtenerProductosMasVendidos()
+        );
 
-        if (venta == null || venta.getItems().isEmpty()) {
-            return "redirect:/ventas";
-        }
+        return "ventas/mas-vendidos";
+    }
 
-        ventaService.registrarVenta(venta, principal.getName());
-
-        session.removeAttribute("venta");
-
-        return "redirect:/ventas";
-    }*/
 }
     //
