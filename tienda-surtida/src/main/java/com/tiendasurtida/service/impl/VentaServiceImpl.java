@@ -23,15 +23,16 @@ public class VentaServiceImpl implements VentaService {
     private final UsuarioRepository usuarioRepository;
     private final DetalleVentaRepository detalleVentaRepository;
     private final ClienteRepository clienteRepository;
+    private final CajaRepository cajaRepository;
 
 
-
-    public VentaServiceImpl(VentaRepository ventaRepository, ProductoRepository productoRepository, UsuarioRepository usuarioRepository, DetalleVentaRepository detalleVentaRepository, ClienteRepository clienteRepository) {
+    public VentaServiceImpl(VentaRepository ventaRepository, ProductoRepository productoRepository, UsuarioRepository usuarioRepository, DetalleVentaRepository detalleVentaRepository, ClienteRepository clienteRepository, CajaRepository cajaRepository) {
         this.ventaRepository = ventaRepository;
         this.productoRepository = productoRepository;
         this.usuarioRepository = usuarioRepository;
         this.detalleVentaRepository = detalleVentaRepository;
         this.clienteRepository = clienteRepository;
+        this.cajaRepository = cajaRepository;
     }
 
     @Override
@@ -40,6 +41,10 @@ public class VentaServiceImpl implements VentaService {
 
         Usuario usuario = usuarioRepository.findByUsernameUsuario(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        // validar cahja abierta
+        Caja caja = cajaRepository.findByEstadoIgnoreCase("ABIERTA").orElseThrow(() -> new RuntimeException("Debe abrir una caja antes de registrar ventas"));
+
+
         //aqui parte delclinete
         ClienteDTO clienteDTO=ventaDTO.getCliente();
         Cliente clienteFinal = null;
@@ -66,6 +71,7 @@ public class VentaServiceImpl implements VentaService {
 
         Venta venta = new Venta();
         venta.setUsuario(usuario);
+        venta.setCaja(caja); //relacionamos laventa con la caja abierta
         venta.setCliente(clienteFinal);
         venta.setFechaVenta(LocalDateTime.now());
         venta.setTotalVenta(BigDecimal.ZERO);

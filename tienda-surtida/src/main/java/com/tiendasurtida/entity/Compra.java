@@ -35,6 +35,9 @@ public class Compra {
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
+    @ManyToOne
+    @JoinColumn(name = "id_caja")
+    private Caja caja;
 
     // rdlacion condetalleProducto
     @OneToMany(mappedBy = "compra", cascade = CascadeType.ALL, orphanRemoval=true)
@@ -44,7 +47,7 @@ public class Compra {
     public Compra() {
     }
 
-    public Compra(Long idCompra, LocalDateTime fechaCompra, Double totalCompra, String observacionCompra, String estadoCompra, Proveedor proveedor, Usuario usuario, List<DetalleCompra> detalles) {
+    public Compra(Long idCompra, LocalDateTime fechaCompra, Double totalCompra, String observacionCompra, String estadoCompra, Proveedor proveedor, Usuario usuario, Caja caja, List<DetalleCompra> detalles) {
         this.idCompra = idCompra;
         this.fechaCompra = fechaCompra;
         this.totalCompra = totalCompra;
@@ -52,6 +55,7 @@ public class Compra {
         this.estadoCompra = estadoCompra;
         this.proveedor = proveedor;
         this.usuario = usuario;
+        this.caja = caja;
         this.detalles = detalles;
     }
 
@@ -118,5 +122,13 @@ public class Compra {
 
     public void setEstadoCompra(String estadoCompra) {
         this.estadoCompra = estadoCompra;
+    }
+
+    public Caja getCaja() {
+        return caja;
+    }
+
+    public void setCaja(Caja caja) {
+        this.caja = caja;
     }
 }

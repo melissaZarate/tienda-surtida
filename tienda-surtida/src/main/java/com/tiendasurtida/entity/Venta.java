@@ -32,27 +32,30 @@ public class Venta {
     @ManyToOne
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;
+    @ManyToOne
+    @JoinColumn(name = "id_caja")
+    private Caja caja;
 
     @OneToMany(mappedBy = "venta",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetalleVenta> detalles = new ArrayList<>();
     //constructor
 
     public Venta() {
     }
 
-    public Venta(Long idVenta, LocalDateTime fechaVenta, BigDecimal totalVenta, String rutaPdf, Usuario usuario, Cliente cliente, List<DetalleVenta> detalles) {
+    public Venta(Long idVenta, LocalDateTime fechaVenta, BigDecimal totalVenta, String rutaPdf, Usuario usuario, Cliente cliente, Caja caja, List<DetalleVenta> detalles) {
         this.idVenta = idVenta;
         this.fechaVenta = fechaVenta;
         this.totalVenta = totalVenta;
         this.rutaPdf = rutaPdf;
         this.usuario = usuario;
         this.cliente = cliente;
+        this.caja = caja;
         this.detalles = detalles;
     }
 
-    // GETTERS Y SETTERS
+// GETTERS Y SETTERS
 
     public Long getIdVenta() {
         return idVenta;
@@ -108,5 +111,13 @@ public class Venta {
 
     public void setRutaPdf(String rutaPdf) {
         this.rutaPdf = rutaPdf;
+    }
+
+    public Caja getCaja() {
+        return caja;
+    }
+
+    public void setCaja(Caja caja) {
+        this.caja = caja;
     }
 }

@@ -1,17 +1,9 @@
 package com.tiendasurtida.service.impl;
 
-import com.tiendasurtida.entity.Compra;
-import com.tiendasurtida.entity.DetalleCompra;
-import com.tiendasurtida.entity.Producto;
-import com.tiendasurtida.entity.HistorialPrecio;
-import com.tiendasurtida.entity.VencimientoProducto;
-import com.tiendasurtida.repository.CompraRepository;
-import com.tiendasurtida.repository.HistorialPrecioRepository;
-import com.tiendasurtida.repository.ProductoRepository;
+import com.tiendasurtida.entity.*;
+import com.tiendasurtida.repository.*;
 import com.tiendasurtida.service.CompraService;
 import org.springframework.stereotype.Service;
-import com.tiendasurtida.repository.DetalleCompraRepository;
-import com.tiendasurtida.repository.VencimientoProductoRepository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -29,25 +21,30 @@ public class CompraServiceImpl implements CompraService {
 
     private final DetalleCompraRepository detalleCompraRepository;
     private final VencimientoProductoRepository vencimientoProductoRepository;
+    private final CajaRepository cajaRepository;
   //para historial se modifica el cpntructor
 
-
-    public CompraServiceImpl(CompraRepository compraRepository, ProductoRepository productoRepository, HistorialPrecioRepository historialPrecioRepository, DetalleCompraRepository detalleCompraRepository, VencimientoProductoRepository vencimientoProductoRepository) {
+    public CompraServiceImpl(CompraRepository compraRepository, ProductoRepository productoRepository, HistorialPrecioRepository historialPrecioRepository, DetalleCompraRepository detalleCompraRepository, VencimientoProductoRepository vencimientoProductoRepository, CajaRepository cajaRepository) {
         this.compraRepository = compraRepository;
         this.productoRepository = productoRepository;
         this.historialPrecioRepository = historialPrecioRepository;
         this.detalleCompraRepository = detalleCompraRepository;
         this.vencimientoProductoRepository = vencimientoProductoRepository;
+        this.cajaRepository = cajaRepository;
     }
 
     @Override
     public Compra crearCompra(Compra compra) {
 
         compra.setFechaCompra(LocalDateTime.now());
+        // Validar caja abierta
+        Caja caja = cajaRepository.findByEstadoIgnoreCase("ABIERTA").orElseThrow(() -> new RuntimeException("Debe abrir una caja antes de registrar ventas"));
+
 
         if (compra.getTotalCompra() == null) {
             compra.setTotalCompra(0.0);
         }
+        compra.setCaja(caja); //setCaja(caja); // <- relacionar la venta con la caja abierta
         compra.setEstadoCompra("EN_PROCESO");
 
         return compraRepository.save(compra);
@@ -137,8 +134,7 @@ public class CompraServiceImpl implements CompraService {
                     LocalDateTime.now()
             );
 
-            historial.setMotivoHistorial(
-                    "Compra con nuevo precio proveedor"
+            historial.setMotivoHistorial("Compra con nuevo precio proveedor"
             );
 
             historialPrecioRepository.save(historial);
@@ -170,19 +166,12 @@ public class CompraServiceImpl implements CompraService {
             producto.setEstadoProducto(true);
         }
 
-
         // Relación detalle-compra
         detalle.setCompra(compra);
-
-
         compra.getDetalles().add(detalle);
 
         // Recalcular total de compra
-        BigDecimal total = compra.getDetalles()
-                .stream()
-                .map(DetalleCompra::getPrecioTotalDetalle)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
+        BigDecimal total = compra.getDetalles().stream().map(DetalleCompra::getPrecioTotalDetalle).reduce(BigDecimal.ZERO, BigDecimal::add);
         compra.setTotalCompra(total.doubleValue());
 
         // Guardar cambios
