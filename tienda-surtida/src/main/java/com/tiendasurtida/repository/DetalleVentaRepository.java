@@ -5,6 +5,8 @@ import com.tiendasurtida.entity.DetalleVenta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface DetalleVentaRepository extends JpaRepository<DetalleVenta, Long> {
@@ -19,4 +21,7 @@ public interface DetalleVentaRepository extends JpaRepository<DetalleVenta, Long
     //para productos mas vendidos
     @Query("SELECT p.nombreProducto,SUM(d.cantidadDetalle)FROM DetalleVenta d JOIN d.producto p GROUP BY p.idProducto, p.nombreProducto ORDER BY SUM(d.cantidadDetalle) DESC")
     List<Object[]> obtenerProductosMasVendidos();
+    //para reportes e productos mas vendidos segunfecha
+    @Query("SELECT d.producto.nombreProducto,SUM(d.cantidadDetalle)FROM DetalleVenta d WHERE d.venta.fechaVenta BETWEEN :inicio AND :fin GROUP BY d.producto.nombreProducto ORDER BY SUM(d.cantidadDetalle) DESC")
+    List<Object[]> obtenerProductosMasVendidos(LocalDateTime inicio, LocalDateTime fin);
 }

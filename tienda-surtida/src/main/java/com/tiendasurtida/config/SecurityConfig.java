@@ -59,40 +59,82 @@ public class SecurityConfig {
                         .anyRequest().authenticated()*/
                     //    .authorizeHttpRequests(auth -> auth
 
+
                                 .requestMatchers("/login").permitAll()
-                                .requestMatchers("/css/**","/js/**").permitAll()
+                                .requestMatchers("/css/**","/js/**","/img/**").permitAll()
 
+//dashboard
+                                .requestMatchers("/dashboard/**")
+                                .hasAnyRole("Duena","Administrador","Vendedor")
+
+//usuarios
                                 .requestMatchers("/usuarios/**")
-                                .hasAnyRole("Dueña","Administrador")
+                                .hasAnyRole("Duena","Administrador")
 
+//productos
                                 .requestMatchers("/productos/**")
-                                .hasAnyRole("Dueña","Administrador","Vendedor")
+                                .hasAnyRole("Duena","Administrador","Vendedor")
 
-                                .requestMatchers("/ventas/**")
-                                .hasAnyRole("Dueña","Vendedor","Administrador")
+                                .requestMatchers("/categorias/**")
+                                .hasAnyRole("Duena","Administrador")
 
+                                .requestMatchers("/unidades/**")
+                                .hasAnyRole("Duena","Administrador")
+
+                                .requestMatchers("/vencimientos/**")
+                                .hasAnyRole("Duena","Administrador","Vendedor")
+
+                                .requestMatchers("/historial-precios/**")
+                                .hasAnyRole("Duena","Administrador")
+
+//comoras
+                               .requestMatchers("/compras/**")
+                                .hasAnyRole("Duena","Administrador")
+
+                                .requestMatchers("/proveedores/**")
+                                .hasAnyRole("Duena","Administrador")
+
+//pedidos
                                 .requestMatchers("/pedidos/generar")
-                                .hasAnyRole("Dueña","Administrador","Vendedor")
+                                .hasAnyRole("Duena","Administrador","Vendedor")
 
                                 .requestMatchers("/pedidos/aprobar/**")
-                                .hasRole("Dueña")
+                                .hasRole("Duena")
 
                                 .requestMatchers("/pedidos/rechazar/**")
-                                .hasRole("Dueña")
+                                .hasRole("Duena")
 
                                 .requestMatchers("/pedidos/**")
-                                .hasAnyRole("Dueña","Administrador","Vendedor")
+                                .hasAnyRole("Duena","Administrador","Vendedor")
 
+//ventas
+                                .requestMatchers("/ventas/**")
+                                .hasAnyRole("Duena","Administrador","Vendedor")
+
+                                .requestMatchers("/ventas/historial/**")
+                                .hasAnyRole("Duena","Administrador","Vendedor")
+                                .requestMatchers("/ventas/mas-vendidos/**")
+                                .hasAnyRole("Duena","Administrador","Vendedor")
+
+//cjas
+                                .requestMatchers("/caja/**")
+                                .hasAnyRole("Duena","Administrador")
+
+                                .requestMatchers("/reportes/**")
+                                .hasAnyRole("Duena","Administrador")
+
+///socios
                                 .requestMatchers("/socio/**")
-                                .hasAnyRole("Dueña","Socio")
+                                .hasAnyRole("Duena","Socio")
 
+//para socios
                                 .anyRequest().authenticated()
 
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/",true)
+                        .defaultSuccessUrl("/dashboard",true)
                         .permitAll()
                 )
                 .logout(logout -> logout

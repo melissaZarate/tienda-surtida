@@ -5,6 +5,8 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 
+
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,6 +38,17 @@
             background: #f97316 !important;
             color: white !important;
         }
+        .sidebar-brand {
+            height: 160px !important;
+            padding: 0 !important;
+        }
+
+        .sidebar-brand .brand-link {
+            height: 120px !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 
 </head>
@@ -44,9 +57,7 @@
 
 <div class="app-wrapper">
 
-    <!-- =========================
-         NAVBAR
-    ========================== -->
+    <!-- NAVBAR -->
     <nav class="app-header navbar navbar-expand bg-body">
 
         <div class="container-fluid">
@@ -116,21 +127,20 @@
 
     </nav>
 
-    <!-- =========================
-         SIDEBAR
-    ========================== -->
+    <!-- SIDEBAR -->
     <aside class="app-sidebar bg-body-secondary shadow"
            data-bs-theme="dark">
 
         <!-- Logo -->
-        <div class="sidebar-brand">
+        <div class="sidebar-brand border-bottom">
 
-            <a th:href="@{/}" class="brand-link d-flex aling-items-center">
-              <img th:src="@{/assets/img/logo (2).png }"
-                    class="brand-image img-circle elevation-3"
-                     alt="logo"
-                     style="width:100%;height:100px;object-fit:contain;">
+            <a th:href="@{/dashboard}"
+               class="brand-link d-flex justify-content-center align-items-center p-2">
 
+                <img th:src="@{/assets/img/loguito.png}"
+                     alt="Logo"
+                     style="max-width:95%;
+                    max-height:150px;">
 
             </a>
 
@@ -146,30 +156,82 @@
                     <!-- Inicio -->
                     <li class="nav-item">
 
-                        <a th:href="@{/}"
+                        <a th:href="@{/dashboard}"
                            class="nav-link">
 
-                            <i class="nav-icon bi bi-house"></i>
+                            <i class="nav-icon bi bi-speedometer me-2"></i>
 
-                            <p>Inicio</p>
+                            <p>Dashboard</p>
 
                         </a>
 
                     </li>
+                    <!--reportes-->
 
-                    <!-- Usuarios -->
-                    <li class="nav-item">
+                    <li class="nav-item"
+                        sec:authorize="hasAnyRole('Duena','Administrador')">
 
-                        <a th:href="@{/usuarios}"
-                           class="nav-link">
+                        <a href="#" class="nav-link" data-lte-toggle="treeview">
 
-                            <i class="nav-icon bi bi-people"></i>
+                            <i class="nav-icon bi bi-bar-chart-line-fill"></i>
 
-                            <p>Usuarios</p>
+                            <p>
+                                Reportes
+                                <i class="nav-arrow bi bi-chevron-right"></i>
+                            </p>
 
                         </a>
 
+                        <ul class="nav nav-treeview">
+
+                            <li class="nav-item">
+
+                                <a th:href="@{/reportes/financiero}"
+                                   class="nav-link">
+
+                                    <i class="bi bi-tod"></i>
+                                    <i class="bi bi-cash-stack nav-icon text-warning"></i>
+                                    <p>Financiero</p>
+
+                                </a>
+
+                            </li>
+                            <!--stock bajo-->
+                            <li class="nav-item">
+
+                                <a th:href="@{/reportes/stock}"
+                                   class="nav-link">
+
+                                    <i class="bi bi-tod"></i>
+                                    <i class="bi bi-exclamation-triangle-fill nav-icon text-warning"></i>
+                                    <p>Stock Bajo</p>
+
+                                </a>
+
+                            </li>
+                            <!--productos mas vendidos-->
+                            <li class="nav-item">
+
+                                <a th:href="@{/reportes/productos-mas-vendidos}"
+                                   class="nav-link">
+
+                                    <i class="bi bi-tod"></i>
+                                    <i class="bi bi-trophy-fill nav-icon text-warning"></i>
+                                    <p>Mas vendidos</p>
+
+                                </a>
+
+                            </li>
+
+
+
+                        </ul>
+
+
                     </li>
+
+
+
                     <li class="nav-item">
 
                         <a href="#" class="nav-link" data-lte-toggle="treeview">
@@ -185,7 +247,8 @@
 
                         <ul class="nav nav-treeview">
 
-                            <li class="nav-item">
+                            <li class="nav-item"
+                                sec:authorize="hasAnyRole('Duena','Administrador')">
 
                                 <a th:href="@{/categorias}"
                                    class="nav-link">
@@ -198,7 +261,8 @@
 
                             </li>
                             <!--aqui boton para uidad medida-->
-                            <li class="nav-item">
+                            <li class="nav-item"
+                                sec:authorize="hasAnyRole('Duena','Administrador')">
 
                                 <a th:href="@{/unidades}"
                                    class="nav-link">
@@ -224,7 +288,8 @@
 
                             </li>
                             <!--aqui boton para historial de precios-->
-                            <li class="nav-item">
+                            <li class="nav-item"
+                                sec:authorize="hasAnyRole('Duena','Administrador')">
 
                                 <a th:href="@{/historial-precios}"
                                    class="nav-link">
@@ -237,7 +302,8 @@
 
                             </li>
                             <!--aqui boton para vencimiento de productoss-->
-                            <li class="nav-item">
+                            <li class="nav-item"
+                                sec:authorize="hasAnyRole('Duena','Administrador','Vendedor')">
 
                                 <a th:href="@{/vencimientos/lista}"
                                    class="nav-link">
@@ -256,7 +322,8 @@
                         </ul>
 
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item"
+                        sec:authorize="hasAnyRole('Duena','Administrador')">
 
                         <a href="#" class="nav-link" data-lte-toggle="treeview">
 
@@ -271,7 +338,8 @@
 
                         <ul class="nav nav-treeview">
 
-                            <li class="nav-item">
+                            <li class="nav-item"
+                                sec:authorize="hasAnyRole('Duena','Administrador')">
 
                                 <a th:href="@{/proveedores}"
                                    class="nav-link">
@@ -298,7 +366,8 @@
 
                             </li>
                             <!--boton pra pedidos-->
-                            <li class="nav-item">
+                            <li class="nav-item"
+                                sec:authorize="hasAnyRole('Duena','Administrador','Vendedor')">
 
                                 <a th:href="@{/pedidos}"
                                    class="nav-link">
@@ -316,7 +385,8 @@
                         </ul>
 
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item"
+                        sec:authorize="hasAnyRole('Duena','Administrador','Vendedor')">
 
                         <a href="#" class="nav-link" data-lte-toggle="treeview">
 
@@ -331,7 +401,8 @@
 
                         <ul class="nav nav-treeview">
 
-                            <li class="nav-item">
+                            <li class="nav-item"
+                                sec:authorize="hasAnyRole('Duena','Administrador','Vendedor')">
 
                                 <a th:href="@{/ventas}"
                                    class="nav-link">
@@ -344,7 +415,8 @@
 
                             </li>
                             <!--historial-->
-                            <li class="nav-item">
+                            <li class="nav-item"
+                                sec:authorize="hasAnyRole('Duena','Administrador','Vendedor')">
 
                                 <a th:href="@{/ventas/historial}"
                                    class="nav-link">
@@ -357,14 +429,15 @@
 
                             </li>
                             <!--productos mas vendidos-->
-                            <li class="nav-item">
+                            <li class="nav-item"
+                                sec:authorize="hasAnyRole('Duena','Administrador')">
 
                                 <a th:href="@{/ventas/mas-vendidos}"
                                    class="nav-link">
 
                                     <i class="bi bi-tod"></i>
                                     <i class="bi bi-trophy-fill nav-icon text-warning"></i>
-                                    <p>productos mas vendidos</p>
+                                    <p>Ranking de productos</p>
 
                                 </a>
 
@@ -376,7 +449,8 @@
 
 
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item"
+                        sec:authorize="hasAnyRole('Duena','Administrador')">
 
                         <a th:href="@{/caja}"
                            class="nav-link">
@@ -384,6 +458,20 @@
                             <i class="nav-icon bi bi-cash-stack"></i>
 
                             <p>Caja</p>
+
+                        </a>
+
+                    </li>
+                    <!-- Usuarios -->
+                    <li class="nav-item"
+                        sec:authorize="hasAnyRole('Duena','Administrador')">
+
+                        <a th:href="@{/usuarios}"
+                           class="nav-link">
+
+                            <i class="nav-icon bi bi-people"></i>
+
+                            <p>Usuarios</p>
 
                         </a>
 
@@ -397,9 +485,9 @@
 
     </aside>
 
-    <!-- =========================
-         CONTENIDO PRINCIPAL
-    ========================== -->
+
+       <!--  CONTENIDO PRINCIPAL-->
+
     <main class="app-main">
 
         <div class="app-content">
@@ -425,9 +513,7 @@
 
 </div>
 
-<!-- =========================
-     SCRIPTS
-========================== -->
+
 
 <script th:src="@{/js/adminlte.js}"></script>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+    <div class="container mt-3">
+
+        <!-- TÍTULO -->
+
+        <div class="mb-3">
+            <h2 class="fw-bold mb-0">
+                Reporte Financiero
+            </h2>
+
+            <small class="text-muted">
+                Consulta ingresos, egresos y ganancias por período.
+            </small>
+        </div>
+
+        <!-- FORMULARIO -->
+
+        <div class="card shadow-sm mb-3">
+
+            <div class="card-body">
+
+                <form method="get"
+                      th:action="@{/reportes/financiero}">
+
+                    <div class="row g-3">
+
+                        <div class="col-12 col-md-5">
+
+                            <label class="form-label">
+                                Fecha inicio
+                            </label>
+
+                            <input type="date"
+                                   name="inicio"
+                                   class="form-control"
+                                   th:value="${inicio}"
+                                   required>
+
+                        </div>
+
+                        <div class="col-12 col-md-5">
+
+                            <label class="form-label">
+                                Fecha fin
+                            </label>
+
+                            <input type="date"
+                                   name="fin"
+                                   class="form-control"
+                                   th:value="${fin}"
+                                   required>
+
+                        </div>
+
+                        <div class="col-12 col-md-2 d-flex align-items-end">
+
+                            <button type="submit"
+                                    class="btn btn-primary w-100">
+
+                                Generar
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- PERIODO CONSULTADO -->
+
+        <div th:if="${inicio != null and fin != null}"
+             class="alert alert-info">
+
+            <strong>Período consultado:</strong>
+
+            <span th:text="${#temporals.format(inicio,'dd/MM/yyyy')}"></span>
+
+            al
+
+            <span th:text="${#temporals.format(fin,'dd/MM/yyyy')}"></span>
+
+        </div>
+
+        <!-- TARJETAS -->
+
+        <div class="row text-center mb-3"
+             th:if="${reporte != null}">
+
+            <div class="col-12 col-md-4 mb-3">
+
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted">
+                            Total Ventas
+                        </h6>
+
+                        <h4 class="text-success fw-bold"
+                            th:text="${reporte.totalVentas}">
+                        </h4>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-12 col-md-4 mb-3">
+
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted">
+                            Total Compras
+                        </h6>
+
+                        <h4 class="text-danger fw-bold"
+                            th:text="${reporte.totalCompras}">
+                        </h4>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-12 col-md-4 mb-3">
+
+                <div class="card shadow-sm h-100">
+
+                    <div class="card-body">
+
+                        <h6 class="text-muted">
+                            Ganancia Estimada
+                        </h6>
+
+                        <h4 class="text-primary fw-bold"
+                            th:text="${reporte.ganancias}">
+                        </h4>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TABLA RESUMEN -->
+
+        <div class="card shadow-sm"
+             th:if="${reporte != null}">
+
+            <div class="card-header">
+
+                <strong>
+                    Resumen Financiero
+                </strong>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table table-hover mb-0">
+
+                    <thead class="table-light">
+
+                    <tr>
+                        <th>Desde</th>
+                        <th>Hasta</th>
+                        <th>Total Ventas</th>
+                        <th>Total Compras</th>
+                        <th>Ganancia</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr>
+
+                        <td th:text="${#temporals.format(reporte.fechaInicio,'dd/MM/yyyy')}">
+                        </td>
+
+                        <td th:text="${#temporals.format(reporte.fechaFin,'dd/MM/yyyy')}">
+                        </td>
+
+                        <td class="text-success fw-bold"
+                            th:text="${reporte.totalVentas}">
+                        </td>
+
+                        <td class="text-danger fw-bold"
+                            th:text="${reporte.totalCompras}">
+                        </td>
+
+                        <td class="text-primary fw-bold"
+                            th:text="${reporte.ganancias}">
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</html>

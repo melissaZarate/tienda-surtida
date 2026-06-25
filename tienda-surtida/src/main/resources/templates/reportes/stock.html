@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+    <div class="container mt-3">
+
+        <h4 class="text-center mb-3">Productos con Stock Bajo</h4>
+
+        <!--  MENSAJE SI NO HAY STOCK BAJO -->
+        <div class="alert alert-success text-center"
+             th:if="${#lists.isEmpty(productos)}">
+             No hay productos con stock bajo
+        </div>
+
+        <!--  RESUMEN RÁPIDO -->
+        <div class="row text-center mb-3">
+
+            <div class="col-12 col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6>Total productos en alerta</h6>
+                        <h3 class="text-danger" th:text="${#lists.size(productos)}"></h3>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- LISTA DE PRODUCTOS -->
+        <div th:each="p : ${productos}" class="card shadow-sm mb-2">
+
+            <div class="card-body">
+
+                <!-- NOMBRE -->
+                <h5 class="mb-2" th:text="${p.nombreProducto}">
+                    Producto
+                </h5>
+
+                <!-- STOCK ACTUAL -->
+                <p class="mb-1">
+                    <b>Stock actual:</b>
+
+                    <span th:text="${p.stockActualProducto}"
+                          th:classappend="${p.stockActualProducto <= p.stockMinimoProducto} ? 'text-danger fw-bold' : 'text-success'">
+                </span>
+                </p>
+
+                <!-- STOCK MÍNIMO -->
+                <p class="mb-0">
+                    <b>Stock mínimo:</b>
+                    <span th:text="${p.stockMinimoProducto}"></span>
+                </p>
+
+                <!-- ALERTA VISUAL -->
+                <div th:if="${p.stockActualProducto <= p.stockMinimoProducto}"
+                     class="alert alert-danger mt-2 mb-0 py-1 text-center">
+                    Stock bajo
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</html>

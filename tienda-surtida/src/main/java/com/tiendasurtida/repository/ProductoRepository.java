@@ -28,5 +28,13 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> { //us
     List<Producto> obtenerProductosStockBajoPorCategoria(@Param("idCategoria") Long idCategoria);
     @Query(" SELECT p FROM Producto p WHERE LOWER(p.nombreProducto) LIKE LOWER(CONCAT('%', :nombre, '%'))")
     List<Producto> buscarPorNombre(String nombre);
+    //consultas para el dashboard
+    @Query("SELECT COUNT(p) FROM Producto p WHERE p.estadoProducto = true") //pra el total de productos
+    Long contarProductosActivos();
+    @Query("SELECT COUNT(p) FROM Producto p WHERE p.stockActualProducto <= p.stockMinimoProducto AND p.estadoProducto = true")//productos constock bajo
+    Long contarProductosStockBajo();
+    //para rportes
+    @Query("SELECT p FROM Producto p WHERE p.stockActualProducto <= p.stockMinimoProducto")
+    List<Producto> productosStockBajo();
 
 }

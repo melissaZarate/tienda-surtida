@@ -4,43 +4,136 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/base}">
 
-<body>
-<head>
-    <title>Dashboards</title>
-</head>
-
 <div layout:fragment="contenido">
 
-
-    <div class="app-content-header">
-        <div class="container-fluid">
-            <h1 class="mb-4">Bienvenido a Tienda Surtida</h1>
-        </div>
+    <!-- TÍTULO -->
+    <div class="mb-4">
+        <h2 class="fw-bold">
+            <i class="bi bi-speedometer2"></i>
+            Dashboard
+        </h2>
+        <p class="text-muted mb-0">
+            Resumen general de la tienda
+        </p>
     </div>
 
-    <div class="app-content">
-        <div class="container-fluid">
+    <!-- FILA 1 -->
+    <div class="row g-3 mb-3">
 
-            <div class="row">
+        <!-- Productos -->
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
 
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Usuarios</h3>
-                        </div>
+                    <h6 class="text-muted">
+                        Productos Registrados
+                    </h6>
 
-                        <div class="card-body">
-                            Gestión de usuarios del sistema.
-                        </div>
-                    </div>
+                    <h2 class="fw-bold"
+                        th:text="${dashboard.totalProductos}">
+                        0
+                    </h2>
+
                 </div>
-
             </div>
-
         </div>
+
+        <!-- Stock Bajo -->
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Stock Bajo
+                    </h6>
+
+                    <h2 class="fw-bold text-danger"
+                        th:text="${dashboard.productosStockBajo}">
+                        0
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Caja -->
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Caja Actual
+                    </h6>
+
+                    <h2 class="fw-bold text-success"
+                        th:text="${dashboard.cajaActual}">
+                        0
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FILA 2 -->
+    <div class="row g-3">
+
+        <!-- Ventas -->
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Ventas Hoy
+                    </h6>
+
+                    <h2 class="fw-bold text-primary"
+                        th:text="${dashboard.ventasHoy}">
+                        0
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Compras -->
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Compras Hoy
+                    </h6>
+
+                    <h2 class="fw-bold text-warning"
+                        th:text="${dashboard.comprasHoy}">
+                        0
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Ganancia -->
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Ganancia Hoy
+                    </h6>
+
+                    <h2 class="fw-bold text-success"
+                        th:text="${dashboard.gananciasHoy}">
+                        0
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </div>
-
-</body>
 </html>

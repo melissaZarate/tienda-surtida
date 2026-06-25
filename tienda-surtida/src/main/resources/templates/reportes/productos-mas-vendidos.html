@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+  <!-- TÍTULO -->
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+
+    <div>
+      <h2 class="fw-bold mb-0">
+        Productos Más Vendidos
+      </h2>
+
+      <small class="text-muted">
+        Consulta los productos más vendidos en un período específico.
+      </small>
+    </div>
+
+  </div>
+
+  <!-- FILTRO -->
+
+  <div class="card shadow-sm mb-4">
+
+    <div class="card-body">
+
+      <form method="get"
+            th:action="@{/reportes/productos-mas-vendidos}">
+
+        <div class="row g-3">
+
+          <div class="col-12 col-md-4">
+
+            <label class="form-label">
+              Fecha inicio
+            </label>
+
+            <input type="date"
+                   name="inicio"
+                   class="form-control"
+                   th:value="${inicio}">
+          </div>
+
+          <div class="col-12 col-md-4">
+
+            <label class="form-label">
+              Fecha fin
+            </label>
+
+            <input type="date"
+                   name="fin"
+                   class="form-control"
+                   th:value="${fin}">
+          </div>
+
+          <div class="col-12 col-md-4 d-flex align-items-end">
+
+            <button type="submit"
+                    class="btn btn-primary w-100">
+
+              Generar Reporte
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+  <!-- RESUMEN -->
+
+  <div th:if="${inicio != null and fin != null}"
+       class="alert alert-info">
+
+    <strong>Período consultado:</strong>
+
+    <span th:text="${inicio}"></span>
+
+    al
+
+    <span th:text="${fin}"></span>
+
+  </div>
+
+  <!-- TABLA -->
+
+  <div class="card shadow-sm">
+
+    <div class="card-header">
+
+      <strong>
+        Ranking de Productos
+      </strong>
+
+    </div>
+
+    <div class="card-body p-0">
+
+      <div class="table-responsive">
+
+        <table class="table table-hover mb-0">
+
+          <thead class="table-light">
+
+          <tr>
+
+            <th>#</th>
+
+            <th>Producto</th>
+
+            <th class="text-center">
+              Cantidad Vendida
+            </th>
+
+          </tr>
+
+          </thead>
+
+          <tbody>
+
+          <tr th:if="${#lists.isEmpty(productos)}">
+
+            <td colspan="3"
+                class="text-center text-muted py-4">
+
+              No existen ventas para el período seleccionado.
+
+            </td>
+
+          </tr>
+
+          <tr th:each="p, iter : ${productos}">
+
+            <td th:text="${iter.count}">
+              1
+            </td>
+
+            <td th:text="${p.nombreProducto}">
+              Producto
+            </td>
+
+            <td class="text-center">
+
+                            <span class="badge bg-success"
+                                  th:text="${p.cantidadVendida}">
+                                0
+                            </span>
+
+            </td>
+
+          </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</html>

@@ -8,6 +8,8 @@
 
     <div class="container-fluid">
 
+        <!-- CABECERA -->
+
         <div class="d-flex justify-content-between align-items-center mb-3">
 
             <h2>
@@ -19,12 +21,13 @@
                class="btn btn-outline-secondary">
 
                 <i class="bi bi-arrow-left"></i>
+                Volver
 
             </a>
 
         </div>
 
-        <!-- SI NO HAY REGISTROS -->
+        <!-- SIN REGISTROS -->
 
         <div th:if="${#lists.isEmpty(cajas)}"
              class="alert alert-info">
@@ -33,137 +36,120 @@
 
         </div>
 
-        <!-- LISTADO -->
+        <!-- TABLA -->
 
-        <div th:if="${!#lists.isEmpty(cajas)}">
+        <div class="card shadow-sm"
+             th:if="${!#lists.isEmpty(cajas)}">
 
-            <div class="card shadow-sm mb-3"
-                 th:each="caja : ${cajas}">
+            <div class="card-header">
 
-                <div class="card-header d-flex justify-content-between">
+                <strong>
+                    Historial de Aperturas y Cierres de Caja
+                </strong>
 
-                    <strong>
-                        Caja #<span th:text="${caja.idCaja}"></span>
-                    </strong>
+            </div>
 
-                    <span th:if="${caja.estado == 'ABIERTA'}"
-                          class="badge bg-success">
+            <div class="table-responsive">
 
-                        ABIERTA
+                <table class="table table-hover table-bordered align-middle mb-0">
 
-                    </span>
+                    <thead class="table-light">
 
-                    <span th:if="${caja.estado == 'CERRADA'}"
-                          class="badge bg-secondary">
+                    <tr>
 
-                        CERRADA
+                        <th># Caja</th>
 
-                    </span>
+                        <th>Apertura</th>
 
-                </div>
+                        <th>Cierre</th>
 
-                <div class="card-body">
+                        <th>Inicial</th>
 
-                    <div class="row">
+                        <th>Ingresos</th>
 
-                        <div class="col-6">
+                        <th>Egresos</th>
 
-                            <small class="text-muted">
-                                Apertura
-                            </small>
+                        <th>Saldo Final</th>
 
-                            <div th:text="${#temporals.format(caja.fechaApertura,'dd/MM/yyyy HH:mm')}">
-                            </div>
+                        <th>Estado</th>
 
-                        </div>
+                    </tr>
 
-                        <div class="col-6">
+                    </thead>
 
-                            <small class="text-muted">
-                                Cierre
-                            </small>
+                    <tbody>
 
-                            <div th:if="${caja.fechaCierre != null}"
-                                 th:text="${#temporals.format(caja.fechaCierre,'dd/MM/yyyy HH:mm')}">
-                            </div>
+                    <tr th:each="caja : ${cajas}">
 
-                            <div th:if="${caja.fechaCierre == null}">
+                        <td th:text="${caja.idCaja}"></td>
+
+                        <td th:text="${#temporals.format(caja.fechaApertura,'dd/MM/yyyy HH:mm')}">
+                        </td>
+
+                        <td>
+
+                            <span th:if="${caja.fechaCierre != null}"
+                                  th:text="${#temporals.format(caja.fechaCierre,'dd/MM/yyyy HH:mm')}">
+                            </span>
+
+                            <span th:if="${caja.fechaCierre == null}">
                                 —
-                            </div>
+                            </span>
 
-                        </div>
+                        </td>
 
-                    </div>
+                        <td class="text-primary fw-bold">
 
-                    <hr>
+                            Bs <span th:text="${caja.montoInicial}"></span>
 
-                    <div class="row text-center">
+                        </td>
 
-                        <div class="col-4">
+                        <td class="text-success fw-bold">
 
-                            <small class="text-muted">
-                                Inicial
-                            </small>
+                            Bs <span th:text="${caja.totalIngresos}"></span>
 
-                            <h6 class="text-primary">
+                        </td>
 
-                                Bs <span th:text="${caja.montoInicial}"></span>
+                        <td class="text-danger fw-bold">
 
-                            </h6>
+                            Bs <span th:text="${caja.totalEgresos}"></span>
 
-                        </div>
+                        </td>
 
-                        <div class="col-4">
-
-                            <small class="text-muted">
-                                Ingresos
-                            </small>
-
-                            <h6 class="text-success">
-
-                                Bs <span th:text="${caja.totalIngresos}"></span>
-
-                            </h6>
-
-                        </div>
-
-                        <div class="col-4">
-
-                            <small class="text-muted">
-                                Egresos
-                            </small>
-
-                            <h6 class="text-danger">
-
-                                Bs <span th:text="${caja.totalEgresos}"></span>
-
-                            </h6>
-
-                        </div>
-
-                    </div>
-
-                    <hr>
-
-                    <div class="text-center">
-
-                        <small class="text-muted">
-                            Saldo Final
-                        </small>
-
-                        <h4 class="text-success">
+                        <td class="fw-bold">
 
                             Bs <span th:text="${caja.saldoFinal}"></span>
 
-                        </h4>
+                        </td>
 
-                    </div>
+                        <td>
 
-                </div>
+                            <span th:if="${caja.estado == 'ABIERTA'}"
+                                  class="badge bg-success">
+
+                                ABIERTA
+
+                            </span>
+
+                            <span th:if="${caja.estado == 'CERRADA'}"
+                                  class="badge bg-secondary">
+
+                                CERRADA
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
 
             </div>
 
         </div>
+
     </div>
 
 </div>
