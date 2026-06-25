@@ -1,5 +1,6 @@
 package com.tiendasurtida.service.impl;
 
+import com.tiendasurtida.dto.DashboardComparativoDTO;
 import com.tiendasurtida.dto.DashboardDTO;
 import com.tiendasurtida.entity.Caja;
 import com.tiendasurtida.repository.CajaRepository;
@@ -57,6 +58,50 @@ public class DashboardServiceImpl implements DashboardService {
         }
         return dto;
 
+    }
+    @Override
+    public DashboardComparativoDTO obtenerComparativoVentas() {
+
+        DashboardComparativoDTO dto = new DashboardComparativoDTO();
+
+        LocalDate hoy = LocalDate.now();
+        LocalDate ayer = hoy.minusDays(1);
+
+        LocalDateTime inicioHoy = hoy.atStartOfDay();
+        LocalDateTime finHoy = hoy.atTime(23, 59, 59);
+
+        LocalDateTime inicioAyer = ayer.atStartOfDay();
+        LocalDateTime finAyer = ayer.atTime(23, 59, 59);
+
+        BigDecimal ventasHoy = ventaRepository.obtenerTotalEntreFechas(inicioHoy, finHoy);
+        BigDecimal ventasAyer = ventaRepository.obtenerTotalEntreFechas(inicioAyer, finAyer);
+        String estado;
+        if(ventasHoy.compareTo(ventasAyer)>0){
+            estado="CRECIMIENTO";
+        }
+        else if(ventasHoy.compareTo(ventasAyer)<0){
+            estado="caida";
+        }
+        else{
+            estado="ESTABLE";
+        }
+
+        dto.setEstado(estado);
+        dto.setVentasHoy(ventasHoy);
+        dto.setVentasAyer(ventasAyer);
+        //ccalcuklo
+        BigDecimal diferencia = ventasHoy.subtract(ventasAyer); //resta positivi: crecimienti negativo caida
+        dto.setDiferencia(diferencia);
+
+        BigDecimal porcentaje = BigDecimal.ZERO;
+
+        if (ventasAyer.compareTo(BigDecimal.ZERO) > 0) { //porcentaje=diferencia*100)/ventassayer solosiayer no es ceo
+            porcentaje = diferencia.multiply(BigDecimal.valueOf(100)).divide(ventasAyer, 2, java.math.RoundingMode.HALF_UP);
+        }
+
+        dto.setPorcentajeCrecimiento(porcentaje);
+
+        return dto;
     }
 
 }

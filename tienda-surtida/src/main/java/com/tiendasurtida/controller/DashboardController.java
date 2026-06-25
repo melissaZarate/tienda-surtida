@@ -38,6 +38,7 @@ public class DashboardController {
     public String dashboard(Model model) {
 
         model.addAttribute("dashboard", dashboardService.obtenerDashboard());
+        model.addAttribute("comparativo", dashboardService.obtenerComparativoVentas());
 
         return "dashboard/index";
     }

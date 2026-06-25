@@ -25,5 +25,8 @@ BigDecimal obtenerVentasEntreFechas(@Param("inicio") LocalDateTime inicio, @Para
 //para reportes
 @Query("SELECT COALESCE(SUM(v.totalVenta), 0) FROM Venta v WHERE v.fechaVenta BETWEEN :inicio AND :fin")
 BigDecimal sumarVentas(@Param("inicio") LocalDateTime inicio, @Param("fin") LocalDateTime fin);
+//para sumar ventas por rango de ffecha
+@Query("SELECT COALESCE(SUM(v.totalVenta), 0) FROM Venta v WHERE v.fechaVenta BETWEEN :inicio AND :fin")
+BigDecimal obtenerTotalEntreFechas(@Param("inicio") LocalDateTime inicio,  @Param("fin") LocalDateTime fin);
 
 }

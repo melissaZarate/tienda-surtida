@@ -134,6 +134,113 @@
         </div>
 
     </div>
+    <!-- panel inteligente -->
+
+    <div class="row mt-3">
+
+        <div class="col-12">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header text-white d-flex justify-content-between align-items-center" style="background-color: #e86523; color:white;">
+
+                <span>
+                    <i class="bi bi-cpu-fill"></i>
+                    Análisis inteligente del día
+                </span>
+
+                    <small>
+                        Hoy vs Ayer
+                    </small>
+
+                </div>
+
+                <div class="card-body">
+
+                    <!-- ESTADO GENERAL -->
+                    <div class="alert text-center"
+                         th:classappend="${
+                        comparativo.estado == 'CRECIMIENTO'
+                        ? 'alert-success'
+                        : (comparativo.estado == 'CAIDA'
+                            ? 'alert-danger'
+                            : 'alert-warning')
+                     }">
+
+                        <strong>
+                            Estado del negocio:
+                            <span th:text="${comparativo.estado}"></span>
+                        </strong>
+
+                    </div>
+
+                    <!-- KPI ROW -->
+                    <div class="row text-center">
+
+                        <div class="col-md-3">
+                            <h6>Ventas Hoy</h6>
+                            <h4 class="text-success"
+                                th:text="${comparativo.ventasHoy}">
+                            </h4>
+                        </div>
+
+                        <div class="col-md-3">
+                            <h6>Ventas Ayer</h6>
+                            <h4 class="text-primary"
+                                th:text="${comparativo.ventasAyer}">
+                            </h4>
+                        </div>
+
+                        <div class="col-md-3">
+                            <h6>Diferencia</h6>
+                            <h4 th:text="${comparativo.diferencia}"
+                                th:classappend="${
+                                comparativo.diferencia >= 0
+                                ? 'text-success'
+                                : 'text-danger'
+                            }">
+                            </h4>
+                        </div>
+
+                        <div class="col-md-3">
+                            <h6>Crecimiento</h6>
+                            <h4 th:text="${comparativo.porcentajeCrecimiento + '%'}"
+                                th:classappend="${
+                                comparativo.porcentajeCrecimiento >= 0
+                                ? 'text-success'
+                                : 'text-danger'
+                            }">
+                            </h4>
+                        </div>
+
+                    </div>
+
+                    <!-- INTERPRETACIÓN -->
+                    <hr>
+
+                    <div class="text-center">
+
+                        <p th:if="${comparativo.estado == 'CRECIMIENTO'}">
+                            Buen rendimiento: las ventas están aumentando.
+                        </p>
+
+                        <p th:if="${comparativo.estado == 'CAIDA'}">
+                            Atención: las ventas han disminuido.
+                        </p>
+
+                        <p th:if="${comparativo.estado == 'ESTABLE'}">
+                             Sin cambios relevantes en ventas.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 </html>
