@@ -169,7 +169,5 @@ public class ProductoController {
         return productoService.obtenerDatosAjuste(id);
     }
 
-   /* @GetMapping("/productos/datos-ajuste/{id}")
-    @ResponseBody
-    public DatosAjusteDTO obtenerDatos(@PathVariable Long id)*/
+
 }

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+    <!--
+         TÍTULO+ -->
+    <div class="mb-4">
+        <h2 class="fw-bold">
+            <i class="bi bi-graph-up-arrow"></i>
+            Rentabilidad de Productos
+        </h2>
+
+        <p class="text-muted mb-0">
+            Análisis de ganancias por producto en el rango seleccionado
+        </p>
+    </div>
+
+    <!--
+         FILTRO FECHAS -->
+    <div class="card shadow-sm border-0 mb-3">
+        <div class="card-body">
+
+            <form class="row g-2" method="get"
+                  th:action="@{/reportes/rentabilidad}">
+
+                <div class="col-12 col-md-4">
+                    <input type="date"
+                           class="form-control"
+                           name="inicio"
+                           th:value="${inicio}">
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <input type="date"
+                           class="form-control"
+                           name="fin"
+                           th:value="${fin}">
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <button class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i>
+                        Consultar
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!--
+         ESTADO GENERAL (SEMÁFORO)
+     -->
+    <div class="mb-3">
+
+        <span class="badge fs-6 p-2"
+              th:text="${estado}"
+              th:classappend="' ' +
+                (${estado == 'POSITIVO'} ? 'bg-success' :
+                (${estado == 'NEGATIVO'} ? 'bg-danger' : 'bg-secondary'))">
+        </span>
+
+    </div>
+
+    <!--
+         KPI CARDS -->
+    <div class="row g-3 mb-3">
+
+        <!-- GANANCIA -->
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">Ganancia Total</h6>
+
+                    <h2 class="fw-bold"
+                        th:classappend="${totalGanancia >= 0} ? 'text-success' : 'text-danger'"
+                        th:text="${totalGanancia}">
+                        0
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- INGRESO -->
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">Ingreso Total</h6>
+
+                    <h2 class="fw-bold text-primary"
+                        th:text="${totalIngreso}">
+                        0
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- UNIDADES -->
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">Unidades Vendidas</h6>
+
+                    <h2 class="fw-bold text-warning"
+                        th:text="${totalUnidades}">
+                        0
+                    </h2>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--
+         TABLA PRINCIPAL -->
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-dark">
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio Compra</th>
+                    <th>Precio Venta</th>
+                    <th>Cantidad</th>
+                    <th>Ingreso</th>
+                    <th>Ganancia</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="item : ${rentabilidad}">
+
+                    <!-- PRODUCTO -->
+                    <td class="fw-semibold"
+                        th:text="${item.producto}">
+                    </td>
+
+                    <!-- PRECIO COMPRA -->
+                    <td th:text="${item.precioCompra + ' Bs'}"></td>
+
+                    <!-- PRECIO VENTA -->
+                    <td th:text="${item.precioVenta + ' Bs'}"></td>
+
+                    <!-- CANTIDAD -->
+                    <td th:text="${item.cantidadVendida}"></td>
+
+                    <!-- INGRESO -->
+                    <td class="text-primary fw-semibold"
+                        th:text="${item.ingresoGenerado + ' Bs'}">
+                    </td>
+
+                    <!-- GANANCIA (INTELIGENCIA VISUAL) -->
+                    <td>
+
+                        <i th:if="${item.ganancia > 0}"
+                           class="bi bi-arrow-up-circle-fill text-success"></i>
+
+                        <i th:if="${item.ganancia < 0}"
+                           class="bi bi-arrow-down-circle-fill text-danger"></i>
+
+                        <i th:if="${item.ganancia == 0}"
+                           class="bi bi-dash-circle-fill text-secondary"></i>
+
+                        <span class="fw-bold ms-1"
+                              th:classappend="${item.ganancia >= 0} ? 'text-success' : 'text-danger'"
+                              th:text="${item.ganancia + ' Bs'}">
+                        </span>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+</html>

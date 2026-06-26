@@ -171,7 +171,7 @@
 
         <div class="mt-4"
              th:if="${pedido.estadoPedido.idEstadoPedido == 1}"
-              sec:authorize="hasRole('Dueña')">
+              sec:authorize="hasRole('Duena')">
 
             <form th:action="@{/pedidos/aprobar/{id}(id=${pedido.idPedido})}"
                   method="post"

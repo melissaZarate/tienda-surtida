@@ -5,29 +5,63 @@
       layout:decorate="~{layout/base}">
 
 <div layout:fragment="contenido">
-
-    <!-- TÍTULO -->
+    <!-- =========================
+        TÍTULO
+   ========================== -->
     <div class="mb-4">
         <h2 class="fw-bold">
             <i class="bi bi-speedometer2"></i>
-            Dashboard
+            Dashboard Inteligente
         </h2>
         <p class="text-muted mb-0">
-            Resumen general de la tienda
+            Resumen interpretado del estado del negocio
         </p>
     </div>
 
-    <!-- FILA 1 -->
+    <!-- =========================
+         ESTADO GENERAL (SEMÁFORO)
+    ========================== -->
+    <div class="card shadow-sm border-0 mb-3">
+
+        <div class="card-body text-center">
+
+            <h5 class="fw-bold">Estado del Negocio Hoy</h5>
+
+            <h3 th:classappend="${
+                    dashboard.gananciasHoy >= 0
+                    ? 'text-success'
+                    : 'text-danger'
+                }"
+                th:text="${
+                    dashboard.gananciasHoy >= 0
+                    ? 'GANANCIA POSITIVA '
+                    : 'FLUJO NEGATIVO '
+                }">
+            </h3>
+
+            <p class="text-muted mb-0"
+               th:text="${
+                    dashboard.gananciasHoy >= 0
+                    ? 'El negocio está generando utilidad hoy.'
+                    : 'Hoy se está invirtiendo más de lo que se vendió.'
+               }">
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- =========================
+         FILA 1
+    ========================== -->
     <div class="row g-3 mb-3">
 
-        <!-- Productos -->
+        <!-- PRODUCTOS -->
         <div class="col-12 col-md-4">
             <div class="card shadow-sm border-0">
                 <div class="card-body text-center">
 
-                    <h6 class="text-muted">
-                        Productos Registrados
-                    </h6>
+                    <h6 class="text-muted">Productos Registrados</h6>
 
                     <h2 class="fw-bold"
                         th:text="${dashboard.totalProductos}">
@@ -38,14 +72,12 @@
             </div>
         </div>
 
-        <!-- Stock Bajo -->
+        <!-- STOCK BAJO -->
         <div class="col-12 col-md-4">
             <div class="card shadow-sm border-0">
                 <div class="card-body text-center">
 
-                    <h6 class="text-muted">
-                        Stock Bajo
-                    </h6>
+                    <h6 class="text-muted">Stock Bajo</h6>
 
                     <h2 class="fw-bold text-danger"
                         th:text="${dashboard.productosStockBajo}">
@@ -56,84 +88,127 @@
             </div>
         </div>
 
-        <!-- Caja -->
+        <!-- CAJA -->
         <div class="col-12 col-md-4">
             <div class="card shadow-sm border-0">
                 <div class="card-body text-center">
 
-                    <h6 class="text-muted">
-                        Caja Actual
-                    </h6>
+                    <h6 class="text-muted">Caja Actual</h6>
 
                     <h2 class="fw-bold text-success"
                         th:text="${dashboard.cajaActual}">
                         0
                     </h2>
 
+                    <small class="text-muted">
+                        Dinero disponible en efectivo (ventas - compras)
+                    </small>
+
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- FILA 2 -->
+    <!-- =========================
+         FILA 2
+    ========================== -->
     <div class="row g-3">
 
-        <!-- Ventas -->
+        <!-- VENTAS -->
         <div class="col-12 col-md-4">
             <div class="card shadow-sm border-0">
                 <div class="card-body text-center">
 
-                    <h6 class="text-muted">
-                        Ventas Hoy
-                    </h6>
+                    <h6 class="text-muted">Ventas Hoy</h6>
 
                     <h2 class="fw-bold text-primary"
                         th:text="${dashboard.ventasHoy}">
                         0
                     </h2>
 
+                    <small class="text-muted">
+                        💰 Dinero ingresado por ventas
+                    </small>
+
                 </div>
             </div>
         </div>
 
-        <!-- Compras -->
+        <!-- COMPRAS -->
         <div class="col-12 col-md-4">
             <div class="card shadow-sm border-0">
                 <div class="card-body text-center">
 
-                    <h6 class="text-muted">
-                        Compras Hoy
-                    </h6>
+                    <h6 class="text-muted">Compras Hoy</h6>
 
                     <h2 class="fw-bold text-warning"
                         th:text="${dashboard.comprasHoy}">
                         0
                     </h2>
 
+                    <small class="text-muted">
+                        🛒 Inversión en inventario
+                    </small>
+
                 </div>
             </div>
         </div>
 
-        <!-- Ganancia -->
+        <!-- GANANCIA -->
         <div class="col-12 col-md-4">
             <div class="card shadow-sm border-0">
                 <div class="card-body text-center">
 
-                    <h6 class="text-muted">
-                        Ganancia Hoy
-                    </h6>
+                    <h6 class="text-muted">Resultado del Día</h6>
 
-                    <h2 class="fw-bold text-success"
+                    <h2 class="fw-bold"
+                        th:classappend="${dashboard.gananciasHoy >= 0} ? 'text-success' : 'text-danger'"
                         th:text="${dashboard.gananciasHoy}">
                         0
                     </h2>
+
+                    <small class="text-muted"
+                           th:text="${
+                                dashboard.gananciasHoy >= 0
+                                ? '✔ El negocio ganó dinero hoy'
+                                : '⚠ Se invirtió más de lo vendido'
+                           }">
+                    </small>
 
                 </div>
             </div>
         </div>
 
     </div>
+
+    <!-- =========================
+         ALERTA EXPLICATIVA
+    ========================== -->
+    <div class="alert mt-4"
+         th:classappend="${
+            dashboard.gananciasHoy >= 0
+            ? 'alert-success'
+            : 'alert-danger'
+         }">
+
+        <strong>
+            <i class="bi bi-info-circle"></i>
+            Interpretación:
+        </strong>
+
+        <span th:text="${
+            dashboard.gananciasHoy >= 0
+            ? 'Hoy el negocio está en equilibrio positivo. Se vendió más de lo que se invirtió.'
+            : 'Hoy el negocio está en inversión. El dinero salió principalmente en compras de stock.'
+        }">
+        </span>
+
+    </div>
+
+
+
+
     <!-- panel inteligente -->
 
     <div class="row mt-3">

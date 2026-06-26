@@ -255,7 +255,7 @@
                 <input type="date"
                        class="form-control"
                        name="fechaVencimiento"
-                       id="fechaVencimiento" required>
+                       id="fechaVencimiento" >
             </div>
 
         </div>
@@ -520,9 +520,11 @@
 
             if (control === "true") {
                 campo.style.display = "block";
+                input.setAttribute("required","required");
             } else {
                 campo.style.display = "none";
-                document.getElementById("fechaVencimiento").value = "";
+                input.removeAttribute("required");
+                input.value = "";
             }
 
         });

@@ -51,14 +51,46 @@ public class ProductoServiceImpl implements ProductoService {
         return productoRepository.findAll(); //obtiene todos los productos
 
     }
-
     @Override
+    public Producto guardarProducto(Producto producto) {
+
+        //  CREAR PRODUCTO
+        if (producto.getIdProducto() == null) {
+
+            if (producto.getStockActualProducto() == null) {
+                producto.setStockActualProducto(0);
+            }
+
+            if (producto.getPrecioVentaProducto() == null) {
+                producto.setPrecioVentaProducto(BigDecimal.ZERO);
+            }
+
+            return productoRepository.save(producto);
+        }
+
+        // ️ EDITAR PRODUCTO (IMPORTANTE)
+        Producto existente = productoRepository.findById(producto.getIdProducto())
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        // SOLO CAMPOS EDITABLES
+        existente.setNombreProducto(producto.getNombreProducto());
+        existente.setDescripcionProducto(producto.getDescripcionProducto());
+        existente.setStockMinimoProducto(producto.getStockMinimoProducto());
+        existente.setCategoria(producto.getCategoria());
+        existente.setUnidadMedida(producto.getUnidadMedida());
+        existente.setEstadoProducto(producto.getEstadoProducto());
+        existente.setControlVencimientoProducto(producto.getControlVencimientoProducto());
+
+        return productoRepository.save(existente);
+    }
+
+ /*   @Override probaremos oro metodo
     public Producto guardarProducto(Producto producto) {
         if(producto.getStockActualProducto()==null){
             producto.setStockActualProducto(0);
         }
         return productoRepository.save(producto); // guardar producto siel id es null se crea o inserta y siel id existe actualiza
-    }
+    }*/
 
     @Override
     public Producto buscarPorId(Long id) {

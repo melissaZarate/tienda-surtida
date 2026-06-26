@@ -77,7 +77,7 @@ public class CompraServiceImpl implements CompraService {
         // Buscar producto
         Producto producto = productoRepository.findById(detalle.getProducto().getIdProducto()).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
        //para crear automaticamente rel lote de vencimiento, solovalidacion, verificamos que el produto tiene control de vencimiento
-        if (producto.getControlVencimientoProducto()) {
+        if (Boolean.TRUE.equals(producto.getControlVencimientoProducto())) {
 
             if (fechaVencimiento == null) {
                 throw new RuntimeException(
