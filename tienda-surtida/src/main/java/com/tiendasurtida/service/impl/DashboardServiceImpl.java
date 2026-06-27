@@ -2,17 +2,20 @@ package com.tiendasurtida.service.impl;
 
 import com.tiendasurtida.dto.DashboardComparativoDTO;
 import com.tiendasurtida.dto.DashboardDTO;
+import com.tiendasurtida.dto.RecomendacionDTO;
 import com.tiendasurtida.entity.Caja;
-import com.tiendasurtida.repository.CajaRepository;
-import com.tiendasurtida.repository.CompraRepository;
-import com.tiendasurtida.repository.ProductoRepository;
-import com.tiendasurtida.repository.VentaRepository;
+import com.tiendasurtida.repository.*;
 import com.tiendasurtida.service.DashboardService;
+import com.tiendasurtida.util.FechaUtil;
+import org.codehaus.groovy.runtime.typehandling.DefaultTypeTransformation;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class DashboardServiceImpl implements DashboardService {
@@ -21,14 +24,16 @@ public class DashboardServiceImpl implements DashboardService {
     private final VentaRepository ventaRepository;
     private final CompraRepository compraRepository;
     private final CajaRepository cajaRepository;
+    private final PedidoRepository pedidoRepository;
     //consructores
 
 
-    public DashboardServiceImpl(ProductoRepository productoRepository, VentaRepository ventaRepository, CompraRepository compraRepository, CajaRepository cajaRepository) {
+    public DashboardServiceImpl(ProductoRepository productoRepository, VentaRepository ventaRepository, CompraRepository compraRepository, CajaRepository cajaRepository, PedidoRepository pedidoRepository) {
         this.productoRepository = productoRepository;
         this.ventaRepository = ventaRepository;
         this.compraRepository = compraRepository;
         this.cajaRepository = cajaRepository;
+        this.pedidoRepository = pedidoRepository;
     }
 
     @Override
@@ -104,4 +109,50 @@ public class DashboardServiceImpl implements DashboardService {
         return dto;
     }
 
+    @Override
+    public List<RecomendacionDTO> obtenerRecomendaciones() { //en list porque ouede ocurrir que un dia ocurra mas recomendaciines
+        List<RecomendacionDTO> recomendaciones = new ArrayList<>();
+        LocalDate hoy = LocalDate.now();
+
+        if (FechaUtil.esDiaAbastecimiento(hoy)) {
+            recomendaciones.add(
+                    new RecomendacionDTO(
+                            FechaUtil.mensajeAbastecimiento(hoy),
+                            "INFO"
+                    )
+            );
+        }
+
+       // String dia= FechaUtil.obtenerDiaEnEspanol(LocalDate.now());
+
+     //   LocalDate hoy = LocalDate.now();
+        //primara regla de abstaecimientos;dia de abastecimiento
+
+        //segunda regla de abstecimiento: productos con stok bajo
+        productoRepository.contarProductosStockBajo();
+        long stockBajo = productoRepository.contarProductosStockBajo(); //aqui usamos la consulta almacenads
+        if(stockBajo>0){
+
+            recomendaciones.add(new RecomendacionDTO("Existen " + stockBajo + " productos con stock bajo. Revise el reporte de inventario.", "WARNING"));
+        }else{
+            recomendaciones.add(new RecomendacionDTO("El inventario se encuentra dentro de los niveles establecidos.", "SUCCESS"));
+        }
+        //recera regla pedidos pendientes
+       // long pedidosPendientes= pedidoRepository.countByEstadoPedido_NombreEstado("PENDIENTE");
+        // Tercera regla: pedidos pendientes
+        long pedidosPendientes = pedidoRepository.countByEstadoPedido_NombreEstadoPedido("PENDIENTE"); //lo que devuelve la cpnsulta
+
+        if (pedidosPendientes > 0) {
+
+            recomendaciones.add(new RecomendacionDTO("Hay " + pedidosPendientes + " pedidos pendientes de aprobación.", "WARNING"));
+
+        } else {
+
+            recomendaciones.add(new RecomendacionDTO("No existen pedidos pendientes de aprobación.", "SUCCESS"));
+        }
+
+        return recomendaciones;
+
+
+    }
 }

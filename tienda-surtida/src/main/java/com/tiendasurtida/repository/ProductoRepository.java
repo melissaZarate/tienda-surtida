@@ -34,7 +34,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> { //us
     @Query("SELECT COUNT(p) FROM Producto p WHERE p.stockActualProducto <= p.stockMinimoProducto AND p.estadoProducto = true")//productos constock bajo
     Long contarProductosStockBajo();
     //para rportes
-    @Query("SELECT p FROM Producto p WHERE p.stockActualProducto <= p.stockMinimoProducto")
+    @Query("SELECT p FROM Producto p WHERE p.stockActualProducto <= p.stockMinimoProducto AND p.estadoProducto = true")
     List<Producto> productosStockBajo();
 
 }

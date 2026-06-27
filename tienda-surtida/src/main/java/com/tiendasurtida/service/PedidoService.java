@@ -19,6 +19,7 @@ public interface PedidoService {
     Pedido generarPedidoPorCategoria(String username , Long idCategoria);
     Pedido generarPedidoAutomaticoPorUsername(String username);
     String generarTextoPedido(Long idPedido);
+   // long contarPedidosPendientes();
 
    /* Pedido generarPedidoAutomatico(Long idUsuario);
 

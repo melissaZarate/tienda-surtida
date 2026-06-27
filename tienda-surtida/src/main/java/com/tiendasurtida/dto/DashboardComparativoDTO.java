@@ -45,10 +45,12 @@ public class DashboardComparativoDTO {
     }
 
     public void setDiferencia(BigDecimal diferencia) {
+
         this.diferencia = diferencia;
     }
 
     public BigDecimal getPorcentajeCrecimiento() {
+
         return porcentajeCrecimiento;
     }
 
