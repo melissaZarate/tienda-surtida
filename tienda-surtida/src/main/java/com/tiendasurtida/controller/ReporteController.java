@@ -1,7 +1,10 @@
 package com.tiendasurtida.controller;
 
 import com.tiendasurtida.dto.RentabilidadProductoDTO;
+import com.tiendasurtida.dto.ReporteVentasDiariasDTO;
+import com.tiendasurtida.dto.ReporteVentasResumenDTO;
 import com.tiendasurtida.service.ReporteService;
+import com.tiendasurtida.service.VentaService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,12 +22,14 @@ import java.util.List;
     public class ReporteController {
 
         private final ReporteService reporteService;
+        private final VentaService ventaService;
 
-        public ReporteController(ReporteService reporteService) {
-            this.reporteService = reporteService;
-        }
+    public ReporteController(ReporteService reporteService, VentaService ventaService) {
+        this.reporteService = reporteService;
+        this.ventaService = ventaService;
+    }
 
-        @GetMapping("/financiero")
+    @GetMapping("/financiero")
         public String reporteFinanciero(
                 @RequestParam(required = false)
                 @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio,
@@ -50,7 +55,7 @@ import java.util.List;
         }
     @GetMapping("/productos-mas-vendidos")
     public String productosMasVendidos(
-            @RequestParam(required = false) //se caga en null
+            @RequestParam(required = false) //se carga en null
             @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio,
             @RequestParam(required = false)
             @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fin,
@@ -119,6 +124,39 @@ import java.util.List;
         model.addAttribute("fin", fin);
 
         return "reportes/rentabilidad";
+    }
+    @GetMapping("/ventas-diarias")
+    public String reporteVentasDiarias(
+
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate fechaInicio,
+
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate fechaFin,
+
+            Model model) {
+
+        if (fechaInicio == null) {
+            fechaInicio = LocalDate.now();
+        }
+
+        if (fechaFin == null) {
+            fechaFin = LocalDate.now();
+        }
+
+        LocalDateTime inicio = fechaInicio.atStartOfDay();
+        LocalDateTime fin = fechaFin.atTime(23, 59, 59);
+
+        // resuemn
+           ReporteVentasResumenDTO reporte = ventaService.obtenerReporteVentasDiarias(inicio, fin);
+
+        model.addAttribute("reporte", reporte);
+        model.addAttribute("fechaInicio", fechaInicio);
+        model.addAttribute("fechaFin", fechaFin);
+
+        return "reportes/ventas-diarias";
     }
 }
 

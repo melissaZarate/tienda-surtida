@@ -11,14 +11,17 @@ public class CajaDTO {
     }
 
     public CajaDTO(BigDecimal montoInicial) {
+
         this.montoInicial = montoInicial;
     }
 
     public BigDecimal getMontoInicial() {
+
         return montoInicial;
     }
 
     public void setMontoInicial(BigDecimal montoInicial) {
+
         this.montoInicial = montoInicial;
     }
 }

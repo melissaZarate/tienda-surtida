@@ -173,7 +173,7 @@
 
                         <a href="#" class="nav-link" data-lte-toggle="treeview">
 
-                            <i class="nav-icon bi bi-bar-chart-line-fill"></i>
+                            <i class="nav-icon bi bi-bar-chart-line-fill "></i>
 
                             <p>
                                 Reportes
@@ -196,6 +196,19 @@
                                 </a>
 
                             </li>
+                            <!--boton poara reportes de ventas-->
+                            <li class="nav-item">
+
+                                <a th:href="@{/reportes/ventas-diarias}"
+                                   class="nav-link">
+
+                                    <i class="bi bi-calendar-day nav-icon text-warning"></i>
+
+                                    <p>Ventas Diarias</p>
+
+                                </a>
+
+                            </li>
                             <!--stock bajo-->
                             <li class="nav-item">
 
@@ -209,6 +222,8 @@
                                 </a>
 
                             </li>
+                            <!---->
+
                             <!--productos mas vendidos-->
                             <li class="nav-item">
 

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<div layout:fragment="contenido">
+
+    <!-- TÍTULO -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-0">
+                <i class="bi bi-graph-up-arrow text-primary"></i>
+                Reporte de Ventas Diarias
+            </h2>
+
+            <small class="text-muted">
+                Consulte las ventas realizadas en un período determinado.
+            </small>
+        </div>
+
+    </div>
+
+    <!-- FILTRO -->
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-primary text-white">
+            <i class="bi bi-funnel"></i>
+            Filtro por fechas
+        </div>
+
+        <div class="card-body">
+
+            <form th:action="@{/reportes/ventas-diarias}" method="get">
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Fecha inicio
+                        </label>
+
+                        <input type="date"
+                               class="form-control"
+                               name="fechaInicio"
+                               th:value="${fechaInicio}">
+
+                    </div>
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Fecha fin
+                        </label>
+
+                        <input type="date"
+                               class="form-control"
+                               name="fechaFin"
+                               th:value="${fechaFin}">
+
+                    </div>
+
+                    <div class="col-md-4 d-flex align-items-end">
+
+                        <button class="btn btn-primary w-100">
+
+                            <i class="bi bi-search"></i>
+                            Consultar
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- RESUMEN -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-6">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Total vendido en el período
+                    </h6>
+
+                    <h2 class="fw-bold text-success"
+                        th:text="'Bs. ' + ${reporte.totalPeriodo}">
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body text-center">
+
+                    <h6 class="text-muted">
+                        Cantidad de ventas realizadas
+                    </h6>
+
+                    <h2 class="fw-bold text-primary"
+                        th:text="${reporte.cantidadVentasPeriodo}">
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+    <div class="card shadow-sm border-0">
+
+        <div class="card-header">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <h5 class="mb-0">
+                        <i class="bi bi-table text-success"></i>
+                        Detalle de ventas por día
+                    </h5>
+
+                    <small class="text-muted">
+                        Información agrupada por fecha.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="alert alert-warning"
+                 th:if="${#lists.isEmpty(reporte.detalleVentas)}">
+
+                <i class="bi bi-exclamation-triangle-fill"></i>
+
+                No existen ventas registradas para el período seleccionado.
+
+            </div>
+
+            <div class="table-responsive"
+                 th:unless="${#lists.isEmpty(reporte.detalleVentas)}">
+
+                <table class="table table-hover table-striped align-middle">
+
+                    <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Fecha</th>
+                        <th class="text-center">Cantidad de ventas</th>
+                        <th class="text-end">Total vendido</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="venta : ${reporte.detalleVentas}">
+
+                        <td th:text="${#temporals.format(venta.fecha,'dd/MM/yyyy')}">
+                        </td>
+
+                        <td class="text-center"
+                            th:text="${venta.cantidadVentas}">
+                        </td>
+
+                        <td class="text-end fw-bold text-success"
+                            th:text="'Bs. ' + ${venta.totalVendido}">
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</html>

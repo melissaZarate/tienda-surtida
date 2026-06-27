@@ -1,18 +1,17 @@
 
 package com.tiendasurtida.service.impl;
 
-import com.tiendasurtida.dto.ClienteDTO;
-import com.tiendasurtida.dto.ItemVentaDTO;
-import com.tiendasurtida.dto.VentaDTO;
+import com.tiendasurtida.dto.*;
 import com.tiendasurtida.entity.*;
 import com.tiendasurtida.repository.*;
 import com.tiendasurtida.service.VentaService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.tiendasurtida.dto.ClienteDTO;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -130,6 +129,46 @@ public class VentaServiceImpl implements VentaService {
     @Override
     public Venta obtenerVentaPorId(Long id) {
             return ventaRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+    }
+
+    @Override
+    public ReporteVentasResumenDTO obtenerReporteVentasDiarias(LocalDateTime inicio, LocalDateTime fin) {
+
+        List<Object[]> resultados = ventaRepository.obtenerReporteVentasDiarias(inicio, fin);
+
+        List<ReporteVentasDiariasDTO> lista = new ArrayList<>();
+
+        BigDecimal totalPeriodo = BigDecimal.ZERO;
+        Long cantidadVentasPeriodo = 0L;
+
+        for (Object[] fila : resultados) {
+
+            LocalDate fecha = ((java.sql.Date) fila[0]).toLocalDate();
+            Long cantidadVentas = ((Number) fila[1]).longValue();
+            BigDecimal totalVendido = (BigDecimal) fila[2];
+
+            ReporteVentasDiariasDTO dto =
+                    new ReporteVentasDiariasDTO();
+
+            dto.setFecha(fecha);
+            dto.setCantidadVentas(cantidadVentas);
+            dto.setTotalVendido(totalVendido);
+
+            lista.add(dto);
+
+            // Acumuladores del período
+            totalPeriodo = totalPeriodo.add(totalVendido);
+            cantidadVentasPeriodo += cantidadVentas;
+        }
+
+        ReporteVentasResumenDTO resumen =
+                new ReporteVentasResumenDTO();
+
+        resumen.setDetalleVentas(lista);
+        resumen.setTotalPeriodo(totalPeriodo);
+        resumen.setCantidadVentasPeriodo(cantidadVentasPeriodo);
+
+        return resumen;
     }
     /* @Override
     @Transactional
