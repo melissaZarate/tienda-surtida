@@ -106,9 +106,10 @@
         <!-- FILA 1 -->
         <div class="row g-3">
 
-            <div class="col-12 col-md-8">
+            <div class="col-12 ">
 
                 <label class="form-label">
+                    <i class="bi bi-box"></i>
                     Producto
                 </label>
 
@@ -131,10 +132,11 @@
 
             </div>
 
-            <div class="col-12 col-md-4">
+            <div class=" col-md-4">
 
                 <label class="form-label">
-                    Cantidad
+                    <bi class="bi bi-123"></bi>
+                    Cantidad comprada
                 </label>
 
                 <input type="number"
@@ -146,6 +148,65 @@
                        oninput="calcularPrecioSugerido()">
 
             </div>
+            <!--nuevo campo de unidad de compra-->
+            <div class=" col-md-4">
+
+                <label class="form-label fw-bold">
+                    <bi class="bi bi-rulers"></bi>
+                    Unidad de compra
+                </label>
+
+                <select id="idUnidadCompra"
+                        name="idUnidadCompra"
+                        class="form-select"
+                        required>
+
+                    <option value="">
+                        Seleccione unidad
+                    </option>
+
+                    <option th:each="u:${unidadesCompra}"
+                            th:value="${u.idUnidadCompra}"
+                            th:text="${u.nombreUnidadCompra}"
+                            th:attr="data-equivalencia=${u.equivalenciaUnidadCompra}">
+                    </option>
+
+                </select>
+
+            </div>
+            <div class="col-md-4">
+
+                <label class="form-label fw-bold text-success">
+                    <bi class="bi bi-box-arrow-in-down"></bi>
+                    Unidades ingresadas al stock
+
+                </label>
+
+
+                <input type="number"
+
+                       name="unidadesIngresadasDetalle"
+
+                       id="unidadesIngresadasDetalle"
+
+                       class="form-control"
+
+                       min="1"
+
+                       placeholder="Ej: 36"
+
+                       required>
+
+
+                <small class="text-muted">
+
+                    Ejemplo:
+                    1 cuarta Super Glue = 36 unidades
+
+                </small>
+
+
+            </div>
 
         </div>
 
@@ -155,7 +216,8 @@
             <div class="col-12 col-md-6">
 
                 <label class="form-label">
-                    Precio Total Compra
+                    <bi class="bi bi-cash-stack"></bi>
+                    Costo total de compra
                 </label>
 
                 <input type="number"
@@ -190,8 +252,8 @@
 
             <div class="col-12 col-md-6">
 
-                <label class="form-label">
-                    Costo Unitario
+                <label class="form-control bg-success-subtle">
+                    Costo por unidad
                 </label>
 
                 <input type="text"
@@ -203,8 +265,8 @@
 
             <div class="col-12 col-md-6">
 
-                <label class="form-label">
-                    Precio Sugerido
+                <label class="form-control bg-primary-subtle">
+                    Precio de venta sugerido
                 </label>
 
                 <input type="text"
@@ -222,7 +284,7 @@
             <div class="col-12">
 
                 <label class="form-label fw-bold text-success">
-                    Precio Venta Final
+                    Precio de venta
                 </label>
 
                 <input type="number"
@@ -268,7 +330,7 @@
                 <button type="submit"
                         class="btn btn-success w-100">
 
-                    <i class="bi bi-plus-circle me-1"></i>
+                    <i class="bi bi-cart-plus-fill me-1"></i>
                     Agregar Producto
 
                 </button>
@@ -349,14 +411,16 @@
             <div class="table-responsive"
                  th:unless="${#lists.isEmpty(detalles)}">
 
-                <table class="table table-striped table-hover align-middle">
+                <table class="table table-sm table-striped  align-middle">
 
                     <thead class="table-dark">
 
                     <tr>
 
                         <th>Producto</th>
-                        <th>Cantidad</th>
+                        <th>Compra</th>
+
+                        <th>ingreso stock</th>
                         <th>Precio Total</th>
                         <th>Costo Unitario</th>
                         <th>% Ganancia</th>
@@ -370,8 +434,13 @@
                     <tr th:each="d : ${detalles}">
 
                         <td th:text="${d.producto.nombreProducto}"></td>
+                        <td>
+                            <span th:text="${d.cantidadDetalle}"></span>
+                            <span th:text="${d.unidadCompra.nombreUnidadCompra}"></span>
+                        </td>
 
-                        <td th:text="${d.cantidadDetalle}"></td>
+
+                        <td th:text="${d.unidadesIngresadasDetalle}"></td>
 
                         <td th:text="'Bs. ' + ${d.precioTotalDetalle}"></td>
 
@@ -455,7 +524,7 @@
 
             let cantidad =
                 parseFloat(
-                    document.getElementById("cantidad").value
+                    document.getElementById("unidadesIngresadasDetalle").value
                 ) || 0;
 
             let precioTotal =
@@ -517,6 +586,7 @@
             let control = option.getAttribute("data-vencimiento");
 
             let campo = document.getElementById("campoVencimiento");
+            let input= document.getElementById("fechaVencimiento");
 
             if (control === "true") {
                 campo.style.display = "block";
@@ -528,6 +598,45 @@
             }
 
         });
+    </script>
+
+    <script>
+        function calcularUnidadesIngresadas(){
+
+            let cantidad =
+                parseInt(document.getElementById("cantidad").value) || 0;
+
+
+            let select = document.getElementById("idUnidadCompra");
+            if(!select) return ;
+            //si aun nose ha seleccioado unidad
+            if(select.selectedIndex<=0){
+                document.getElementById("unidadesIngresadasDetalle").value="";
+
+               return;
+            }
+            let option=select.options[select.selectedIndex];
+
+            let equivalencia = parseInt(option.getAttribute("data-equivalencia")) || 1;
+
+
+            let total = cantidad * equivalencia;
+
+
+
+            document.getElementById(
+                "unidadesIngresadasDetalle"
+            ).value = total;
+            calcularPrecioSugerido();
+        }
+
+
+        document.getElementById("cantidad")
+            .addEventListener("input", calcularUnidadesIngresadas);
+
+
+        document.getElementById("idUnidadCompra")
+            .addEventListener("change", calcularUnidadesIngresadas);
     </script>
 
 </div>

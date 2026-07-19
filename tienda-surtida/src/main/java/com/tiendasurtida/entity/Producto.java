@@ -33,6 +33,13 @@ public class Producto {
 
     @Column(name = "control_vencimiento_producto")
     private Boolean controlVencimientoProducto;
+    //aqui añadimos para realizar los pedidos
+    @Column(name = "pedido_por_paquete")
+    private Boolean pedidoPorPaquete = false;
+
+    @Column(name = "cantidad_por_paquete")
+    private Integer cantidadPorPaquete;
+
     //aqui los productos que tienen claves foranea
     @ManyToOne
     @JoinColumn(name = "id_categoria")

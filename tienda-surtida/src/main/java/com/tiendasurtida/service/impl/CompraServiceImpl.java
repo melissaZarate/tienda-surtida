@@ -76,6 +76,9 @@ public class CompraServiceImpl implements CompraService {
 
         // Buscar producto
         Producto producto = productoRepository.findById(detalle.getProducto().getIdProducto()).orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        if(compra.getEstadoCompra().equals("FINALIZADA")){
+            throw new RuntimeException("compra finalizada, no puede modificarse");
+        }
        //para crear automaticamente rel lote de vencimiento, solovalidacion, verificamos que el produto tiene control de vencimiento
         if (Boolean.TRUE.equals(producto.getControlVencimientoProducto())) {
 
@@ -86,7 +89,7 @@ public class CompraServiceImpl implements CompraService {
 
             VencimientoProducto lote = new VencimientoProducto();
             lote.setProducto(producto);
-            lote.setCantidadVencimiento(detalle.getCantidadDetalle()); //obtenemos cantidad de la comora
+            lote.setCantidadVencimiento(detalle.getUnidadesIngresadasDetalle()); //obtenemos cantidad de la comora
             lote.setFechaVencimiento(fechaVencimiento);
             vencimientoProductoRepository.save(lote);
         }
@@ -94,7 +97,7 @@ public class CompraServiceImpl implements CompraService {
       //  BigDecimal precioVentaAnterior = producto.getPrecioVentaProducto();
 
         // Calcular costo unitario
-        BigDecimal costoUnitario = detalle.getPrecioTotalDetalle().divide(BigDecimal.valueOf(detalle.getCantidadDetalle()), 2, RoundingMode.HALF_UP);
+        BigDecimal costoUnitario = detalle.getPrecioTotalDetalle().divide(BigDecimal.valueOf(detalle.getUnidadesIngresadasDetalle()), 2, RoundingMode.HALF_UP);
 
         // Guardar costo unitario
         detalle.setPrecioCompraDetalle(costoUnitario);
@@ -104,9 +107,7 @@ public class CompraServiceImpl implements CompraService {
                 precioVentaFinal
                         .subtract(costoUnitario)
                         .divide(
-                                costoUnitario,
-                                4,
-                                RoundingMode.HALF_UP
+                                costoUnitario,4, RoundingMode.HALF_UP
                         )
                         .multiply(BigDecimal.valueOf(100));
 
@@ -117,8 +118,7 @@ public class CompraServiceImpl implements CompraService {
 // Solo registrar historial si el producto ya tuvo compras para CASO1
         if (ultimoDetalle != null) {
 
-            HistorialPrecio historial =
-                    new HistorialPrecio();
+            HistorialPrecio historial = new HistorialPrecio();
 
             historial.setProducto(producto);
 
@@ -146,14 +146,13 @@ public class CompraServiceImpl implements CompraService {
 
 
         // Actualizar stock
-        Integer stockActual =
-                producto.getStockActualProducto();
+        Integer stockActual = producto.getStockActualProducto();
 
         if (stockActual == null) {
             stockActual = 0;
         }
 
-        int nuevoStock = stockActual + detalle.getCantidadDetalle();
+        int nuevoStock = stockActual + detalle.getUnidadesIngresadasDetalle(); //aquiactualizamos stock
 
         producto.setStockActualProducto(nuevoStock);
         //regla automatica de estado
@@ -177,9 +176,9 @@ public class CompraServiceImpl implements CompraService {
         // Guardar cambios
         productoRepository.save(producto);
         compraRepository.save(compra);
-        if(compra.getEstadoCompra().equals("FINALIZADA")){
+      /*  if(compra.getEstadoCompra().equals("FINALIZADA")){
             throw new RuntimeException("compra finalizada, no puede modificarse");
-        }
+        }*/
     }
     @Override
     public void finalizarCompra(Long id) {

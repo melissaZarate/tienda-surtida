@@ -186,9 +186,7 @@ public class PedidoServiceImpl implements PedidoService {
 
         // 1. Usuario autenticado (REAL)
         Usuario usuario =
-                usuarioRepository.findByUsernameUsuario(username)
-                        .orElseThrow(() ->
-                                new RuntimeException("Usuario no encontrado"));
+                usuarioRepository.findByUsernameUsuario(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // 2. Evitar pedidos duplicados
         Optional<Pedido> pedidoPendiente =
@@ -215,7 +213,7 @@ public class PedidoServiceImpl implements PedidoService {
         // 5. Crear pedido
         Pedido pedido = new Pedido();
         pedido.setEstadoPedido(estadoPendiente);
-        pedido.setUsuario(usuario); // 👈 AQUÍ YA ES EL LOGUEADO
+        pedido.setUsuario(usuario); // AQUÍ YA ES EL LOGUEADO
         pedido.setFechaGeneracionPedido(LocalDateTime.now());
         pedido.setObservacionPedido("Pedido por categoría ID: " + idCategoria);
 
@@ -252,21 +250,15 @@ public class PedidoServiceImpl implements PedidoService {
         sb.append(" PEDIDO DE REPOSICIÓN\n");
         sb.append(" TIENDA SURTIDA\n\n");
 
-        sb.append("Fecha: ")
-                .append(pedido.getFechaGeneracionPedido())
-                .append("\n");
+        sb.append("Fecha: ").append(pedido.getFechaGeneracionPedido()).append("\n");
 
-        sb.append(" Pedido: ")
-                .append(pedido.getIdPedido())
-                .append("\n\n");
+        sb.append(" Pedido: ").append(pedido.getIdPedido()).append("\n\n");
 
         sb.append(" PRODUCTOS\n\n");
 
         for (DetallePedido detalle : pedido.getDetalles()) {
 
-            sb.append("• ")
-                    .append(detalle.getProducto().getNombreProducto())
-                    .append("\n");
+            sb.append("• ").append(detalle.getProducto().getNombreProducto()).append("\n");
 
             sb.append("  Cantidad: ")
                     .append(detalle.getCantidadDetalle())

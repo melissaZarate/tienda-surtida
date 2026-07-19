@@ -1,15 +1,8 @@
 package com.tiendasurtida.controller;
 
-import com.tiendasurtida.entity.Compra;
-import com.tiendasurtida.entity.DetalleCompra;
-import com.tiendasurtida.entity.Producto;
-import com.tiendasurtida.entity.Proveedor;
-import com.tiendasurtida.entity.Usuario;
+import com.tiendasurtida.entity.*;
 
-import com.tiendasurtida.service.CompraService;
-import com.tiendasurtida.service.ProductoService;
-import com.tiendasurtida.service.ProveedorService;
-import com.tiendasurtida.service.UsuarioService;
+import com.tiendasurtida.service.*;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,17 +25,14 @@ public class CompraController {
     private final ProveedorService proveedorService;
     private final UsuarioService usuarioService;
     private final ProductoService productoService;
+    private final UnidadCompraService unidadCompraService;
 
-    public CompraController(
-            CompraService compraService,
-            ProveedorService proveedorService,
-            UsuarioService usuarioService,
-            ProductoService productoService) {
-
+    public CompraController(CompraService compraService, ProveedorService proveedorService, UsuarioService usuarioService, ProductoService productoService, UnidadCompraService unidadCompraService) {
         this.compraService = compraService;
         this.proveedorService = proveedorService;
         this.usuarioService = usuarioService;
         this.productoService = productoService;
+        this.unidadCompraService = unidadCompraService;
     }
 
     // LISTAR COMPRAS
@@ -107,18 +97,12 @@ public class CompraController {
         Compra compra =
                 compraService.obtenerPorId(id);
 
-        model.addAttribute(
-                "compra",
-                compra
-        );
+        model.addAttribute("compra", compra);
 
-        model.addAttribute(
-                "productos", productoService.listarProductosActivos());
+        model.addAttribute("productos", productoService.listarProductosActivos());
+        model.addAttribute("unidadesCompra", unidadCompraService.listarTodas());
 
-        model.addAttribute(
-                "detalles",
-                compra.getDetalles()
-        );
+        model.addAttribute("detalles", compra.getDetalles());
 
         model.addAttribute(
                 "detalleCompra",
@@ -140,6 +124,9 @@ public class CompraController {
             @RequestParam Double precioTotal,
 
             @RequestParam Double precioVentaFinal,
+            //añadimos kos nuevo atriutos
+            @RequestParam Long idUnidadCompra,
+            @RequestParam Integer unidadesIngresadasDetalle,
             //para capturar fechade vencimiennto
             @RequestParam(required = false)
             @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -150,6 +137,13 @@ public class CompraController {
         DetalleCompra detalle = new DetalleCompra();
 
         detalle.setCantidadDetalle(cantidad);
+
+
+
+        //nuevis cambuios
+        UnidadCompra unidadCompra= unidadCompraService.buscarPorId(idUnidadCompra);
+        detalle.setUnidadCompra(unidadCompra);
+        detalle.setUnidadesIngresadasDetalle(unidadesIngresadasDetalle);
 
         detalle.setPrecioTotalDetalle(BigDecimal.valueOf(precioTotal));
         Producto producto = new Producto();

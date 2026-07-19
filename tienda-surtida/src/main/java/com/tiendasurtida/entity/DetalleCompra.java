@@ -5,6 +5,7 @@ package com.tiendasurtida.entity;
 import java.math.BigDecimal;
 import jakarta.persistence.*;
 
+
 @Entity
 @Table(name = "detalle_compra")
 public class DetalleCompra {
@@ -14,7 +15,7 @@ public class DetalleCompra {
     @Column(name = "id_detalle")
     private Long idDetalle;
 
-    @Column(name = "cantidad_detalle")
+    @Column(name = "cantidad_detalle") //la cantidad que ompro segun la unidad de comr
     private Integer cantidadDetalle;
 
     @Column(name = "precio_compra_detalle")
@@ -36,18 +37,28 @@ public class DetalleCompra {
     @JoinColumn(name = "id_producto")
     private Producto producto;
 
+    //relacion con la unidad de producto comrpaod
+    @ManyToOne
+    @JoinColumn(name = "id_unidad_compra")
+    private UnidadCompra unidadCompra;
+    @Column(name = "unidades_ingresadas_detalle") //esto es para cuando el usyuario ungrese  en detalle la cantidad
+    private Integer unidadesIngresadasDetalle;
+
+
     // CONSTRUCTORES
     public DetalleCompra() {
     }
 
-    public DetalleCompra(Producto producto, Compra compra, BigDecimal porcentajeGananciaDetalle, BigDecimal precioTotalDetalle, BigDecimal precioCompraDetalle, Integer cantidadDetalle, Long idDetalle) {
-        this.producto = producto;
-        this.compra = compra;
-        this.porcentajeGananciaDetalle = porcentajeGananciaDetalle;
-        this.precioTotalDetalle = precioTotalDetalle;
-        this.precioCompraDetalle = precioCompraDetalle;
-        this.cantidadDetalle = cantidadDetalle;
+    public DetalleCompra(Long idDetalle, Integer cantidadDetalle, BigDecimal precioCompraDetalle, BigDecimal precioTotalDetalle, BigDecimal porcentajeGananciaDetalle, Compra compra, Producto producto, UnidadCompra unidadCompra, Integer unidadesIngresadasDetalle) {
         this.idDetalle = idDetalle;
+        this.cantidadDetalle = cantidadDetalle;
+        this.precioCompraDetalle = precioCompraDetalle;
+        this.precioTotalDetalle = precioTotalDetalle;
+        this.porcentajeGananciaDetalle = porcentajeGananciaDetalle;
+        this.compra = compra;
+        this.producto = producto;
+        this.unidadCompra = unidadCompra;
+        this.unidadesIngresadasDetalle = unidadesIngresadasDetalle;
     }
 
     // GETTERS Y SETTERS
@@ -105,5 +116,21 @@ public class DetalleCompra {
 
     public void setPrecioTotalDetalle(BigDecimal precioTotalDetalle) {
         this.precioTotalDetalle = precioTotalDetalle;
+    }
+
+    public UnidadCompra getUnidadCompra() {
+        return unidadCompra;
+    }
+
+    public void setUnidadCompra(UnidadCompra unidadCompra) {
+        this.unidadCompra = unidadCompra;
+    }
+
+    public Integer getUnidadesIngresadasDetalle() {
+        return unidadesIngresadasDetalle;
+    }
+
+    public void setUnidadesIngresadasDetalle(Integer unidadesIngresadasDetalle) {
+        this.unidadesIngresadasDetalle = unidadesIngresadasDetalle;
     }
 }

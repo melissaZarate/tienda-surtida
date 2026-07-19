@@ -145,8 +145,7 @@ public class ProductoServiceImpl implements ProductoService {
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
         // Obtener último costo de compra
-        DetalleCompra ultimoDetalle = detalleCompraRepository
-                .findTopByProductoIdProductoOrderByIdDetalleDesc(idProducto);
+        DetalleCompra ultimoDetalle = detalleCompraRepository.findTopByProductoIdProductoOrderByIdDetalleDesc(idProducto);
 
         if (ultimoDetalle == null) {
             throw new RuntimeException("No existe historial de compras");
@@ -208,9 +207,7 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     public void actualizarStockProducto(Long idProducto) {  //metodo a evaluar
 
-        Integer stockTotal =
-                vencimientoProductoRepository
-                           .sumarStockPorProducto(idProducto);
+        Integer stockTotal = vencimientoProductoRepository.sumarStockPorProducto(idProducto);
 
         Producto producto = productoRepository
                 .findById(idProducto)
