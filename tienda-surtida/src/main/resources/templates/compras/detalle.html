@@ -99,9 +99,7 @@
 
     <!-- FORMulario agrgar producto -->
     <form th:action="@{/compras/{id}/detalle(id=${compra.idCompra})}"
-          method="post" th:if="${compra.estadoCompra=='EN_PROCESO'}">
-
-
+          method="post" th:if="${compra.estadoCompra=='EN_PROCESO'}"
 
         <!-- FILA 1 -->
         <div class="row g-3">
@@ -201,7 +199,7 @@
                 <small class="text-muted">
 
                     Ejemplo:
-                    1 cuarta Super Glue = 36 unidades
+                    Ingrese las unidade de comora, cuarta, media, unidad etc...
 
                 </small>
 

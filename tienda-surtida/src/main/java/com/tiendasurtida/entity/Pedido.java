@@ -18,6 +18,9 @@ public class Pedido {
 
     private String observacionPedido;
 
+    @column(name="total_sugerido_pedido")
+    private BigDecimal totalSugeridoPedido;
+
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     private Usuario usuario;
@@ -33,17 +36,21 @@ public class Pedido {
     }
 //constructor
 
-    public Pedido(Long idPedido, LocalDateTime fechaGeneracionPedido, String observacionPedido, Usuario usuario, EstadoPedido estadoPedido, List<DetallePedido> detalles) {
+    public Pedido(Long idPedido, LocalDateTime fechaGeneracionPedido, String observacionPedido, BigDecimal totalSugeridoPedido, Usuario usuario, EstadoPedido estadoPedido, List<DetallePedido> detalles) {
         this.idPedido = idPedido;
         this.fechaGeneracionPedido = fechaGeneracionPedido;
         this.observacionPedido = observacionPedido;
+        this.totalSugeridoPedido = totalSugeridoPedido;
         this.usuario = usuario;
         this.estadoPedido = estadoPedido;
         this.detalles = detalles;
     }
+
+
     //getter y setter
 
-    public Long getIdPedido() {
+
+    public Long getIdPedido() {  
         return idPedido;
     }
 
@@ -65,6 +72,14 @@ public class Pedido {
 
     public void setObservacionPedido(String observacionPedido) {
         this.observacionPedido = observacionPedido;
+    }
+
+    public BigDecimal getTotalSugeridoPedido() {
+        return totalSugeridoPedido;
+    }
+
+    public void setTotalSugeridoPedido(BigDecimal totalSugeridoPedido) {
+        this.totalSugeridoPedido = totalSugeridoPedido;
     }
 
     public Usuario getUsuario() {
@@ -90,6 +105,4 @@ public class Pedido {
     public void setDetalles(List<DetallePedido> detalles) {
         this.detalles = detalles;
     }
-
-
 }

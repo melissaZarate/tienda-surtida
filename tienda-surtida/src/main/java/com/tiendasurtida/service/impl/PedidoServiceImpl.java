@@ -40,55 +40,6 @@ public class PedidoServiceImpl implements PedidoService {
         this.detallePedidoRepository = detallePedidoRepository;
         this.usuarioRepository = usuarioRepository;
     }
-  /*  @Override
-    @Transactional
-    public Pedido generarPedidoAutomatico(Long idUsuario) {
-
-
-//buscar productos con stock baji
-        List<Producto> productos = productoRepository.obtenerProductosStockBajo();
-        boolean existePedidoPendiente=pedidoRepository.existsByEstadoPedido_IdEstadoPedido(1);
-        if(existePedidoPendiente){
-            throw new RuntimeException("Ya existe un pedidopendiente de aprobacion"); //evita pedidos extras por recarga
-        }
-        //cambios encontroller
-
-        if (productos.isEmpty()) {
-            throw new RuntimeException("No hay productos con stock bajo");
-        }
-
-        Pedido pedido = new Pedido();
-        pedido.setUsuario(usuarioRepository.findById(idUsuario).orElseThrow());
-        pedido.setEstadoPedido(estadoPedidoRepository.findById(1).orElseThrow());
-        pedido.setObservacionPedido("Pedido automático");
-        pedido.setFechaGeneracionPedido(LocalDateTime.now());
-
-        pedido.setDetalles(new ArrayList<>());
-
-        for (Producto p : productos) {
-
-            int stockMinimo = p.getStockMinimoProducto();
-            int stockActual = p.getStockActualProducto();
-            int cantidad = stockMinimo - stockActual;
-           /* System.out.println("Producto: " + p.getNombreProducto());
-            System.out.println("Stock actual: " + stockActual);
-            System.out.println("Stock mínimo: " + stockMinimo);
-            System.out.println("Cantidad sugerida: " + cantidad);
-
-
-            if (cantidad <= 0) continue;
-
-
-            DetallePedido detalle = new DetallePedido();
-            detalle.setPedido(pedido);
-            detalle.setProducto(p);
-            detalle.setCantidadDetalle(cantidad);
-
-            pedido.getDetalles().add(detalle);
-        }
-
-        return pedidoRepository.save(pedido);
-    }*/
   @Override
   @Transactional
   public Pedido generarPedidoAutomaticoPorUsername(String username) {
