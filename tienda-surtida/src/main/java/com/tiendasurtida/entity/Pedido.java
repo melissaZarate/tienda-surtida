@@ -2,6 +2,8 @@
 package com.tiendasurtida.entity;
 
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +20,8 @@ public class Pedido {
 
     private String observacionPedido;
 
-    @column(name="total_sugerido_pedido")
-    private BigDecimal totalSugeridoPedido;
+    @Column(name = "total_sugerido_pedido")
+    private BigDecimal totalSugeridoPedido= BigDecimal.ZERO;
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")
@@ -50,7 +52,7 @@ public class Pedido {
     //getter y setter
 
 
-    public Long getIdPedido() {  
+    public Long getIdPedido() {
         return idPedido;
     }
 

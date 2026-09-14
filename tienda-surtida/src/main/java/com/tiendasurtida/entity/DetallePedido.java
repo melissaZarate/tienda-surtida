@@ -2,6 +2,8 @@ package com.tiendasurtida.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "detalle_pedido")
 public class DetallePedido {
@@ -16,22 +18,30 @@ public class DetallePedido {
     @JoinColumn(name = "id_pedido")
     private Pedido pedido;
 
+
     @ManyToOne
     @JoinColumn(name = "id_producto")
     private Producto producto;
+    @ManyToOne
+    @JoinColumn(name="id_unidad_compra")
+    private UnidadCompra unidadCompra;
+
+    @Column(name= "precio_total_sugerido")
+    private BigDecimal pecioTotalSugerido;
     //constructor
 
 
     public DetallePedido() {
     }
 
-    public DetallePedido(Long idDetalle, Integer cantidadDetalle, Pedido pedido, Producto producto) {
+    public DetallePedido(Long idDetalle, Integer cantidadDetalle, Pedido pedido, Producto producto, UnidadCompra unidadCompra, BigDecimal pecioTotalSugerido) {
         this.idDetalle = idDetalle;
         this.cantidadDetalle = cantidadDetalle;
         this.pedido = pedido;
         this.producto = producto;
+        this.unidadCompra = unidadCompra;
+        this.pecioTotalSugerido = pecioTotalSugerido;
     }
-
 
     // getters y setters
 
@@ -65,5 +75,21 @@ public class DetallePedido {
 
     public void setProducto(Producto producto) {
         this.producto = producto;
+    }
+
+    public UnidadCompra getUnidadCompra() {
+        return unidadCompra;
+    }
+
+    public void setUnidadCompra(UnidadCompra unidadCompra) {
+        this.unidadCompra = unidadCompra;
+    }
+
+    public BigDecimal getPecioTotalSugerido() {
+        return pecioTotalSugerido;
+    }
+
+    public void setPecioTotalSugerido(BigDecimal pecioTotalSugerido) {
+        this.pecioTotalSugerido = pecioTotalSugerido;
     }
 }
