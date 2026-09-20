@@ -1,20 +1,18 @@
 package com.tiendasurtida.service.impl;
 
-import com.tiendasurtida.entity.DetallePedido;
-import com.tiendasurtida.entity.EstadoPedido;
-import com.tiendasurtida.entity.Pedido;
-import com.tiendasurtida.entity.Producto;
-import com.tiendasurtida.entity.Usuario;
+import com.tiendasurtida.entity.*;
 import com.tiendasurtida.repository.PedidoRepository;
 import com.tiendasurtida.repository.EstadoPedidoRepository;
 import com.tiendasurtida.repository.DetallePedidoRepository;
 import com.tiendasurtida.repository.UsuarioRepository;
 import com.tiendasurtida.repository.ProductoRepository;
+import com.tiendasurtida.service.DetalleCompraService;
 import com.tiendasurtida.service.EstadoPedidoService;
 import com.tiendasurtida.service.PedidoService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,35 +27,34 @@ public class PedidoServiceImpl implements PedidoService {
     private final ProductoRepository productoRepository;
     private final DetallePedidoRepository detallePedidoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final DetalleCompraService detalleCompraService;
 
     //constructos
 
 
-    public PedidoServiceImpl(PedidoRepository pedidoRepository, EstadoPedidoRepository estadoPedidoRepository, ProductoRepository productoRepository, DetallePedidoRepository detallePedidoRepository, UsuarioRepository usuarioRepository) {
+    public PedidoServiceImpl(PedidoRepository pedidoRepository, EstadoPedidoRepository estadoPedidoRepository, ProductoRepository productoRepository, DetallePedidoRepository detallePedidoRepository, UsuarioRepository usuarioRepository, DetalleCompraService detalleCompraService) {
         this.pedidoRepository = pedidoRepository;
         this.estadoPedidoRepository = estadoPedidoRepository;
         this.productoRepository = productoRepository;
         this.detallePedidoRepository = detallePedidoRepository;
         this.usuarioRepository = usuarioRepository;
+        this.detalleCompraService = detalleCompraService;
     }
-  @Override
+
+    @Override
   @Transactional
   public Pedido generarPedidoAutomaticoPorUsername(String username) {
 
-      Usuario usuario =
-              usuarioRepository.findByUsernameUsuario(username)
-                      .orElseThrow(() ->
+      Usuario usuario = usuarioRepository.findByUsernameUsuario(username).orElseThrow(() ->
                               new RuntimeException("Usuario no encontrado"));
 
-      Optional<Pedido> pedidoPendiente =
-              pedidoRepository.findByEstadoPedido_IdEstadoPedido(1);
+      Optional<Pedido> pedidoPendiente = pedidoRepository.findByEstadoPedido_IdEstadoPedido(1);
 
       if (pedidoPendiente.isPresent()) {
           throw new RuntimeException("Ya existe un pedido pendiente de aprobación");
       }
 
-      List<Producto> productos =
-              productoRepository.obtenerProductosStockBajo();
+      List<Producto> productos = productoRepository.obtenerProductosStockBajo();
 
       if (productos.isEmpty()) {
           throw new RuntimeException("No existen productos con stock bajo");
@@ -74,11 +71,33 @@ public class PedidoServiceImpl implements PedidoService {
       pedido.setObservacionPedido("Pedido generado automáticamente");
 
       pedido = pedidoRepository.save(pedido);
+      //cambios
+        BigDecimal totalSugerido= BigDecimal.ZERO;
 
       for (Producto producto : productos) {
+          //con esto para cada proiducto que ingrese al for elsistema preguntara : cual fue lauktima compra registrada de este producto?
+          DetalleCompra ultimaCompra = detalleCompraService.obtenerUltimaCompraProducto(producto.getIdProducto());
+          //ahora comprobamos siexiste esta comrpa
+          if (ultimaCompra == null) {
+              //si el proiducto no tien ehistorial de compra
+          }
+          //el producto se sugiere aqui sies null
+          DetallePedido detalle = new DetallePedido();
 
-          int cantidadSugerida =
-                  producto.getStockMinimoProducto() - producto.getStockActualProducto();
+          detalle.setPedido(pedido);
+          detalle.setProducto(producto);
+          //perosi no lo es
+          if (ultimaCompra != null) {
+              detalle.setCantidadDetalle(ultimaCompra.getCantidadDetalle());
+              detalle.setUnidadCompra(ultimaCompra.getUnidadCompra());
+              detalle.setPecioTotalSugerido(ultimaCompra.getPrecioTotalDetalle());
+
+              totalSugerido = totalSugerido.add(ultimaCompra.getPrecioTotalDetalle());
+          }
+
+          detallePedidoRepository.save(detalle);
+
+         /* int cantidadSugerida = producto.getStockMinimoProducto() - producto.getStockActualProducto();
 
           if (cantidadSugerida <= 0) continue;
 
@@ -87,7 +106,7 @@ public class PedidoServiceImpl implements PedidoService {
           detalle.setProducto(producto);
           detalle.setCantidadDetalle(cantidadSugerida);
 
-          detallePedidoRepository.save(detalle);
+          detallePedidoRepository.save(detalle);*/
       }
 
       return pedido;
