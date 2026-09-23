@@ -92,7 +92,7 @@ public class PedidoServiceImpl implements PedidoService {
               detalle.setUnidadCompra(ultimaCompra.getUnidadCompra());
               detalle.setPecioTotalSugerido(ultimaCompra.getPrecioTotalDetalle());
 
-              totalSugerido = totalSugerido.add(ultimaCompra.getPrecioTotalDetalle());
+              totalSugerido = totalSugerido.add(ultimaCompra.getPrecioTotalDetalle()); //aquise suma.add  
           }
 
           detallePedidoRepository.save(detalle);
@@ -108,6 +108,9 @@ public class PedidoServiceImpl implements PedidoService {
 
           detallePedidoRepository.save(detalle);*/
       }
+      //ahora guardamos el total del pedido
+        pedido.setTotalSugeridoPedido(totalSugerido);
+        pedidoRepository.save(pedido);
 
       return pedido;
   }
