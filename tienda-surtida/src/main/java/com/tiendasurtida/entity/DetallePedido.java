@@ -27,20 +27,20 @@ public class DetallePedido {
     private UnidadCompra unidadCompra;
 
     @Column(name= "precio_total_sugerido")
-    private BigDecimal pecioTotalSugerido;
+    private BigDecimal precioTotalSugerido;
     //constructor
 
 
     public DetallePedido() {
     }
 
-    public DetallePedido(Long idDetalle, Integer cantidadDetalle, Pedido pedido, Producto producto, UnidadCompra unidadCompra, BigDecimal pecioTotalSugerido) {
+    public DetallePedido(Long idDetalle, Integer cantidadDetalle, Pedido pedido, Producto producto, UnidadCompra unidadCompra, BigDecimal precioTotalSugerido) {
         this.idDetalle = idDetalle;
         this.cantidadDetalle = cantidadDetalle;
         this.pedido = pedido;
         this.producto = producto;
         this.unidadCompra = unidadCompra;
-        this.pecioTotalSugerido = pecioTotalSugerido;
+        this.precioTotalSugerido = precioTotalSugerido;
     }
 
     // getters y setters
@@ -85,11 +85,11 @@ public class DetallePedido {
         this.unidadCompra = unidadCompra;
     }
 
-    public BigDecimal getPecioTotalSugerido() {
-        return pecioTotalSugerido;
+    public BigDecimal getPrecioTotalSugerido() {
+        return precioTotalSugerido;
     }
 
-    public void setPecioTotalSugerido(BigDecimal pecioTotalSugerido) {
-        this.pecioTotalSugerido = pecioTotalSugerido;
+    public void setPrecioTotalSugerido(BigDecimal precioTotalSugerido) {
+        this.precioTotalSugerido = precioTotalSugerido;
     }
 }

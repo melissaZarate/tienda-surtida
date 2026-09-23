@@ -90,9 +90,9 @@ public class PedidoServiceImpl implements PedidoService {
           if (ultimaCompra != null) {
               detalle.setCantidadDetalle(ultimaCompra.getCantidadDetalle());
               detalle.setUnidadCompra(ultimaCompra.getUnidadCompra());
-              detalle.setPecioTotalSugerido(ultimaCompra.getPrecioTotalDetalle());
+              detalle.setPrecioTotalSugerido(ultimaCompra.getPrecioTotalDetalle());
 
-              totalSugerido = totalSugerido.add(ultimaCompra.getPrecioTotalDetalle()); //aquise suma.add  
+              totalSugerido = totalSugerido.add(ultimaCompra.getPrecioTotalDetalle()); //aquise suma.add
           }
 
           detallePedidoRepository.save(detalle);

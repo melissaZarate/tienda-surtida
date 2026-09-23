@@ -114,12 +114,9 @@
                         <thead class="table-dark">
 
                         <tr>
-
                             <th>Producto</th>
-                            <th>Stock Actual</th>
-                            <th>Stock Mínimo</th>
-                            <th>Cantidad Sugerida</th>
-
+                            <th>Cantidad a Comprar</th>
+                            <th>Precio Total Sugerido</th>
                         </tr>
 
                         </thead>
@@ -128,7 +125,7 @@
 
                         <tr th:if="${#lists.isEmpty(detalles)}">
 
-                            <td colspan="4" class="text-center">
+                            <td colspan="3" class="text-center">
 
                                 Este pedido no tiene productos.
 
@@ -143,17 +140,34 @@
                                 </strong>
                             </td>
 
-                            <td th:text="${detalle.producto.stockActualProducto}">
-                            </td>
+                            <td>
 
-                            <td th:text="${detalle.producto.stockMinimoProducto}">
+        <span th:if="${detalle.cantidadDetalle != null}"
+              class="badge bg-primary">
+
+            <span th:text="${detalle.cantidadDetalle}"></span>
+
+            <span th:if="${detalle.unidadCompra != null}"
+                  th:text="${detalle.unidadCompra.nombreUnidadCompra}">
+            </span>
+
+        </span>
+                                <span th:if="${detalle.cantidadDetalle == null}"
+                                      class="badge bg-secondary">Sin historial de compra</span>
+
                             </td>
 
                             <td>
 
-                                <span class="badge bg-primary"
-                                      th:text="${detalle.cantidadDetalle}">
-                                </span>
+        <span th:if="${detalle.precioTotalSugerido != null}">
+
+            Bs
+            <span th:text="${detalle.precioTotalSugerido}">
+            </span>
+
+        </span>
+
+                                <span th:if="${detalle.precioTotalSugerido == null}">—</span>
 
                             </td>
 
@@ -162,6 +176,22 @@
                         </tbody>
 
                     </table>
+
+                </div>
+                <!--aquipara el total del pedido-->
+                <div class="text-end mt-3">
+
+                    <h5>
+
+                        Total sugerido:
+
+                        <strong>
+                            Bs
+                            <span th:text="${pedido.totalSugeridoPedido}">
+                            </span>
+                        </strong>
+
+                    </h5>
 
                 </div>
 
