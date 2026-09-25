@@ -158,12 +158,10 @@ public class PedidoServiceImpl implements PedidoService {
     public Pedido generarPedidoPorCategoria(String username, Long idCategoria) {
 
         // 1. Usuario autenticado (REAL)
-        Usuario usuario =
-                usuarioRepository.findByUsernameUsuario(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Usuario usuario = usuarioRepository.findByUsernameUsuario(username).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // 2. Evitar pedidos duplicados
-        Optional<Pedido> pedidoPendiente =
-                pedidoRepository.findByEstadoPedido_IdEstadoPedido(1);
+        Optional<Pedido> pedidoPendiente = pedidoRepository.findByEstadoPedido_IdEstadoPedido(1);
 
         if (pedidoPendiente.isPresent()) {
             throw new RuntimeException("Ya existe un pedido pendiente de aprobación");
@@ -191,23 +189,38 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setObservacionPedido("Pedido por categoría ID: " + idCategoria);
 
         pedido = pedidoRepository.save(pedido);
+        //cambio
+        BigDecimal totalSugerido=BigDecimal.ZERO; //valor inicial de 0
 
         // 6. Detalles
         for (Producto producto : productos) {
 
-            int cantidadSugerida =
-                    producto.getStockMinimoProducto() - producto.getStockActualProducto();
-
-            if (cantidadSugerida <= 0) continue;
+            DetalleCompra ultimaCompra=detalleCompraService.obtenerUltimaCompraProducto(producto.getIdProducto());
 
             DetallePedido detalle = new DetallePedido();
             detalle.setPedido(pedido);
             detalle.setProducto(producto);
-            detalle.setCantidadDetalle(cantidadSugerida);
+            if (ultimaCompra != null) {
+
+                detalle.setCantidadDetalle(ultimaCompra.getCantidadDetalle());
+
+                detalle.setUnidadCompra(ultimaCompra.getUnidadCompra());
+
+                detalle.setPrecioTotalSugerido(ultimaCompra.getPrecioTotalDetalle());
+                if (ultimaCompra.getPrecioTotalDetalle() != null) {
+
+                    totalSugerido = totalSugerido.add(
+                            ultimaCompra.getPrecioTotalDetalle()
+                    );
+                }
+            }
+
+          /*  detalle.setCantidadDetalle(cantidadSugerida);*/
 
             detallePedidoRepository.save(detalle);
         }
-
+        pedido.setTotalSugeridoPedido(totalSugerido);
+        pedidoRepository.save(pedido);
         return pedido;
     }
     //lsta depedidoentxt
