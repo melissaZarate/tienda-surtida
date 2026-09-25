@@ -215,32 +215,69 @@ public class PedidoServiceImpl implements PedidoService {
     public String generarTextoPedido(Long idPedido) {
 
         Pedido pedido = pedidoRepository.findById(idPedido)
-                .orElseThrow(() ->
-                        new RuntimeException("Pedido no encontrado"));
+                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
 
-        StringBuilder sb = new StringBuilder();
+        List<DetallePedido> detalles =
+                detallePedidoRepository.findByPedido_IdPedido(idPedido);
 
-        sb.append(" PEDIDO DE REPOSICIÓN\n");
-        sb.append(" TIENDA SURTIDA\n\n");
+        StringBuilder texto = new StringBuilder();
 
-        sb.append("Fecha: ").append(pedido.getFechaGeneracionPedido()).append("\n");
+        texto.append("🛒 PEDIDO DE REPOSICIÓN\n");
+        texto.append("------------------------------\n");
+        texto.append("Pedido N.º: ")
+                .append(pedido.getIdPedido())
+                .append("\n");
 
-        sb.append(" Pedido: ").append(pedido.getIdPedido()).append("\n\n");
+        texto.append("Fecha: ")
+                .append(pedido.getFechaGeneracionPedido())
+                .append("\n\n");
 
-        sb.append(" PRODUCTOS\n\n");
+        texto.append("Productos:\n");
 
-        for (DetallePedido detalle : pedido.getDetalles()) {
+        for (DetallePedido detalle : detalles) {
 
-            sb.append("• ").append(detalle.getProducto().getNombreProducto()).append("\n");
+            texto.append("• ")
+                    .append(detalle.getProducto().getNombreProducto())
+                    .append("\n");
 
-            sb.append("  Cantidad: ")
-                    .append(detalle.getCantidadDetalle())
-                    .append("\n\n");
+            if (detalle.getCantidadDetalle() != null) {
+
+                texto.append("  Cantidad: ")
+                        .append(detalle.getCantidadDetalle());
+
+                if (detalle.getUnidadCompra() != null) {
+
+                    texto.append(" ")
+                            .append(detalle.getUnidadCompra()
+                                    .getNombreUnidadCompra());
+                }
+
+                texto.append("\n");
+
+            } else {
+
+                texto.append("  Sin historial de compra\n");
+            }
+
+            if (detalle.getPrecioTotalSugerido() != null) {
+
+                texto.append("  Precio sugerido: Bs ")
+                        .append(detalle.getPrecioTotalSugerido())
+                        .append("\n");
+
+            }
+
+            texto.append("\n");
         }
 
-        sb.append("--------------------------------\n");
-        sb.append("Generado automáticamente por el Sistema Tienda Surtida");
+        texto.append("------------------------------\n");
 
-        return sb.toString();
+        texto.append("TOTAL SUGERIDO: Bs ")
+                .append(pedido.getTotalSugeridoPedido())
+                .append("\n\n");
+
+        texto.append("Generado automáticamente por el Sistema Tienda Surtida");
+
+        return texto.toString();
     }
 }
