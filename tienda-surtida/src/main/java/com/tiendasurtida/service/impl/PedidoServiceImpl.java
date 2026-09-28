@@ -9,6 +9,8 @@ import com.tiendasurtida.repository.ProductoRepository;
 import com.tiendasurtida.service.DetalleCompraService;
 import com.tiendasurtida.service.EstadoPedidoService;
 import com.tiendasurtida.service.PedidoService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -115,8 +117,9 @@ public class PedidoServiceImpl implements PedidoService {
       return pedido;
   }
     @Override
-    public List<Pedido> listarPedidos() {
-        return pedidoRepository.findAll();
+    public Page<Pedido> listarPedidos(Pageable pageable) {
+      //aqui cambiamos a pageable
+        return pedidoRepository.findAllByOrderByFechaGeneracionPedidoDesc(pageable);
     }
 
     @Override

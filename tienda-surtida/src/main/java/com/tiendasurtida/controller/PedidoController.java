@@ -3,6 +3,9 @@ package com.tiendasurtida.controller;
 import com.tiendasurtida.entity.Pedido;
 import com.tiendasurtida.service.PedidoService;
 import com.tiendasurtida.repository.CategoriaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.ui.Model;
@@ -28,9 +31,22 @@ public class PedidoController {
     }
 
     //  LISTAR PEDIDOS
-    @GetMapping
+   /* @GetMapping
     public String listar(Model model) {
         List<Pedido> pedidos=pedidoService.listarPedidos();
+
+        model.addAttribute("pedidos",pedidos );
+        //verificar si existe un p4dido pendiente
+        model.addAttribute("categorias", categoriaRepository.findAll());
+        model.addAttribute("existePendiente",pedidoService.existePedidoPendiente());
+
+        return "pedido/lista";
+    }*/
+    @GetMapping
+    public String listar(@RequestParam(defaultValue="0") int page, Model model) {
+        //aquicambiamos para ver en paginas desde spring
+        Pageable pageable= PageRequest.of(page,10);
+        Page<Pedido> pedidos=pedidoService.listarPedidos(pageable);
 
         model.addAttribute("pedidos",pedidos );
         //verificar si existe un p4dido pendiente

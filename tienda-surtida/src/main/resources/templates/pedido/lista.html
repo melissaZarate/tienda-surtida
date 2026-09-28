@@ -166,6 +166,48 @@
                         </tbody>
 
                     </table>
+                    <!--aqui para paginacion-->
+                    <nav th:if="${pedidos.totalPages > 1}"
+                         aria-label="Paginación de pedidos">
+
+                        <ul class="pagination justify-content-center">
+
+                            <!-- Anterior -->
+                            <li class="page-item"
+                                th:classappend="${pedidos.first} ? 'disabled'">
+
+                                <a class="page-link"
+                                   th:href="@{/pedidos(page=${pedidos.number - 1})}">
+                                    Anterior
+                                </a>
+
+                            </li>
+
+                            <!-- Números de página -->
+                            <li class="page-item"
+                                th:each="pagina : ${#numbers.sequence(0, pedidos.totalPages - 1)}"
+                                th:classappend="${pagina == pedidos.number} ? 'active'">
+
+                                <a class="page-link"
+                                   th:href="@{/pedidos(page=${pagina})}"
+                                   th:text="${pagina + 1}">
+                                </a>
+
+                            </li>
+
+                            <!-- Siguiente -->
+                            <li class="page-item"
+                                th:classappend="${pedidos.last} ? 'disabled'">
+
+                                <a class="page-link"
+                                   th:href="@{/pedidos(page=${pedidos.number + 1})}">
+                                    Siguiente
+                                </a>
+
+                            </li>
+
+                        </ul>
+                    </nav>
 
                 </div>
 
