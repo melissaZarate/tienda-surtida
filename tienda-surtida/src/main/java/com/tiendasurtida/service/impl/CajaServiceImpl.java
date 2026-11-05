@@ -4,6 +4,8 @@ package com.tiendasurtida.service.impl;
 import com.tiendasurtida.dto.CajaDTO;
 import com.tiendasurtida.entity.Caja;
 import com.tiendasurtida.entity.Venta;
+import com.tiendasurtida.entity.Compra;
+
 import com.tiendasurtida.repository.CajaRepository;
 import com.tiendasurtida.repository.CompraRepository;
 import com.tiendasurtida.repository.VentaRepository;
@@ -67,7 +69,30 @@ public class CajaServiceImpl implements CajaService {
     @Override
     public Caja obtenerCajaAbierta() {
 
-        return cajaRepository.findByEstadoIgnoreCase("ABIERTA").orElse(null);
+        Caja caja = cajaRepository.findByEstadoIgnoreCase("ABIERTA")
+                .orElse(null);
+
+        if (caja == null) {
+            return null;
+        }
+
+        BigDecimal ingresos = ventaRepository.findByCaja(caja).stream()
+                .map(Venta::getTotalVenta)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal egresos = compraRepository.findByCaja(caja).stream()
+                .map(Compra::getTotalCompra)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal saldoDisponible = caja.getMontoInicial()
+                .add(ingresos)
+                .subtract(egresos);
+
+        caja.setTotalIngresos(ingresos);
+        caja.setTotalEgresos(egresos);
+        caja.setSaldoFinal(saldoDisponible);
+
+        return caja;
     }
 
     @Override
