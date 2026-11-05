@@ -52,7 +52,7 @@ public class CajaServiceImpl implements CajaService {
                 .orElseThrow(() -> new RuntimeException("No existe una caja abierta"));
         BigDecimal ingresos = ventaRepository.findByCaja(caja).stream().map(Venta::getTotalVenta) //busca las ventas de esta caj
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal egresos = compraRepository.findByCaja(caja).stream().map(c -> BigDecimal.valueOf(c.getTotalCompra()))
+        BigDecimal egresos = compraRepository.findByCaja(caja).stream().map(c -> c.getTotalCompra())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal saldoFinal = caja.getMontoInicial().add(ingresos).subtract(egresos); //operacion

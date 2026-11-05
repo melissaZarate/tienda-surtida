@@ -42,7 +42,7 @@ public class CompraServiceImpl implements CompraService {
 
 
         if (compra.getTotalCompra() == null) {
-            compra.setTotalCompra(0.0);
+            compra.setTotalCompra(BigDecimal.ZERO); //cmbio de double a bigdecial
         }
         compra.setCaja(caja); //setCaja(caja); // <- relacionar la venta con la caja abierta
         compra.setEstadoCompra("EN_PROCESO");
@@ -103,12 +103,7 @@ public class CompraServiceImpl implements CompraService {
         detalle.setPrecioCompraDetalle(costoUnitario);
 
         // Calcular porcentaje real de ganancia
-        BigDecimal porcentajeGananciaReal =
-                precioVentaFinal
-                        .subtract(costoUnitario)
-                        .divide(
-                                costoUnitario,4, RoundingMode.HALF_UP
-                        )
+        BigDecimal porcentajeGananciaReal = precioVentaFinal.subtract(costoUnitario).divide(costoUnitario,4, RoundingMode.HALF_UP)
                         .multiply(BigDecimal.valueOf(100));
 
         detalle.setPorcentajeGananciaDetalle(porcentajeGananciaReal.setScale(2,RoundingMode.HALF_UP));
@@ -171,7 +166,7 @@ public class CompraServiceImpl implements CompraService {
 
         // Recalcular total de compra
         BigDecimal total = compra.getDetalles().stream().map(DetalleCompra::getPrecioTotalDetalle).reduce(BigDecimal.ZERO, BigDecimal::add);
-        compra.setTotalCompra(total.doubleValue());
+        compra.setTotalCompra(total);
 
         // Guardar cambios
         productoRepository.save(producto);

@@ -49,9 +49,11 @@ public class DashboardServiceImpl implements DashboardService {
 //
         dto.setVentasHoy(ventasHoy); //venas actuales hoy
 
-        Double comprasHoy = compraRepository.obtenerComprasEntreFechas(inicio, fin); //compras actuales
-        dto.setComprasHoy(BigDecimal.valueOf(comprasHoy));
-        BigDecimal gananciasHoy = ventasHoy.subtract(BigDecimal.valueOf(comprasHoy));
+        BigDecimal comprasHoy = compraRepository.obtenerComprasEntreFechas(inicio, fin);
+
+        dto.setComprasHoy(comprasHoy);
+
+        BigDecimal gananciasHoy = ventasHoy.subtract(comprasHoy);
         dto.setGananciasHoy(gananciasHoy);
         //para caja
         Caja caja = cajaRepository.findByEstadoIgnoreCase("ABIERTA").orElse(null);

@@ -17,7 +17,7 @@ public interface CompraRepository extends JpaRepository<Compra, Long> {
     List<Compra> findByCaja(Caja caja);
     //consultas para el dashboard
     @Query("SELECT COALESCE(SUM(c.totalCompra), 0) FROM Compra c WHERE c.fechaCompra BETWEEN :inicio AND :fin")
-    Double obtenerComprasEntreFechas(@Param("inicio") LocalDateTime inicio, @Param("fin") LocalDateTime fin);
+    BigDecimal obtenerComprasEntreFechas(@Param("inicio") LocalDateTime inicio, @Param("fin") LocalDateTime fin);
     @Query("SELECT COALESCE(SUM(c.totalCompra), 0) FROM Compra c WHERE c.fechaCompra BETWEEN :inicio AND :fin")
     BigDecimal sumarCompras(@Param("inicio") LocalDateTime inicio, @Param("fin") LocalDateTime fin);
 

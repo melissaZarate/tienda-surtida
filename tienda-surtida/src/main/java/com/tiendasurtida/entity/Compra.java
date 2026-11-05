@@ -1,6 +1,8 @@
 package com.tiendasurtida.entity;
 
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import jakarta.persistence.*;
@@ -19,7 +21,7 @@ public class Compra {
     private LocalDateTime fechaCompra;
 
     @Column(name = "total_compra")
-    private Double totalCompra;
+    private BigDecimal totalCompra;
 
     @Column(name = "observacion_compra")
     private String observacionCompra;
@@ -47,7 +49,7 @@ public class Compra {
     public Compra() {
     }
 
-    public Compra(Long idCompra, LocalDateTime fechaCompra, Double totalCompra, String observacionCompra, String estadoCompra, Proveedor proveedor, Usuario usuario, Caja caja, List<DetalleCompra> detalles) {
+    public Compra(Long idCompra, LocalDateTime fechaCompra, BigDecimal totalCompra, String observacionCompra, String estadoCompra, Proveedor proveedor, Usuario usuario, Caja caja, List<DetalleCompra> detalles) {
         this.idCompra = idCompra;
         this.fechaCompra = fechaCompra;
         this.totalCompra = totalCompra;
@@ -60,6 +62,8 @@ public class Compra {
     }
 
     // GETTERS Y SETTERS
+
+
     public Long getIdCompra() {
         return idCompra;
     }
@@ -76,11 +80,11 @@ public class Compra {
         this.fechaCompra = fechaCompra;
     }
 
-    public Double getTotalCompra() {
+    public BigDecimal getTotalCompra() {
         return totalCompra;
     }
 
-    public void setTotalCompra(Double totalCompra) {
+    public void setTotalCompra(BigDecimal totalCompra) {
         this.totalCompra = totalCompra;
     }
 
@@ -90,6 +94,14 @@ public class Compra {
 
     public void setObservacionCompra(String observacionCompra) {
         this.observacionCompra = observacionCompra;
+    }
+
+    public String getEstadoCompra() {
+        return estadoCompra;
+    }
+
+    public void setEstadoCompra(String estadoCompra) {
+        this.estadoCompra = estadoCompra;
     }
 
     public Proveedor getProveedor() {
@@ -108,27 +120,19 @@ public class Compra {
         this.usuario = usuario;
     }
 
-    public List<DetalleCompra> getDetalles() {
-        return detalles;
-    }
-
-    public void setDetalles(List<DetalleCompra> detalles) {
-        this.detalles = detalles;
-    }
-
-    public String getEstadoCompra() {
-        return estadoCompra;
-    }
-
-    public void setEstadoCompra(String estadoCompra) {
-        this.estadoCompra = estadoCompra;
-    }
-
     public Caja getCaja() {
         return caja;
     }
 
     public void setCaja(Caja caja) {
         this.caja = caja;
+    }
+
+    public List<DetalleCompra> getDetalles() {
+        return detalles;
+    }
+
+    public void setDetalles(List<DetalleCompra> detalles) {
+        this.detalles = detalles;
     }
 }
