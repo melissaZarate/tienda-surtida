@@ -2,6 +2,7 @@
 package com.tiendasurtida.service.impl;
 
 import com.tiendasurtida.dto.CajaDTO;
+import com.tiendasurtida.dto.CajaResumenDTO;
 import com.tiendasurtida.entity.Caja;
 import com.tiendasurtida.entity.Venta;
 import com.tiendasurtida.entity.Compra;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -98,5 +100,28 @@ public class CajaServiceImpl implements CajaService {
     @Override
     public List<Caja> listarCajas() {
         return cajaRepository.findAllByOrderByFechaAperturaDesc(); //cajas nuevas aparecenprimero
+    }
+
+    @Override
+    public CajaResumenDTO obtenerResumenDiario() {
+
+        // Definir el rango del día
+        LocalDateTime inicioDia = LocalDate.now().atStartOfDay();
+        LocalDateTime finDia = inicioDia.plusDays(1).minusNanos(1);
+
+        // Recuperar el último acumulado anterior
+        BigDecimal acumuladoAnterior = cajaRepository
+                .findTopByEstadoIgnoreCaseAndFechaCierreBeforeOrderByFechaCierreDesc("CERRADA", inicioDia).map(Caja::getSaldoFinal)
+                .orElse(BigDecimal.ZERO);
+       //  Sumar todas las ventas del día
+        BigDecimal ventasHoy = ventaRepository.obtenerVentasEntreFechas(inicioDia, finDia);
+        // Sumar todas las compras del día
+        BigDecimal comprasHoy = compraRepository.obtenerComprasEntreFechas(inicioDia, finDia);
+        // Calcular el saldo preliminar
+        BigDecimal saldoPreliminar = acumuladoAnterior.add(ventasHoy).subtract(comprasHoy);
+        // Construir el resumen llamamos a la clase
+        return new CajaResumenDTO(acumuladoAnterior, ventasHoy, comprasHoy, saldoPreliminar);
+
+
     }
 }
