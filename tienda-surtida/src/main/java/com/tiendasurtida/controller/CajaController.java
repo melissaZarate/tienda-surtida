@@ -2,6 +2,7 @@
 package com.tiendasurtida.controller;
 
 import com.tiendasurtida.dto.CajaDTO;
+import com.tiendasurtida.dto.CajaResumenDTO;
 import com.tiendasurtida.entity.Caja;
 import com.tiendasurtida.service.CajaService;
 import org.springframework.stereotype.Controller;
@@ -22,8 +23,9 @@ public class CajaController {
     public String cajaActual(Model model) {
 
         Caja caja = cajaService.obtenerCajaAbierta(); //busca la caja abierta yla envia a thymeleaf
-
+        CajaResumenDTO resumen=cajaService.obtenerResumenDiario();
         model.addAttribute("caja", caja);
+        model.addAttribute("resumen", resumen);
 
         return "caja/actual";
     }
